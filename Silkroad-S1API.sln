@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35506.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Silkroad-S1API", "Silkroad-S1API\Silkroad-S1API.csproj", "{4F51EA68-B08B-4D76-9CAA-B365C841D09C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F1CC0465-4FEA-4E40-8A5F-49C47BC93A0D}"
+	ProjectSection(SolutionItems) = preProject
+		local.build.props = local.build.props
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4F51EA68-B08B-4D76-9CAA-B365C841D09C}.Debug|Any CPU.ActiveCfg = Il2Cpp|Any CPU
+		{4F51EA68-B08B-4D76-9CAA-B365C841D09C}.Debug|Any CPU.Build.0 = Il2Cpp|Any CPU
+		{4F51EA68-B08B-4D76-9CAA-B365C841D09C}.Release|Any CPU.ActiveCfg = Il2Cpp|Any CPU
+		{4F51EA68-B08B-4D76-9CAA-B365C841D09C}.Release|Any CPU.Build.0 = Il2Cpp|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
