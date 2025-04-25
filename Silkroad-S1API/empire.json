@@ -2,7 +2,7 @@
   "dealers": [
     {
       "name": "Combo 'Costco'",
-      "image": "Silkroad/combo.png",
+      "image": "combo.png",
       "unlockRequirements": [],
       "drugs": [
         {
@@ -152,7 +152,7 @@
     },
     {
       "name": "Badger",
-      "image": "Silkroad/badger.png",
+      "image": "badger.png",
       "unlockRequirements": [
         {
           "name": "Combo 'Costco'",
@@ -257,7 +257,7 @@
     },
     {
       "name": "Skinny Pete",
-      "image": "Silkroad/skinny_pete.png",
+      "image": "skinny_pete.png",
       "unlockRequirements": [
         {
           "name": "Combo 'Costco'",
@@ -362,7 +362,7 @@
     },
     {
       "name": "Domingo 'Krazy-8' Molina",
-      "image": "Silkroad/SilkRoadIcon_quest.png",
+      "image": "SilkRoadIcon_quest.png",
       "unlockRequirements": [
         {
           "name": "Jesse Pinkman",
@@ -574,7 +574,7 @@
     },
     {
       "name": "Tuco Salamanca",
-      "image": "Silkroad/SilkRoadIcon_quest.png",
+      "image": "SilkRoadIcon_quest.png",
       "unlockRequirements": [
         {
           "name": "Domingo 'Krazy-8' Molina",
@@ -732,7 +732,7 @@
     },
     {
       "name": "Jesse Pinkman",
-      "image": "Silkroad/jesse.png",
+      "image": "jesse.png",
       "unlockRequirements": [
         {
           "name": "Combo 'Costco'",
@@ -902,7 +902,7 @@
     },
     {
       "name": "Gustavo Fring",
-      "image": "Silkroad/SilkRoadIcon_quest.png",
+      "image": "SilkRoadIcon_quest.png",
       "unlockRequirements": [
         {
           "name": "Jesse Pinkman",
@@ -1074,7 +1074,7 @@
     },
     {
       "name": "Lydia Rodarte-Quayle",
-      "image": "Silkroad/SilkRoadIcon_quest.png",
+      "image": "SilkRoadIcon_quest.png",
       "unlockRequirements": [
         {
           "name": "Gustavo Fring",
@@ -1278,7 +1278,7 @@
     },
     {
       "name": "Don Eladio Vuente",
-      "image": "Silkroad/SilkRoadIcon_quest.png",
+      "image": "SilkRoadIcon_quest.png",
       "unlockRequirements": [
         {
           "name": "Gustavo Fring",
@@ -1393,7 +1393,7 @@
     },
     {
       "name": "Heisenberg",
-      "image": "Silkroad/SilkRoadIcon_quest.png",
+      "image": "SilkRoadIcon_quest.png",
       "unlockRequirements": [
         {
           "name": "Don Eladio Vuente",

@@ -24,6 +24,7 @@ namespace Silkroad
 
         public string DealerName { get; private set; }
         public string? DealerImage { get; private set; }
+        //Parameterless Constructor for the S1API call
         public BlackmarketBuyer() : base("blackmarket_buyer", "Blackmarket", "Buyer")
         {
             DealerName = "Blackmarket Buyer";
@@ -52,7 +53,7 @@ namespace Silkroad
                 MaxDeliveryAmount = 5
             };
 
-            
+
 
             // Register the default dealer save data so that later lookups won't return null.
             Buyers[DealerName] = _DealerData;
@@ -66,7 +67,7 @@ namespace Silkroad
                 throw new ArgumentNullException(nameof(dealer));
 
             DealerName = dealer.Name;
-            DealerImage = Path.Combine(MelonEnvironment.ModsDirectory, dealer.Image);
+            DealerImage = Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", dealer.Image);
 
             if (Buyers.ContainsKey(dealer.Name))
             {
@@ -107,32 +108,32 @@ namespace Silkroad
             };
 
             var shippingList = dealer.Shippings ?? Enumerable.Empty<Shipping>();
-var validShippings = shippingList
-    .Where(s => s.UnlockRep <= _DealerData.Reputation && s.MinAmount > 0 && s.MaxAmount > 0)
-    .ToList();
-MelonLogger.Msg($"   Found {validShippings.Count} shipping option(s) unlocked for dealer '{dealer.Name}' at rep {_DealerData.Reputation}.");
+            var validShippings = shippingList
+                .Where(s => s.UnlockRep <= _DealerData.Reputation && s.MinAmount > 0 && s.MaxAmount > 0)
+                .ToList();
+            MelonLogger.Msg($"   Found {validShippings.Count} shipping option(s) unlocked for dealer '{dealer.Name}' at rep {_DealerData.Reputation}.");
 
-foreach (var s in validShippings)
-{
-    MelonLogger.Msg($"      Shipping Option: {s.Name} | UnlockRep: {s.UnlockRep} | MinAmount: {s.MinAmount} | MaxAmount: {s.MaxAmount}");
-}
+            foreach (var s in validShippings)
+            {
+                MelonLogger.Msg($"      Shipping Option: {s.Name} | UnlockRep: {s.UnlockRep} | MinAmount: {s.MinAmount} | MaxAmount: {s.MaxAmount}");
+            }
 
-var shippingMethod = validShippings
-    .OrderByDescending(s => s.MaxAmount)
-    .FirstOrDefault();
+            var shippingMethod = validShippings
+                .OrderByDescending(s => s.MaxAmount)
+                .FirstOrDefault();
 
-if (shippingMethod != null)
-{
-    _DealerData.MinDeliveryAmount = shippingMethod.MinAmount;
-    _DealerData.MaxDeliveryAmount = shippingMethod.MaxAmount;
-    MelonLogger.Msg($"   Using shipping method: {shippingMethod.Name} ({shippingMethod.MinAmount}-{shippingMethod.MaxAmount})");
-}
-else
-{
-    _DealerData.MinDeliveryAmount = 1; // Default fallback
-    _DealerData.MaxDeliveryAmount = 5; // Default fallback
-    MelonLogger.Msg("   No shipping methods unlocked, using defaults (1-5)");
-}
+            if (shippingMethod != null)
+            {
+                _DealerData.MinDeliveryAmount = shippingMethod.MinAmount;
+                _DealerData.MaxDeliveryAmount = shippingMethod.MaxAmount;
+                MelonLogger.Msg($"   Using shipping method: {shippingMethod.Name} ({shippingMethod.MinAmount}-{shippingMethod.MaxAmount})");
+            }
+            else
+            {
+                _DealerData.MinDeliveryAmount = 1; // Default fallback
+                _DealerData.MaxDeliveryAmount = 5; // Default fallback
+                MelonLogger.Msg("   No shipping methods unlocked, using defaults (1-5)");
+            }
 
             Buyers[dealer.Name] = _DealerData;
 
@@ -140,14 +141,21 @@ else
             MelonLogger.Msg($"✅ Dealer initialized: {dealer.Name}");
             MelonLogger.Msg($"   Unlocked Drugs: {string.Join(", ", _DealerData.UnlockedDrugs)}");
             MelonLogger.Msg($"   MinDeliveryAmount: {_DealerData.MinDeliveryAmount}, MaxDeliveryAmount: {_DealerData.MaxDeliveryAmount}");
+
         }
 
-        protected override Sprite? NPCIcon => ImageUtils.LoadImage(DealerImage ?? Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", "SilkRoadIcon_quest.png"));
-
+        protected override Sprite? NPCIcon
+        {
+            get
+            {
+                // Dynamically load the image based on the DealerImage of the current instance
+                return ImageUtils.LoadImage(DealerImage ?? Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", "SilkRoadIcon_quest.png"));
+            }
+        }
         protected override void OnLoaded()
         {
             base.OnLoaded();
-            MelonCoroutines.Start(WaitForDealerAndSendStatus());
+            //MelonCoroutines.Start(WaitForDealerAndSendStatus());
             IsInitialized = true;
         }
 
@@ -236,11 +244,13 @@ else
             string line = dealerData.RewardDroppedTexts[RandomUtils.RangeInt(0, dealerData.RewardDroppedTexts.Count)];
             SendTextMessage(line);
         }
+        //Possible Check to see if all dealers save data are initialized and send a message to the player
         private System.Collections.IEnumerator WaitForDealerAndSendStatus()
         {
             float timeout = 5f;
             float waited = 0f;
-
+            IsInitialized = false;
+            MelonLogger.Msg($"⏳ Waiting for dealer {DealerName} to be initialized...");
             // Wait for this specific dealer's data to be initialized
             while (!IsInitialized && waited < timeout)
             {
