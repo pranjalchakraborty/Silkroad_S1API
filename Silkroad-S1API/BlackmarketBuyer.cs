@@ -83,7 +83,7 @@ namespace Silkroad
                 DeliverySuccessTexts = dealer.Dialogue?.Responses?.Accept ?? new List<string>(),
                 RewardDroppedTexts = dealer.Dialogue?.Responses?.Success ?? new List<string>(),
                 DealerName = dealer.Name,
-                Icon = dealer.Image,
+                Icon = DealerImage,
                 Reputation = 0,
                 UnlockedDrugs = (dealer.Drugs ?? Enumerable.Empty<Drug>())
                     .Where(d => d.UnlockRep == 0)
@@ -149,7 +149,7 @@ namespace Silkroad
             get
             {
                 // Dynamically load the image based on the DealerImage of the current instance
-                return ImageUtils.LoadImage(DealerImage ?? Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", "SilkRoadIcon_quest.png"));
+                return ImageUtils.LoadImage(Contacts.CurrentBuyerImage ?? Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", "SilkRoadIcon_quest.png"));
             }
         }
         protected override void OnLoaded()
@@ -165,9 +165,15 @@ namespace Silkroad
             Debug.Log($"BlackmarketBuyer {DealerName} created.");
         }
 
+        public static DealerSaveData GetDealerSaveData(string dealerName)
+        {
+            return Buyers.TryGetValue(dealerName, out var dealerData) ? dealerData : null;
+        }
+
         public void UnlockDrug(string dealerName, string drugType)
         {
-            if (!BlackmarketBuyer.Buyers.TryGetValue(dealerName, out var dealerData))
+            var dealerData = GetDealerSaveData(dealerName);
+            if (dealerData == null)
                 return;
 
             if (!dealerData.UnlockedDrugs.Contains(drugType))
@@ -178,7 +184,8 @@ namespace Silkroad
 
         public void UnlockQuality(string dealerName, string drugType, string qualityType)
         {
-            if (!BlackmarketBuyer.Buyers.TryGetValue(dealerName, out var dealerData))
+            var dealerData = GetDealerSaveData(dealerName);
+            if (dealerData == null)
                 return;
 
             dealerData.UnlockedQuality[drugType] = qualityType;
@@ -186,7 +193,8 @@ namespace Silkroad
 
         public void UnlockNecessaryEffect(string dealerName, string effectName)
         {
-            if (!BlackmarketBuyer.Buyers.TryGetValue(dealerName, out var dealerData))
+            var dealerData = GetDealerSaveData(dealerName);
+            if (dealerData == null)
                 return;
 
             if (!dealerData.NecessaryEffects.Any(e => e.Name == effectName))
@@ -196,7 +204,8 @@ namespace Silkroad
         }
         public void UnlockOptionalEffect(string dealerName, string effectName, float probability = 0.5f)
         {
-            if (!BlackmarketBuyer.Buyers.TryGetValue(dealerName, out var dealerData))
+            var dealerData = GetDealerSaveData(dealerName);
+            if (dealerData == null)
                 return;
 
             if (!dealerData.OptionalEffects.Any(e => e.Name == effectName))
@@ -207,7 +216,8 @@ namespace Silkroad
 
         public void SendDeliveryAccepted(string dealerName, string product, int amount)
         {
-            if (!BlackmarketBuyer.Buyers.TryGetValue(dealerName, out var dealerData))
+            var dealerData = GetDealerSaveData(dealerName);
+            if (dealerData == null)
                 return;
 
             DealerName = dealerData.DealerName;
@@ -223,7 +233,8 @@ namespace Silkroad
 
         public void SendDeliverySuccess(string dealerName, string product)
         {
-            if (!BlackmarketBuyer.Buyers.TryGetValue(dealerName, out var dealerData))
+            var dealerData = GetDealerSaveData(dealerName);
+            if (dealerData == null)
                 return;
 
             DealerName = dealerData.DealerName;
@@ -235,7 +246,8 @@ namespace Silkroad
 
         public void SendRewardDropped(string dealerName)
         {
-            if (!BlackmarketBuyer.Buyers.TryGetValue(dealerName, out var dealerData))
+            var dealerData = GetDealerSaveData(dealerName);
+            if (dealerData == null)
                 return;
 
             DealerName = dealerData.DealerName;

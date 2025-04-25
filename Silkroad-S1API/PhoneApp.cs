@@ -9,21 +9,25 @@ using SilkRoad;
 using System.Linq;
 using MelonLoader.Utils;
 using System.IO;
+using S1API.Internal.Utils;
 
 namespace Silkroad
 {
     public class MyApp : S1API.PhoneApp.PhoneApp
-    {
+    {   
         protected override string AppName => "Silkroad";
         protected override string AppTitle => "Silkroad";
         protected override string IconLabel => "Silkroad";
-        protected override string IconFileName => Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad","SilkRoadIcon.png");
+        protected override string IconFileName => Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", "SilkRoadIcon.png");
 
         private List<QuestData> quests;
         private RectTransform questListContainer;
         private Text questTitle, questTask, questReward, deliveryStatus, acceptLabel;
         private Button acceptButton;
         private Text statusText;
+
+        //Bypass method to set quest image dynamically from dealer icon
+        public static string QuestImage;
 
         protected override void OnCreatedUI(GameObject container)
         {
@@ -186,47 +190,59 @@ namespace Silkroad
 
 
         private void GenerateQuest(DealerSaveData dealer, string drugType, string quality, List<string> necessaryEffects, List<string> optionalEffects)
-{
-    // Ensure that any string parameter is not null by defaulting it to empty string.
-    dealer.DealerName = dealer.DealerName ?? "";
-    drugType = drugType ?? "";
-    quality = quality ?? "";
-    necessaryEffects = necessaryEffects ?? new List<string>();
-    optionalEffects = optionalEffects ?? new List<string>();
+        {
+            // Ensure that any string parameter is not null by defaulting it to empty string.
+            dealer.DealerName = dealer.DealerName ?? "";
+            drugType = drugType ?? "";
+            quality = quality ?? "";
+            necessaryEffects = necessaryEffects ?? new List<string>();
+            optionalEffects = optionalEffects ?? new List<string>();
 
-    int amount = RandomUtils.RangeInt(dealer.MinDeliveryAmount, dealer.MaxDeliveryAmount);
-    float effectMultiplier = (necessaryEffects.Count > 0) ? 1.2f : 1.0f;
-    int reward = Mathf.RoundToInt(drugType.Length * 20f * amount * effectMultiplier);
+            int amount = RandomUtils.RangeInt(dealer.MinDeliveryAmount, dealer.MaxDeliveryAmount);
+            float effectMultiplier = (necessaryEffects.Count > 0) ? 1.2f : 1.0f;
+            int reward = Mathf.RoundToInt(drugType.Length * 20f * amount * effectMultiplier);
 
-    string effectDesc = "";
-    if (necessaryEffects.Count > 0)
-        effectDesc += $"Required: {string.Join(", ", necessaryEffects)}";
-    if (optionalEffects.Count > 0)
-        effectDesc += (effectDesc.Length > 0 ? "; " : "") + $"Optional: {string.Join(", ", optionalEffects)}";
+            string effectDesc = "";
+            if (necessaryEffects.Count > 0)
+                effectDesc += $"Required: {string.Join(", ", necessaryEffects)}";
+            if (optionalEffects.Count > 0)
+                effectDesc += (effectDesc.Length > 0 ? "; " : "") + $"Optional: {string.Join(", ", optionalEffects)}";
 
-    var quest = new QuestData
-    {
-        Title = $"{dealer.DealerName} - {drugType} Delivery",
-        Task = $"Deliver {amount}x {quality} {drugType}" + (effectDesc.Length > 0 ? $" with [{effectDesc}]" : ""),
-        Reward = reward,
-        ProductID = drugType,
-        AmountRequired = (uint)amount,
-        TargetObjectName = dealer.DealerName,
-        DealerName = dealer.DealerName,
-        NecessaryEffects = necessaryEffects,
-        OptionalEffects = optionalEffects
-    };
+            var productID = drugType;
+            //Append productID with quality, necessary effects and optional effects
+            if (quality.Length > 0)
+                productID += $"{quality}";
 
-    quests.Add(quest);
+            if (necessaryEffects.Count > 0)
+                productID += $"NE:{string.Join(",", necessaryEffects)}";
 
-    MelonLogger.Msg($"✅ Quest generated:");
-    MelonLogger.Msg($"   Title: {quest.Title}");
-    MelonLogger.Msg($"   Task: {quest.Task}");
-    MelonLogger.Msg($"   Reward: ${quest.Reward}");
-    MelonLogger.Msg($"   Amount Required: {quest.AmountRequired}");
-    MelonLogger.Msg($"   Necessary Effects: {string.Join(", ", quest.NecessaryEffects)}");
-    MelonLogger.Msg($"   Optional Effects: {string.Join(", ", quest.OptionalEffects)}");
-}
+            if (optionalEffects.Count > 0)
+                productID += $"OE:{string.Join(",", optionalEffects)}";
+
+            var quest = new QuestData
+            {
+                Title = $"{dealer.DealerName} - {drugType} Delivery",
+                Task = $"Deliver {amount}x {quality} {drugType}" + (effectDesc.Length > 0 ? $" with [{effectDesc}]" : ""),
+                Reward = reward,
+                ProductID = drugType,
+                AmountRequired = (uint)amount,
+                TargetObjectName = dealer.DealerName,
+                DealerName = dealer.DealerName,
+                NecessaryEffects = necessaryEffects,
+                OptionalEffects = optionalEffects,
+                QuestImage=Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", BlackmarketBuyer.GetDealerSaveData(dealer.DealerName)?.Icon ?? "SilkRoadIcon_quest.png") 
+            };
+
+            quests.Add(quest);
+
+            MelonLogger.Msg($"✅ Quest generated:");
+            MelonLogger.Msg($"   Title: {quest.Title}");
+            MelonLogger.Msg($"   Task: {quest.Task}");
+            MelonLogger.Msg($"   Reward: ${quest.Reward}");
+            MelonLogger.Msg($"   Amount Required: {quest.AmountRequired}");
+            MelonLogger.Msg($"   Necessary Effects: {string.Join(", ", quest.NecessaryEffects)}");
+            MelonLogger.Msg($"   Optional Effects: {string.Join(", ", quest.OptionalEffects)}");
+        }
 
 
         private void RefreshQuestList()
@@ -240,7 +256,7 @@ namespace Silkroad
                 MelonLogger.Msg($"✅ Adding quest to UI: {quest.Title}");
 
                 var row = UIFactory.CreateQuestRow(quest.Title, questListContainer, out var iconPanel, out var textPanel);
-                UIFactory.SetIcon(null, iconPanel.transform);
+                UIFactory.SetIcon(ImageUtils.LoadImage(quest.QuestImage ?? Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", "SilkRoadIcon_quest.png")), iconPanel.transform);
                 ButtonUtils.AddListener(row.GetComponent<Button>(), () => OnSelectQuest(quest));
 
                 UIFactory.CreateTextBlock(textPanel.transform, quest.Title, quest.Task,
@@ -268,7 +284,7 @@ namespace Silkroad
                 deliveryStatus.text = "⚠️ Finish your current job first!";
                 return;
             }
-
+            QuestImage=BlackmarketBuyer.GetDealerSaveData(quest.DealerName)?.Icon;
             var q = S1API.Quests.QuestManager.CreateQuest<QuestDelivery>();
             if (q is QuestDelivery delivery)
             {
@@ -278,6 +294,7 @@ namespace Silkroad
                 delivery.Data.DealerName = quest.DealerName;
                 delivery.Data.NecessaryEffects = quest.NecessaryEffects;
                 delivery.Data.OptionalEffects = quest.OptionalEffects;
+                delivery.Data.QuestImage = QuestImage;
 
                 if (Contacts.GetBuyer(quest.DealerName) is BlackmarketBuyer buyer)
                 {

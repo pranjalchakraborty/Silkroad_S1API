@@ -13,5 +13,7 @@ namespace SilkRoad
         public string DealerName;
         public List<string> NecessaryEffects;
         public List<string> OptionalEffects;
+        public string? QuestImage;
+    
     }
 }

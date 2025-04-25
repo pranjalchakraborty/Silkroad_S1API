@@ -14,6 +14,7 @@ public class DeliverySaveData
     public string DealerName;
     public List<string> NecessaryEffects;
     public List<string> OptionalEffects;
+    public string? QuestImage;
 
     [JsonConstructor]
     public DeliverySaveData() { }

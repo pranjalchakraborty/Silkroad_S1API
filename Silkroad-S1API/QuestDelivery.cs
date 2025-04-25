@@ -30,17 +30,34 @@ namespace Silkroad
         private QuestEntry rewardEntry;
         public static bool QuestActive = false;
         public static event Action OnQuestCompleted;
-        
-        // Add a static instance to access the current quest from UI
+        private Sprite? _questIcon; // Backing field for QuestIcon
+
+
+        // Add a static instance to access the current quest from UI / Force Complete/Fail Quests
         public static QuestDelivery Instance { get; private set; }
 
-        protected override Sprite? QuestIcon => ImageUtils.LoadImage(Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", "SilkRoadIcon_quest.png"));
+        protected override Sprite? QuestIcon
+        {
+            get
+            {
+                MelonLogger.Msg($"Loading quest icon for {Data.DealerName}={Data.QuestImage}");
+
+                // Dynamically load the image based on the DealerImage of the current instance
+                return ImageUtils.LoadImage(MyApp.QuestImage ?? Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", "SilkRoadIcon_quest.png"));
+;
+            }
+        }
 
         protected override void OnCreated()
         {
+            MelonLogger.Msg($"Setting ON CREATED quest icon for {Data.DealerName}={Data.QuestImage}");
+            
             base.OnCreated();
             Instance = this;
             QuestActive = true;
+
+            // Set the QuestIcon backing field after OnCreated() is called
+
 
             if (!Data.Initialized)
             {
@@ -226,21 +243,21 @@ namespace Silkroad
             }
 
             // Check for new shipping unlocks
-            
-if (dealerConfig.Dealers.FirstOrDefault(d => d.Name == Data.DealerName) != null)
-{
-    // Directly update shipping amounts based on the dealer’s shipping list and current reputation.
-    dealerData.UpdateDeliveryAmounts(dealer.Shippings ?? new List<Shipping>(), dealerData.Reputation);
-    MelonLogger.Msg($"   Updated delivery amounts: {dealerData.MinDeliveryAmount}-{dealerData.MaxDeliveryAmount}");
-}
+
+            if (dealerConfig.Dealers.FirstOrDefault(d => d.Name == Data.DealerName) != null)
+            {
+                // Directly update shipping amounts based on the dealer’s shipping list and current reputation.
+                dealerData.UpdateDeliveryAmounts(dealer.Shippings ?? new List<Shipping>(), dealerData.Reputation);
+                MelonLogger.Msg($"   Updated delivery amounts: {dealerData.MinDeliveryAmount}-{dealerData.MaxDeliveryAmount}");
+            }
 
             // Update delivery amounts based on unlocked shipping
-            
+
             MelonLogger.Msg($"   Updated delivery amounts: {dealerData.MinDeliveryAmount}-{dealerData.MaxDeliveryAmount}");
-            
+
             MelonLogger.Msg($"   Unlocked Drugs: {string.Join(", ", dealerData.UnlockedDrugs)}");
             MelonLogger.Msg($"   Unlocked Qualities: {string.Join(", ", dealerData.UnlockedQuality.Keys)}");
-             }
+        }
 
         // NEW: Force-complete the active quest (i.e. give the reward immediately)
         public static void ForceCompleteQuest()
@@ -248,7 +265,7 @@ if (dealerConfig.Dealers.FirstOrDefault(d => d.Name == Data.DealerName) != null)
             if (QuestActive && Instance != null)
             {
                 Instance.GiveReward();
-                MelonLogger.Msg("Quest force-completed via UI.");
+                MelonLogger.Msg("Quest force-completed.");
             }
             else
             {
@@ -262,7 +279,7 @@ if (dealerConfig.Dealers.FirstOrDefault(d => d.Name == Data.DealerName) != null)
             if (QuestActive && Instance != null)
             {
                 QuestActive = false;
-                MelonLogger.Msg("Quest force-failed via UI.");
+                MelonLogger.Msg("Quest force-failed.");
                 // Set the reward entry inactive and complete the quest, marking it as failed.
                 Instance.rewardEntry.SetState(QuestState.Inactive);
                 Instance.Complete();
