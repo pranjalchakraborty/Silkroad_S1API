@@ -25,15 +25,15 @@ namespace Silkroad
         public Dialogue Dialogues { get; set; } = new Dialogue();
 
         public static string CurrentNPC = "Blackmarket Buyer";
-        public string DealerName { get; private set; }= "Blackmarket Buyer";
-        public string? DealerImage { get; private set; }=Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", "SilkRoadIcon_quest.png");
+        public string DealerName { get; private set; } = "Blackmarket Buyer";
+        public string? DealerImage { get; private set; } = Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", "SilkRoadIcon_quest.png");
         //Parameterless Constructor for the S1API call
         public BlackmarketBuyer() : base(CurrentNPC.ToLower().Replace(" ", "_"),
             CurrentNPC.Split(' ')[0],
             CurrentNPC.Contains(' ') ? CurrentNPC.Substring(CurrentNPC.IndexOf(' ') + 1) : "")
-        {   
+        {
 
-            if (_DealerData!=null)
+            if (_DealerData != null)
             {
                 MelonLogger.Msg($"⚠️ Dealer {DealerName} already exists in Buyers dictionary.");
                 return;
@@ -48,9 +48,9 @@ namespace Silkroad
                 StepDeliveryAmount = 1,
                 MaxDeliveryAmount = 5
             };
-IsInitialized= true; // Set the initialized flag to true
-            // Register the default dealer save data so that later lookups won't return null.
-            
+            IsInitialized = true; // Set the initialized flag to true
+                                  // Register the default dealer save data so that later lookups won't return null.
+
         }
         public BlackmarketBuyer(Dealer dealer) : base(
             dealer.Name.ToLower().Replace(" ", "_"),
@@ -60,8 +60,8 @@ IsInitialized= true; // Set the initialized flag to true
             if (dealer == null)
                 throw new ArgumentNullException(nameof(dealer));
             DealerName = dealer.Name;
-            CurrentNPC = dealer.Name;// Use static string to set save/load directory
-            new BlackmarketBuyer(); // Call the parameterless constructor to initialize the base class and save/load
+            //CurrentNPC = dealer.Name;// Use static string to set save/load directory
+            //new BlackmarketBuyer(); // Call the parameterless constructor to initialize the base class and save/load
             DealerImage = Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", dealer.Image);
             Dialogues = dealer.Dialogue;
             UnlockRequirements = dealer.UnlockRequirements ?? new List<UnlockRequirement>();
@@ -82,7 +82,7 @@ IsInitialized= true; // Set the initialized flag to true
             SendCustomMessage("Intro");
             UnlockDrug(); // Check if the dealer has any unlocked drugs based on reputation
             UpgradeShipping(); // Upgrade the shipping tier if possible
-             // Save the dealer data to the Buyers dictionary
+                               // Save the dealer data to the Buyers dictionary
             IsInitialized = true;
 
             // Log initialization details
@@ -183,9 +183,9 @@ IsInitialized= true; // Set the initialized flag to true
                 MelonLogger.Msg($"⚠️ Shipping already at max tier {_DealerData.ShippingTier}.");
                 return false;
             }
-        } 
+        }
 
-        public void SendCustomMessage(string messageType, string product="", int amount=0)
+        public void SendCustomMessage(string messageType, string product = "", int amount = 0)
         {
 
             List<string> messages = Dialogues.GetType().GetProperty(messageType)?.GetValue(Dialogues) as List<string>;
@@ -213,7 +213,7 @@ IsInitialized= true; // Set the initialized flag to true
         {
             float timeout = 5f;
             float waited = 0f;
-            
+
             MelonLogger.Msg($"⏳ Waiting for dealer {DealerName} to be initialized...");
             // Wait for this specific dealer's data to be initialized
             while (!IsInitialized || _DealerData == null && waited < timeout)

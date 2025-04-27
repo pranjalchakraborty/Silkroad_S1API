@@ -28,8 +28,6 @@ Any Dialogue string can have (product} and {amount} which will be replaced appro
 
 
 Tasks:
-User Driven:
-//create json_editor.exe for creating and saving and interlinking npcs
 
 Functions:
 Save/Load
@@ -42,7 +40,6 @@ test - progression, rewards, save/load logic
 UI Tracker:
 add ui panel to show relations, product, quality, shipping, effects unlocks with drop down selector for each npc
 add shipping unlock costs - now free - on button press deduct corresponding fee and call shipping upgrade function
-Show Proper Rewards
 
 UI/Performance:
 //add button in app to check if NPC unlock criteria met/update - Initialize()/Update from JSON in delivery rewards to be replaced

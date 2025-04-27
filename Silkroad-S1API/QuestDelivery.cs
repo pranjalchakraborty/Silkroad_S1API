@@ -61,8 +61,15 @@ namespace Silkroad
         private QuestEntry rewardEntry;
         public static bool QuestActive = false;
         public static event Action OnQuestCompleted;
-        private Sprite? _questIcon; // Backing field for QuestIcon
 
+        protected override Sprite? QuestIcon
+        {
+            get
+            {
+                // Dynamically load the image based on the DealerImage of the current instance - Doesn't work
+                return ImageUtils.LoadImage(Data.QuestImage ?? Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", "SilkRoadIcon_quest.png"));
+            }
+        }
         protected override void OnLoaded()
         {
             base.OnLoaded();
@@ -96,26 +103,12 @@ namespace Silkroad
         // Add a static instance to access the current quest from UI / Force Complete/Fail Quests
         public static QuestDelivery Instance { get; private set; }
 
-        protected override Sprite? QuestIcon
-        {
-            get
-            {
-                // MelonLogger.Msg($"Loading quest icon for {Data.DealerName}={Data.QuestImage}");
-
-                // Dynamically load the image based on the DealerImage of the current instance
-                return ImageUtils.LoadImage(MyApp.QuestImage ?? Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", "SilkRoadIcon_quest.png"));
-                ;
-            }
-        }
-
         protected override void OnCreated()
         {
 
             base.OnCreated();
             Instance = this;
             QuestActive = true;
-
-            // Set the QuestIcon backing field after OnCreated() is called
 
 
             if (!Data.Initialized)
