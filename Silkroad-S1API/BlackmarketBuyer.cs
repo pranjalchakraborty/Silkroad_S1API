@@ -17,130 +17,78 @@ namespace Silkroad
     public class BlackmarketBuyer : NPC
     {
         public bool IsInitialized { get; private set; } = false;
-        private DealerSaveData _DealerData;
+        [SaveableField("DealerSaveData")]
+        public DealerSaveData _DealerData;
+        public List<UnlockRequirement> UnlockRequirements { get; set; } = new List<UnlockRequirement>(); // Updated to match JSON structure
+        public List<Drug> Drugs { get; set; } = new List<Drug>(); // Initialize Drugs list
+        public List<Shipping> Shippings { get; set; } = new List<Shipping>(); // Initialize Shippings list
+        public Dialogue Dialogues { get; set; } = new Dialogue();
 
-        [SaveableField("Buyers")]
-        public static Dictionary<string, DealerSaveData> Buyers = new Dictionary<string, DealerSaveData>();
-
-        public string DealerName { get; private set; }
-        public string? DealerImage { get; private set; }
+        public static string CurrentNPC = "Blackmarket Buyer";
+        public string DealerName { get; private set; }= "Blackmarket Buyer";
+        public string? DealerImage { get; private set; }=Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", "SilkRoadIcon_quest.png");
         //Parameterless Constructor for the S1API call
-        public BlackmarketBuyer() : base("blackmarket_buyer", "Blackmarket", "Buyer")
-        {
-            DealerName = "Blackmarket Buyer";
-            DealerImage = Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", "SilkRoadIcon_quest.png");
+        public BlackmarketBuyer() : base(CurrentNPC.ToLower().Replace(" ", "_"),
+            CurrentNPC.Split(' ')[0],
+            CurrentNPC.Contains(' ') ? CurrentNPC.Substring(CurrentNPC.IndexOf(' ') + 1) : "")
+        {   
 
+            if (_DealerData!=null)
+            {
+                MelonLogger.Msg($"⚠️ Dealer {DealerName} already exists in Buyers dictionary.");
+                return;
+            }
             // Create default DealerSaveData with valid non-null collections.
             _DealerData = new DealerSaveData
             {
-                DeliveryAcceptedTexts = new List<string> { "Default accepted delivery text" },
-                DeliverySuccessTexts = new List<string> { "Default success text" },
-                RewardDroppedTexts = new List<string> { "Default reward dropped text" },
                 DealerName = DealerName,
-                Icon = DealerImage,
                 Reputation = 0,
-                UnlockedDrugs = new List<string> { "default drug" },
-                UnlockedQuality = new Dictionary<string, string>
-        {
-            { "default drug", "default quality" }
-        },
-                NecessaryEffects = new List<Effect>
-        {
-            new Effect { Name = "DefaultNecessaryEffect", Probability = 1.0f, UnlockRep = 0 }
-        },
-                OptionalEffects = new List<Effect>(),
+                ShippingTier = 0,
                 MinDeliveryAmount = 1,
+                StepDeliveryAmount = 1,
                 MaxDeliveryAmount = 5
             };
-
-
-
+IsInitialized= true; // Set the initialized flag to true
             // Register the default dealer save data so that later lookups won't return null.
-            Buyers[DealerName] = _DealerData;
+            
         }
         public BlackmarketBuyer(Dealer dealer) : base(
             dealer.Name.ToLower().Replace(" ", "_"),
             dealer.Name.Split(' ')[0],
-            dealer.Name.Contains(' ') ? dealer.Name.Substring(dealer.Name.IndexOf(' ') + 1) : "Dealer")
+            dealer.Name.Contains(' ') ? dealer.Name.Substring(dealer.Name.IndexOf(' ') + 1) : "")
         {
             if (dealer == null)
                 throw new ArgumentNullException(nameof(dealer));
-
             DealerName = dealer.Name;
+            CurrentNPC = dealer.Name;// Use static string to set save/load directory
+            new BlackmarketBuyer(); // Call the parameterless constructor to initialize the base class and save/load
             DealerImage = Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", dealer.Image);
+            Dialogues = dealer.Dialogue;
+            UnlockRequirements = dealer.UnlockRequirements ?? new List<UnlockRequirement>();
+            Drugs = dealer.Drugs ?? new List<Drug>();
+            Shippings = dealer.Shippings ?? new List<Shipping>();
 
-            if (Buyers.ContainsKey(dealer.Name))
+            if (_DealerData != null && !dealer.resetSave)
             {
-                _DealerData = Buyers[dealer.Name];
                 MelonLogger.Msg($"⚠️ Dealer {dealer.Name} already exists in Buyers dictionary.");
                 return;
             }
-
+            dealer.resetSave = false; // Reset the save flag to false after using it
             // Create DealerSaveData with safe enumeration for dialogue, drugs, and effects.
             _DealerData = new DealerSaveData
             {
-                DeliveryAcceptedTexts = dealer.Dialogue?.DealStart ?? new List<string>(),
-                DeliverySuccessTexts = dealer.Dialogue?.Responses?.Accept ?? new List<string>(),
-                RewardDroppedTexts = dealer.Dialogue?.Responses?.Success ?? new List<string>(),
                 DealerName = dealer.Name,
-                Icon = DealerImage,
-                Reputation = 0,
-                UnlockedDrugs = (dealer.Drugs ?? Enumerable.Empty<Drug>())
-                    .Where(d => d.UnlockRep == 0)
-                    .Select(d => d.Type)
-                    .ToList(),
-                UnlockedQuality = (dealer.Drugs ?? Enumerable.Empty<Drug>())
-                    .Where(d => d.UnlockRep == 0)
-                    .ToDictionary(
-                        d => d.Type,
-                        d => d.Qualities.First(q => q.UnlockRep == 0).Type
-                    ),
-                NecessaryEffects = (dealer.Drugs ?? Enumerable.Empty<Drug>())
-                    .SelectMany(d => (d.Effects ?? Enumerable.Empty<Effect>())
-                        .Where(e => e.UnlockRep == 0 && e.Probability >= 1.0f)
-                        .Select(e => new Effect { Name = e.Name, Probability = e.Probability, UnlockRep = e.UnlockRep }))
-                    .ToList(),
-                OptionalEffects = (dealer.Drugs ?? Enumerable.Empty<Drug>())
-                    .SelectMany(d => (d.Effects ?? Enumerable.Empty<Effect>())
-                        .Where(e => e.UnlockRep == 0 && e.Probability < 1.0f)
-                        .Select(e => new Effect { Name = e.Name, Probability = e.Probability, UnlockRep = e.UnlockRep }))
-                    .ToList()
             };
-
-            var shippingList = dealer.Shippings ?? Enumerable.Empty<Shipping>();
-            var validShippings = shippingList
-                .Where(s => s.UnlockRep <= _DealerData.Reputation && s.MinAmount > 0 && s.MaxAmount > 0)
-                .ToList();
-            MelonLogger.Msg($"   Found {validShippings.Count} shipping option(s) unlocked for dealer '{dealer.Name}' at rep {_DealerData.Reputation}.");
-
-            foreach (var s in validShippings)
-            {
-                MelonLogger.Msg($"      Shipping Option: {s.Name} | UnlockRep: {s.UnlockRep} | MinAmount: {s.MinAmount} | MaxAmount: {s.MaxAmount}");
-            }
-
-            var shippingMethod = validShippings
-                .OrderByDescending(s => s.MaxAmount)
-                .FirstOrDefault();
-
-            if (shippingMethod != null)
-            {
-                _DealerData.MinDeliveryAmount = shippingMethod.MinAmount;
-                _DealerData.MaxDeliveryAmount = shippingMethod.MaxAmount;
-                MelonLogger.Msg($"   Using shipping method: {shippingMethod.Name} ({shippingMethod.MinAmount}-{shippingMethod.MaxAmount})");
-            }
-            else
-            {
-                _DealerData.MinDeliveryAmount = 1; // Default fallback
-                _DealerData.MaxDeliveryAmount = 5; // Default fallback
-                MelonLogger.Msg("   No shipping methods unlocked, using defaults (1-5)");
-            }
-
-            Buyers[dealer.Name] = _DealerData;
+            SendCustomMessage("Intro");
+            UnlockDrug(); // Check if the dealer has any unlocked drugs based on reputation
+            UpgradeShipping(); // Upgrade the shipping tier if possible
+             // Save the dealer data to the Buyers dictionary
+            IsInitialized = true;
 
             // Log initialization details
-            MelonLogger.Msg($"✅ Dealer initialized: {dealer.Name}");
-            MelonLogger.Msg($"   Unlocked Drugs: {string.Join(", ", _DealerData.UnlockedDrugs)}");
-            MelonLogger.Msg($"   MinDeliveryAmount: {_DealerData.MinDeliveryAmount}, MaxDeliveryAmount: {_DealerData.MaxDeliveryAmount}");
+            MelonLogger.Msg($"✅ Dealer initialized: {DealerName}");
+            //MelonLogger.Msg($"   Unlocked Drugs: {string.Join(", ", _DealerData.UnlockedDrugs)}");
+            //MelonLogger.Msg($"   MinDeliveryAmount: {_DealerData.MinDeliveryAmount}, MaxDeliveryAmount: {_DealerData.MaxDeliveryAmount}");
 
         }
 
@@ -155,8 +103,7 @@ namespace Silkroad
         protected override void OnLoaded()
         {
             base.OnLoaded();
-            //MelonCoroutines.Start(WaitForDealerAndSendStatus());
-            IsInitialized = true;
+            MelonCoroutines.Start(WaitForDealerSaveDataAndSendStatus());
         }
 
         protected override void OnCreated()
@@ -167,63 +114,91 @@ namespace Silkroad
 
         public static DealerSaveData GetDealerSaveData(string dealerName)
         {
-            return Buyers.TryGetValue(dealerName, out var dealerData) ? dealerData : null;
+            return Contacts.GetBuyer(dealerName)._DealerData;
         }
+        //Saves the current dealer data to the Buyers Saveable Field dictionary
 
-        public void UnlockDrug(string dealerName, string drugType)
+        public void GiveReputation(int amount)
         {
-            var dealerData = GetDealerSaveData(dealerName);
-            if (dealerData == null)
-                return;
+            _DealerData.Reputation += amount;
+            MelonLogger.Msg($"✅ {DealerName}'s reputation increased by {amount}. New Reputation: {_DealerData.Reputation}");
+        }
+        //A method to check if the new reputation unlocks any new drug, quality or effects for the dealer 
+        public void UnlockDrug()
+        {
+            // Initialize the drug list
+            var drugList = Drugs ?? new List<Drug>();
 
-            if (!dealerData.UnlockedDrugs.Contains(drugType))
+            // Filter drugs based on the current reputation
+            var validDrugs = drugList
+                .Where(d => d.UnlockRep <= _DealerData.Reputation) // Unlock drugs with UnlockRep <= current reputation
+                .Select(d => new Drug
+                {
+                    Type = d.Type,
+                    UnlockRep = d.UnlockRep,
+                    BonusDollar = d.BonusDollar,
+                    BonusRep = d.BonusRep,
+                    BaseDollarMult = d.BaseDollarMult,
+                    BaseRepMult = d.BaseRepMult,
+                    // Unlock qualities where UnlockRep <= current reputation
+                    Qualities = d.Qualities
+                        .Where(q => q.UnlockRep <= _DealerData.Reputation)
+                        .ToList(),
+                    // Unlock effects where UnlockRep <= current reputation
+                    Effects = d.Effects
+                        .Where(e => e.UnlockRep <= _DealerData.Reputation)
+                        .ToList()
+                })
+                .ToList();
+
+            // Update the DealerSaveData with the unlocked drugs
+            _DealerData.UnlockedDrugs = validDrugs;
+
+            // Log the unlocked drugs for debugging
+            MelonLogger.Msg($"   Found {validDrugs.Count} drug(s) unlocked for dealer '{DealerName}' at rep {_DealerData.Reputation}.");
+            foreach (var drug in validDrugs)
             {
-                dealerData.UnlockedDrugs.Add(drugType);
+                MelonLogger.Msg($"      Drug: {drug.Type} | UnlockRep: {drug.UnlockRep}");
+                MelonLogger.Msg($"         Unlocked Qualities: {string.Join(", ", drug.Qualities.Select(q => q.Type))}");
+                MelonLogger.Msg($"         Unlocked Effects: {string.Join(", ", drug.Effects.Select(e => e.Name))}");
             }
         }
 
-        public void UnlockQuality(string dealerName, string drugType, string qualityType)
+
+        //A method that upgrades ShippingTier to the next available shipping option
+        public bool UpgradeShipping()
         {
-            var dealerData = GetDealerSaveData(dealerName);
-            if (dealerData == null)
-                return;
-
-            dealerData.UnlockedQuality[drugType] = qualityType;
-        }
-
-        public void UnlockNecessaryEffect(string dealerName, string effectName)
-        {
-            var dealerData = GetDealerSaveData(dealerName);
-            if (dealerData == null)
-                return;
-
-            if (!dealerData.NecessaryEffects.Any(e => e.Name == effectName))
+            var shippingList = Shippings ?? new List<Shipping>();
+            if (_DealerData.ShippingTier < shippingList.Count - 1)
             {
-                dealerData.NecessaryEffects.Add(new Effect { Name = effectName, Probability = 1.0f });
+                _DealerData.ShippingTier++;
+                _DealerData.MinDeliveryAmount = shippingList[_DealerData.ShippingTier].MinAmount;
+                _DealerData.StepDeliveryAmount = shippingList[_DealerData.ShippingTier].StepAmount;
+                _DealerData.MaxDeliveryAmount = shippingList[_DealerData.ShippingTier].MaxAmount;
+                MelonLogger.Msg($"✅ Shipping upgraded to tier {_DealerData.ShippingTier}.");
+                return true;
             }
-        }
-        public void UnlockOptionalEffect(string dealerName, string effectName, float probability = 0.5f)
-        {
-            var dealerData = GetDealerSaveData(dealerName);
-            if (dealerData == null)
-                return;
-
-            if (!dealerData.OptionalEffects.Any(e => e.Name == effectName))
+            else
             {
-                dealerData.OptionalEffects.Add(new Effect { Name = effectName, Probability = probability });
+                MelonLogger.Msg($"⚠️ Shipping already at max tier {_DealerData.ShippingTier}.");
+                return false;
             }
-        }
+        } 
 
-        public void SendDeliveryAccepted(string dealerName, string product, int amount)
+        public void SendCustomMessage(string messageType, string product="", int amount=0)
         {
-            var dealerData = GetDealerSaveData(dealerName);
-            if (dealerData == null)
+
+            List<string> messages = Dialogues.GetType().GetProperty(messageType)?.GetValue(Dialogues) as List<string>;
+
+            //throw melonloader error if message is null
+            if (messages == null)
+            {
+                MelonLogger.Error($"❌ Message type '{messageType}' not found in Dialogue.");
+                SendTextMessage(messageType);
                 return;
+            }
+            string line = messages[RandomUtils.RangeInt(0, messages.Count)];
 
-            DealerName = dealerData.DealerName;
-            DealerImage = dealerData.Icon;
-
-            string line = dealerData.DeliveryAcceptedTexts[RandomUtils.RangeInt(0, dealerData.DeliveryAcceptedTexts.Count)];
             string formatted = line
                 .Replace("{product}", $"<color=#34AD33>{product}</color>")
                 .Replace("{amount}", $"<color=#FF0004>{amount}x</color>");
@@ -231,57 +206,29 @@ namespace Silkroad
             SendTextMessage(formatted);
         }
 
-        public void SendDeliverySuccess(string dealerName, string product)
-        {
-            var dealerData = GetDealerSaveData(dealerName);
-            if (dealerData == null)
-                return;
 
-            DealerName = dealerData.DealerName;
-            DealerImage = dealerData.Icon;
 
-            string line = dealerData.DeliverySuccessTexts[RandomUtils.RangeInt(0, dealerData.DeliverySuccessTexts.Count)];
-            SendTextMessage(line);
-        }
-
-        public void SendRewardDropped(string dealerName)
-        {
-            var dealerData = GetDealerSaveData(dealerName);
-            if (dealerData == null)
-                return;
-
-            DealerName = dealerData.DealerName;
-            DealerImage = dealerData.Icon;
-
-            string line = dealerData.RewardDroppedTexts[RandomUtils.RangeInt(0, dealerData.RewardDroppedTexts.Count)];
-            SendTextMessage(line);
-        }
         //Possible Check to see if all dealers save data are initialized and send a message to the player
-        private System.Collections.IEnumerator WaitForDealerAndSendStatus()
+        private System.Collections.IEnumerator WaitForDealerSaveDataAndSendStatus()
         {
             float timeout = 5f;
             float waited = 0f;
-            IsInitialized = false;
+            
             MelonLogger.Msg($"⏳ Waiting for dealer {DealerName} to be initialized...");
             // Wait for this specific dealer's data to be initialized
-            while (!IsInitialized && waited < timeout)
+            while (!IsInitialized || _DealerData == null && waited < timeout)
             {
                 waited += Time.deltaTime;
                 yield return null;
             }
 
-            if (!IsInitialized)
+            if (!IsInitialized || _DealerData == null)
             {
+                // If the dealer data is still not initialized after the timeout, log a warning
                 MelonLogger.Warning($"⚠️ Dealer {DealerName} not initialized after timeout");
                 yield break;
             }
 
-            // Check if dealer data exists in the Buyers dictionary
-            if (!Buyers.TryGetValue(DealerName, out var dealerData))
-            {
-                MelonLogger.Warning($"⚠️ No save data found for dealer {DealerName}");
-                yield break;
-            }
 
             MelonLogger.Msg($"✅ Dealer {DealerName} initialized with save data");
 

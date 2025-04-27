@@ -7,6 +7,8 @@ namespace Silkroad
     {
         public string Name { get; set; }
         public string? Image { get; set; }
+
+        public bool resetSave { get; set; } // Indicates if the save should be reset
         public List<UnlockRequirement> UnlockRequirements { get; set; } // Updated to match JSON structure
         public List<Drug> Drugs { get; set; }
 
@@ -27,12 +29,18 @@ namespace Silkroad
         public int UnlockRep { get; set; }
         public List<Quality> Qualities { get; set; }
         public List<Effect> Effects { get; set; }
+        public int BonusDollar { get; set; } // Base dollar value
+        public int BonusRep { get; set; } // Base reputation value
+        public float BaseDollarMult { get; set; } // Base dollar multiplier
+        public float BaseRepMult { get; set; } // Base reputation multiplier
     }
 
     public class Quality
     {
         public string Type { get; set; }
         public int UnlockRep { get; set; }
+        public float DollarMult { get; set; } // Dollar multiplier for the quality
+        public float RepMult { get; set; } // Reputation multiplier for the quality
     }
 
     public class Effect
@@ -61,25 +69,24 @@ namespace Silkroad
 
         [JsonProperty("minAmount")]
         public int MinAmount { get; set; }
+        [JsonProperty("stepAmount")]
+        public int StepAmount { get; set; }
         [JsonProperty("maxAmount")]
         public int MaxAmount { get; set; }
     }
 
-    public class Dialogue
-    {
-        public string Intro { get; set; }
-        public List<string> DealStart { get; set; }  // Changed from DealStart class to List<string>
-        public Responses Responses { get; set; }
-    }
+public class Dialogue
+{
+    public List<string> Intro { get; set; }
+    public List<string> DealStart { get; set; }
+    public List<string> Accept { get; set; }
+    public List<string> Reject { get; set; }
+    public List<string> Expire { get; set; }
+    public List<string> Fail { get; set; }
+    public List<string> Success { get; set; }
+     public List<string> Reward { get; set; }
+}
 
-    public class Responses
-    {
-        public List<string> Accept { get; set; }
-        public List<string> Reject { get; set; }
-        public List<string> Success { get; set; }
-        public List<string> Expire { get; set; }
-        public List<string> Fail { get; set; }
-    }
 
     public class DealerData
     {

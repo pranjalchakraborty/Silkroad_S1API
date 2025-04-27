@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using S1API.UI;
 using S1API.Utils;
-using SilkRoad;
+using Silkroad;
 using System.Linq;
 using MelonLoader.Utils;
 using System.IO;
@@ -14,7 +14,7 @@ using S1API.Internal.Utils;
 namespace Silkroad
 {
     public class MyApp : S1API.PhoneApp.PhoneApp
-    {   
+    {
         protected override string AppName => "Silkroad";
         protected override string AppTitle => "Silkroad";
         protected override string IconLabel => "Silkroad";
@@ -89,7 +89,7 @@ namespace Silkroad
         private void LoadQuests()
         {
             quests = new List<QuestData>();
-
+            //Extra Logging
             MelonLogger.Msg(Contacts.Buyers);
             foreach (var buyer in Contacts.Buyers)
             {
@@ -117,7 +117,8 @@ namespace Silkroad
 
                 MelonLogger.Msg($"Processing buyer: {buyer.DealerName}");
                 // Check if the dealer exists in the Buyers dictionary
-                if (!BlackmarketBuyer.Buyers.TryGetValue(buyer.DealerName, out var dealerSaveData))
+                var dealerSaveData = BlackmarketBuyer.GetDealerSaveData(buyer.DealerName);
+                if (dealerSaveData == null)
                 {
                     MelonLogger.Warning($"⚠️ Dealer {buyer.DealerName} not found in Buyers dictionary.");
                     continue;
@@ -127,54 +128,11 @@ namespace Silkroad
                 MelonLogger.Msg($"✅ Processing dealer: {dealerSaveData.DealerName}");
                 MelonLogger.Msg($"   Unlocked Drugs: {string.Join(", ", dealerSaveData.UnlockedDrugs)}");
                 MelonLogger.Msg($"   MinDeliveryAmount: {dealerSaveData.MinDeliveryAmount}, MaxDeliveryAmount: {dealerSaveData.MaxDeliveryAmount}");
-                MelonLogger.Msg($"   Necessary Effects: {string.Join(", ", dealerSaveData.NecessaryEffects.Select(e => e.Name))}");
-                MelonLogger.Msg($"   Optional Effects: {string.Join(", ", dealerSaveData.OptionalEffects.Select(e => e.Name))}");
 
-                // Iterate through unlocked drugs
-                foreach (var drugType in dealerSaveData.UnlockedDrugs)
+                // Iterate through unlocked drugs and generate a quest for each
+                foreach (var drug in dealerSaveData.UnlockedDrugs)
                 {
-                    if (!dealerSaveData.UnlockedQuality.TryGetValue(drugType, out var qualityType))
-                    {
-                        MelonLogger.Warning($"⚠️ No quality unlocked for drug {drugType}.");
-                        continue;
-                    }
-
-                    MelonLogger.Msg($"   Processing drug: {drugType} (Quality: {qualityType})");
-
-                    // Get necessary effects that are unlocked (rep requirement met)
-                    var necessaryEffects = dealerSaveData.NecessaryEffects?
-                        .Where(e => e.UnlockRep <= dealerSaveData.Reputation)
-                        .Select(e => e.Name)
-                        .Distinct()
-                        .ToList() ?? new List<string>();
-
-                    // Get optional effects that are unlocked and roll for each
-                    var optionalEffects = new List<string>();
-                    if (dealerSaveData.OptionalEffects != null)
-                    {
-                        foreach (var effect in dealerSaveData.OptionalEffects.Where(e => e.UnlockRep <= dealerSaveData.Reputation))
-                        {
-                            if (UnityEngine.Random.Range(0f, 1f) < effect.Probability)
-                            {
-                                optionalEffects.Add(effect.Name);
-                                MelonLogger.Msg($"      Optional effect {effect.Name} rolled in.");
-                            }
-                            else
-                            {
-                                MelonLogger.Msg($"      Optional effect {effect.Name} did not roll.");
-                            }
-                        }
-                    }
-
-                    // Only generate a quest if there is at least one effect
-                    if (necessaryEffects.Count > 0 || optionalEffects.Count > 0)
-                    {
-                        GenerateQuest(dealerSaveData, drugType, qualityType, necessaryEffects, optionalEffects);
-                    }
-                    else
-                    {
-                        MelonLogger.Msg($"      No effects for {drugType}, skipping quest generation.");
-                    }
+                    GenerateQuest(buyer, dealerSaveData, drug.Type);
                 }
             }
 
@@ -189,18 +147,75 @@ namespace Silkroad
 
 
 
-        private void GenerateQuest(DealerSaveData dealer, string drugType, string quality, List<string> necessaryEffects, List<string> optionalEffects)
+        private void GenerateQuest(BlackmarketBuyer buyer, DealerSaveData dealerSaveData, string drugType)
         {
-            // Ensure that any string parameter is not null by defaulting it to empty string.
-            dealer.DealerName = dealer.DealerName ?? "";
-            drugType = drugType ?? "";
-            quality = quality ?? "";
-            necessaryEffects = necessaryEffects ?? new List<string>();
-            optionalEffects = optionalEffects ?? new List<string>();
+            //Setting order amount
+            int steps = (dealerSaveData.MaxDeliveryAmount - dealerSaveData.MinDeliveryAmount) / dealerSaveData.StepDeliveryAmount;
+            int randomStep = RandomUtils.RangeInt(0, steps);
+            int amount = dealerSaveData.MinDeliveryAmount + randomStep * dealerSaveData.StepDeliveryAmount;
+            //Iterate through unlocked drugs where drug type is the same as the one passed in
+            var unlockedDrugs = dealerSaveData.UnlockedDrugs.Where(d => d.Type == drugType).ToList();
 
-            int amount = RandomUtils.RangeInt(dealer.MinDeliveryAmount, dealer.MaxDeliveryAmount);
-            float effectMultiplier = (necessaryEffects.Count > 0) ? 1.2f : 1.0f;
-            int reward = Mathf.RoundToInt(drugType.Length * 20f * amount * effectMultiplier);
+
+            if (unlockedDrugs.Count == 0)
+            {
+                MelonLogger.Warning($"⚠️ No unlocked drugs of type {drugType} found for dealer {dealerSaveData.DealerName}.");
+                return;
+            }
+            var necessaryEffects = new List<string>();
+            var optionalEffects = new List<string>();
+            var quality = "";
+            var aggregateDollarMultMin = 0f;
+            var aggregateDollarMultMax = 0f;
+            var aggregateRepMultMin = 0f;
+            var aggregateRepMultMax = 0f;
+            //Get a random drug from the unlocked drugs
+            var randomDrug = unlockedDrugs[RandomUtils.RangeInt(0, unlockedDrugs.Count)];
+            //Store the last quality. Also store 1+ dollar and rep multiplier
+            var lastQuality = randomDrug.Qualities.LastOrDefault();
+            if (lastQuality != null)
+            {
+                quality = lastQuality.Type;
+                aggregateDollarMultMin = 1 + lastQuality.DollarMult;
+                aggregateRepMultMin = 1 + lastQuality.RepMult;
+                aggregateDollarMultMax = aggregateDollarMultMin;
+                aggregateRepMultMax = aggregateRepMultMin;
+
+            }
+            var tempMult11 = randomDrug.BaseDollarMult;//min
+            var tempMult12 = randomDrug.BaseRepMult;//min
+            var tempMult21 = randomDrug.BaseDollarMult ;//max
+            var tempMult22 = randomDrug.BaseRepMult ;//max
+            //Iterate through randomDrug.Effects and check if the effect is necessary or optional. Also multiply aggregate dollar and rep multipliers with base dollar+sum of effects dollar mult. Same for rep.
+            foreach (var effect in randomDrug.Effects)
+            {
+                if (effect.Probability == 1)
+                {
+                    necessaryEffects.Add(effect.Name);
+                    tempMult11 += effect.DollarMult;
+                    tempMult12 += effect.RepMult;
+                    tempMult21 += effect.DollarMult;
+                    tempMult22 += effect.RepMult;
+                }
+                else
+                {
+                    //Roll Optional Effects by their probability to see if they are removed from randomDrug
+                    if (UnityEngine.Random.Range(0f, 1f) < effect.Probability)
+                    {
+                        optionalEffects.Add(effect.Name);
+                        tempMult21 += effect.DollarMult;
+                        tempMult22 += effect.RepMult;
+                        
+                    }
+                    
+                }
+            }
+            aggregateDollarMultMin *= tempMult11;
+            aggregateRepMultMin *= tempMult12;
+            aggregateDollarMultMax *= tempMult21;
+            aggregateRepMultMax *= tempMult22;
+            //remove from randomDrug.Effects the optional effects that are not in the list of optional effects and have a probability < 1f
+            randomDrug.Effects.RemoveAll(effect => !optionalEffects.Contains(effect.Name) && effect.Probability < 1f);
 
             string effectDesc = "";
             if (necessaryEffects.Count > 0)
@@ -208,29 +223,23 @@ namespace Silkroad
             if (optionalEffects.Count > 0)
                 effectDesc += (effectDesc.Length > 0 ? "; " : "") + $"Optional: {string.Join(", ", optionalEffects)}";
 
-            var productID = drugType;
-            //Append productID with quality, necessary effects and optional effects
-            if (quality.Length > 0)
-                productID += $"{quality}";
-
-            if (necessaryEffects.Count > 0)
-                productID += $"NE:{string.Join(",", necessaryEffects)}";
-
-            if (optionalEffects.Count > 0)
-                productID += $"OE:{string.Join(",", optionalEffects)}";
 
             var quest = new QuestData
             {
-                Title = $"{dealer.DealerName} - {drugType} Delivery",
+                Title = $"{buyer.DealerName} - {drugType} Delivery",
                 Task = $"Deliver {amount}x {quality} {drugType}" + (effectDesc.Length > 0 ? $" with [{effectDesc}]" : ""),
-                Reward = reward,
                 ProductID = drugType,
                 AmountRequired = (uint)amount,
-                TargetObjectName = dealer.DealerName,
-                DealerName = dealer.DealerName,
-                NecessaryEffects = necessaryEffects,
-                OptionalEffects = optionalEffects,
-                QuestImage=Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", BlackmarketBuyer.GetDealerSaveData(dealer.DealerName)?.Icon ?? "SilkRoadIcon_quest.png") 
+                TargetObjectName = buyer.DealerName,
+                DealerName = buyer.DealerName,
+                RequiredDrug = randomDrug,
+                QuestImage = Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", buyer.DealerImage ?? "SilkRoadIcon_quest.png"),
+                BonusDollar = randomDrug.BonusDollar,
+                BonusRep = randomDrug.BonusRep,
+                DollarMultiplierMin = aggregateDollarMultMin,
+                RepMultiplierMin = aggregateRepMultMin,
+                DollarMultiplierMax = aggregateDollarMultMax,
+                RepMultiplierMax = aggregateRepMultMax,
             };
 
             quests.Add(quest);
@@ -238,10 +247,8 @@ namespace Silkroad
             MelonLogger.Msg($"✅ Quest generated:");
             MelonLogger.Msg($"   Title: {quest.Title}");
             MelonLogger.Msg($"   Task: {quest.Task}");
-            MelonLogger.Msg($"   Reward: ${quest.Reward}");
             MelonLogger.Msg($"   Amount Required: {quest.AmountRequired}");
-            MelonLogger.Msg($"   Necessary Effects: {string.Join(", ", quest.NecessaryEffects)}");
-            MelonLogger.Msg($"   Optional Effects: {string.Join(", ", quest.OptionalEffects)}");
+            MelonLogger.Msg($"   Required Drug: {quest.RequiredDrug}");
         }
 
 
@@ -253,7 +260,7 @@ namespace Silkroad
             {
                 if (quest == null) continue;
 
-                MelonLogger.Msg($"✅ Adding quest to UI: {quest.Title}");
+                //MelonLogger.Msg($"✅ Adding quest to UI: {quest.Title}");
 
                 var row = UIFactory.CreateQuestRow(quest.Title, questListContainer, out var iconPanel, out var textPanel);
                 UIFactory.SetIcon(ImageUtils.LoadImage(quest.QuestImage ?? Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", "SilkRoadIcon_quest.png")), iconPanel.transform);
@@ -270,7 +277,9 @@ namespace Silkroad
         {
             questTitle.text = quest.Title;
             questTask.text = $"Task: {quest.Task}";
-            questReward.text = $"Reward: ${quest.Reward:N0}";
+            questReward.text = $"Rewards: ${quest.BonusDollar} + {quest.BonusRep} Rep\n" +
+                $"Dollar Multiplier: {quest.DollarMultiplierMin} - {quest.DollarMultiplierMax}\n" +
+                $"Rep Multiplier: {quest.RepMultiplierMin} - {quest.RepMultiplierMax}";
             deliveryStatus.text = "";
             ButtonUtils.Enable(acceptButton, acceptLabel, "Accept Delivery");
             ButtonUtils.ClearListeners(acceptButton);
@@ -284,21 +293,22 @@ namespace Silkroad
                 deliveryStatus.text = "⚠️ Finish your current job first!";
                 return;
             }
-            QuestImage=BlackmarketBuyer.GetDealerSaveData(quest.DealerName)?.Icon;
+            QuestImage = quest.QuestImage ?? Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", "SilkRoadIcon_quest.png");
             var q = S1API.Quests.QuestManager.CreateQuest<QuestDelivery>();
             if (q is QuestDelivery delivery)
             {
                 delivery.Data.ProductID = quest.ProductID;
                 delivery.Data.RequiredAmount = quest.AmountRequired;
-                delivery.Data.Reward = quest.Reward;
                 delivery.Data.DealerName = quest.DealerName;
-                delivery.Data.NecessaryEffects = quest.NecessaryEffects;
-                delivery.Data.OptionalEffects = quest.OptionalEffects;
                 delivery.Data.QuestImage = QuestImage;
+                delivery.Data.RequiredDrug = quest.RequiredDrug;
+                delivery.Data.Reward = quest.BonusDollar;
+                delivery.Data.RepReward = quest.BonusRep;
+                delivery.Data.Task = quest.Task;
 
                 if (Contacts.GetBuyer(quest.DealerName) is BlackmarketBuyer buyer)
                 {
-                    buyer.SendDeliveryAccepted(quest.DealerName, quest.ProductID, (int)quest.AmountRequired);
+                    buyer.SendCustomMessage("DealStart", quest.ProductID, (int)quest.AmountRequired);
                 }
             }
 

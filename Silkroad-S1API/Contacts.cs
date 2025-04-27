@@ -45,13 +45,13 @@ namespace Silkroad
                     bool canUnlock = dealer.UnlockRequirements == null || 
                                    !dealer.UnlockRequirements.Any() ||
                                    dealer.UnlockRequirements.All(req => 
-                                       BlackmarketBuyer.Buyers.ContainsKey(req.Name) && 
-                                       BlackmarketBuyer.Buyers[req.Name].Reputation >= req.MinRep);
+                                       Contacts.GetBuyer(req.Name)?._DealerData.Reputation >= req.MinRep);
 
                     if (canUnlock)
                     {
                         var buyer = new BlackmarketBuyer(dealer);
                         Buyers[dealer.Name] = buyer;
+                        
                         MelonLogger.Msg($"✅ Initialized dealer: {dealer.Name}");
                     }
                     else

@@ -1,27 +1,49 @@
+Project:
 Let people easily create interlinked customisable npc's who act as dealers to expand the player's drug empire.
-Initial JSON Breaking Bad based.
+Each NPC has independent reputation, amounts range of orders, dialogues, preferred necessary and optional effects.
+Each NPC also has unlockable order amount and effects based on their rep. Other NPCs unlock based on prev NPC rep.
+Each NPC has a resetSave that should be false. If set to true, it resets all save data related to that NPC in the mod. Useful if JSON changed midsave.
+Delivery can be done in parts. Rewards can only be received at once - deliver all before time or fail.
+
+Any JSON can be used for this mod. Icons can also be provided for NPC images.
+A JSON Editor will be provided to easily merge and edit NPC JSONs.
+
+Initial JSON is based on Breaking Bad.
+
+Current Code:
+Only one quest can be taken at a time. Complete it to take another.
+Generates one quest for each npc for each drug type.
+If multiple definitions of same product type exists, random one will be chosen.
+money reward = bonus_dollar + (price of all products delivered)*(base_dollar_mult+sum of all effects' dollar_mult)*(1+quality's dollar_mult)
+rep reward = bonus_rep + (price of all products delivered)*(base_rep_mult+sum of all effects' rep_mult)*(1+quality's rep_mult)
+
+JSON Assumptions:
+Each dealer has atleast one drug type+quality unlocked at rep 0 - to grow in rep with him and one shipping tier at rep 0 - to decide initial quantity. 
+Qualities are sorted in increasing order in the JSON.
+Effects at rep 0 are optional.
+Drug Type, Effects and Quality name strings should match in game code strings.
+Any Dialogue string can have (product} and {amount} which will be replaced appropriately ingame.
+
+
+
 
 Tasks:
+User Driven:
 //create json_editor.exe for creating and saving and interlinking npcs
 
-change amount checking from bricks to real amount
-add logic for accept dropped product based on necessary (unlocked/ordered) effects
-add logic for rep and money rewards based on ordered effects ( rep = amount*(1+sum of rep_mult)  money = amount*price*(1+sum of price_mult) )
+Functions:
+Save/Load
+\\change placeholder dummy product effects and quality with real effects from s1api once supported
+\\Implement rewards based on effects and quality
 
+Tests:
+test - progression, rewards, save/load logic
 
-
-test - progression, rewards
-add buttons to force complete taken quest - testing
-
+UI Tracker:
 add ui panel to show relations, product, quality, shipping, effects unlocks with drop down selector for each npc
-add button in app to check if unlock criteria met/update - Initialize()/Update from JSON
-add shipping unlock costs - now free - on button press deduct corresponding fee
-add drop quest button 
-configure costs (money,rep) for dropping and refreshing quests
+add shipping unlock costs - now free - on button press deduct corresponding fee and call shipping upgrade function
+Show Proper Rewards
 
-//number(min,max) of quests to generate per dealer - numbers
-product id type quests to generate using product manager - bool
-effects type quests to generate - bool
-number of quests that can be taken parallely
-
+UI/Performance:
+//add button in app to check if NPC unlock criteria met/update - Initialize()/Update from JSON in delivery rewards to be replaced
 

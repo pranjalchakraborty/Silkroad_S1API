@@ -19,6 +19,37 @@ using System.IO;
 
 namespace Silkroad
 {
+
+    // This is a temporary mock method to test the logic. Will be replaced with the actual method to get the complete list of strings.
+    // A method that returns a list of strings randomly selected from the complete list of strings 
+    public static class RandomEffectSelector
+    {
+        //Create default values for completeList and count
+        public static List<string> GetRandomEffects(List<string> completeList = null, int count = 8)
+        {
+            // If completeList is null, initialize it with a default list of strings
+            if (completeList == null)
+            {
+                completeList = new List<string>
+                {
+                    "Munchies",
+                    "Refreshing",
+                    "Euphoric",
+                    "Sneaky",
+                    "Paranoia"
+                };
+            }
+
+
+            count = Math.Min(count, completeList.Count);
+
+            //return a random selection of strings from completeList with count elements
+            return completeList.OrderBy(x => Guid.NewGuid()).Take(count).ToList();
+
+        }
+    }
+
+
     public class QuestDelivery : Quest
     {
         [SaveableField("DeliveryData")]
@@ -32,7 +63,36 @@ namespace Silkroad
         public static event Action OnQuestCompleted;
         private Sprite? _questIcon; // Backing field for QuestIcon
 
+        protected override void OnLoaded()
+        {
+            base.OnLoaded();
+            MelonCoroutines.Start(WaitForBuyerAndSendStatus());
+        }
 
+        private System.Collections.IEnumerator WaitForBuyerAndSendStatus()
+        {
+            float timeout = 5f;
+            float waited = 0f;
+            MelonLogger.Msg("Waiting for buyer to be initialized...");
+            // while (Contacts.Buyers == null OR For all key value pairs in Contacts.Buyers, check if the value.IsInitialized is false for at least one of them OR waited < timeqout)
+            while ((Contacts.Buyers == null || !Contacts.Buyers.Values.All(buyer => buyer.IsInitialized)) && waited < timeout)
+            {
+                waited += Time.deltaTime;
+                yield return null; // wait 1 frame
+            }
+
+            if ((Contacts.Buyers == null || !Contacts.Buyers.Values.All(buyer => buyer.IsInitialized)))
+            {
+                MelonLogger.Warning("⚠️ Buyer NPC still not initialized after timeout. Skipping status sync.");
+                //Log the buyer who is not initialized by logging the key from Contacts
+                foreach (var buyer in Contacts.Buyers.Values.Where(b => !b.IsInitialized))
+                {
+                    MelonLogger.Warning($"Buyer is not initialized. Key: {Contacts.Buyers.FirstOrDefault(b => b.Value == buyer).Key}");
+                }
+                yield break;
+            }
+
+        }
         // Add a static instance to access the current quest from UI / Force Complete/Fail Quests
         public static QuestDelivery Instance { get; private set; }
 
@@ -40,18 +100,17 @@ namespace Silkroad
         {
             get
             {
-                MelonLogger.Msg($"Loading quest icon for {Data.DealerName}={Data.QuestImage}");
+                // MelonLogger.Msg($"Loading quest icon for {Data.DealerName}={Data.QuestImage}");
 
                 // Dynamically load the image based on the DealerImage of the current instance
                 return ImageUtils.LoadImage(MyApp.QuestImage ?? Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", "SilkRoadIcon_quest.png"));
-;
+                ;
             }
         }
 
         protected override void OnCreated()
         {
-            MelonLogger.Msg($"Setting ON CREATED quest icon for {Data.DealerName}={Data.QuestImage}");
-            
+
             base.OnCreated();
             Instance = this;
             QuestActive = true;
@@ -77,7 +136,7 @@ namespace Silkroad
                 deliveryDrop = DeadDropManager.All.FirstOrDefault(d => d.GUID == Data.DeliveryDropGUID);
             }
 
-            deliveryEntry = AddEntry($"Deliver {Data.RequiredAmount}x bricks of {Data.ProductID} at the dead drop.");
+            deliveryEntry = AddEntry($"{Data.Task} at the dead drop.");
             deliveryEntry.POIPosition = deliveryDrop.Position;
             deliveryEntry.Begin();
 
@@ -88,36 +147,83 @@ namespace Silkroad
 
             MelonLogger.Msg("📦 QuestDelivery started with drop locations assigned.");
         }
+        private int PackageAmount(string packaging)
+        {
+            // Return the amount based on the packaging type
+            return packaging switch
+            {
+                "Brick" => 20,
+                "Jar" => 5,
+                "Baggie" => 1,
+                _ => 0,
+            };
+        }
 
         private void CheckDelivery()
         {
-            var total = deliveryDrop.Storage.Slots
-                .Where(slot => slot.ItemInstance is ProductInstance product &&
-                               product.Definition.Name == Data.ProductID)
-                .Sum(slot => slot.Quantity);
-
-            if (total < Data.RequiredAmount)
+            MelonLogger.Msg("CheckDelivery called.");
+            MelonLogger.Msg($"Expecting ProductID: {Data.ProductID}, RequiredAmount: {Data.RequiredAmount}");
+             //necessary and optional effects are based on Data.RequiredDrug.Effects => Effect.Probability ==1 means necessary, else optional
+            List<string> necessaryEffects = Data.RequiredDrug.Effects.Where(e => e.Probability == 1).Select(e => e.Name).ToList();
+            List<string> optionalEffects = Data.RequiredDrug.Effects.Where(e => e.Probability < 1).Select(e => e.Name).ToList();
+               
+            foreach (var slot in deliveryDrop.Storage.Slots)
             {
-                MelonLogger.Msg($"❌ Not enough bricks: {total}/{Data.RequiredAmount}");
+                bool isProductInstance = slot.ItemInstance is ProductInstance;
+                var item =((ProductInstance)slot.ItemInstance);
+                string slotProductID = isProductInstance ? item.Definition.Name : "null";
+                string packaging = isProductInstance ? item.AppliedPackaging.Name : "null";
+                int quantity = slot.Quantity;
+                //Temporary list to hold the effects and test with dummy values
+                List<string> productEffects = RandomEffectSelector.GetRandomEffects(necessaryEffects, 8);
+                //Check isProductInstance AND if productEffects contains ALL of the necessary effects
+                //ADD non-dummy check for quality and effects
+                if (isProductInstance && necessaryEffects.All(effect => productEffects.Contains(effect)))
+                {
+                    int total = quantity * PackageAmount(packaging);
+                    if (total < Data.RequiredAmount)
+                    {
+                        slot.AddQuantity(-quantity);    
+                        Data.RequiredAmount -= (uint)total;
+                        UpdateReward(total,item);
+                    }
+                    else{  
+                        var toRemove = (int)(-Data.RequiredAmount / PackageAmount(packaging));
+                        slot.AddQuantity(toRemove);
+                        Data.RequiredAmount = 0;
+                        UpdateReward(total,item);
+                        break;
+                    }
+                }
+
+                //MelonLogger.Msg($"Total Amount: {total}");
+                //var definition = ((ProductInstance)slot.ItemInstance);
+                //DebugUtils.LogObjectJson(definition, "Slot ItemInstance Definition");
+                //MelonLogger.Msg($"Slot: isProductInstance={isProductInstance}, productID={slotProductID}, packaging={packaging}, quantity={quantity}");
+            }
+
+
+            if (Data.RequiredAmount > 0)
+            {
+                MelonLogger.Msg($"❌ Not enough amount delivered. {Data.RequiredAmount} remaining.");
                 return;
             }
 
-            uint toRemove = Data.RequiredAmount;
-            foreach (var slot in deliveryDrop.Storage.Slots)
-            {
-                if (slot.ItemInstance is ProductInstance product &&
-                    product.Definition.Name == Data.ProductID)
-                {
-                    int remove = (int)Mathf.Min(slot.Quantity, toRemove);
-                    slot.AddQuantity(-remove);
-                    toRemove -= (uint)remove;
-                    if (toRemove == 0) break;
-                }
-            }
 
             deliveryEntry.Complete();
             rewardEntry.SetState(QuestState.Active);
             MelonCoroutines.Start(DelayedReward());
+        }
+
+        private void UpdateReward(int total, ProductInstance? item)
+        {
+            ProductDefinition itemDefinition = (ProductDefinition)(item?.Definition);
+            //Dummy Reward calculation - to be replaced with effects and quality calculation
+            MelonLogger.Msg($"Item Definition: {itemDefinition?.Name}");
+            MelonLogger.Msg($"Item Quality: {itemDefinition?.Price}");
+            Data.Reward = total * (int)itemDefinition.Price;
+            return;
+            //throw new NotImplementedException();
         }
 
         private System.Collections.IEnumerator DelayedReward()
@@ -130,134 +236,23 @@ namespace Silkroad
         {
             var rewardAmount = Data.Reward;
             ConsoleHelper.RunCashCommand(rewardAmount);
-
-            if (BlackmarketBuyer.Buyers.TryGetValue(Data.DealerName, out var dealerData))
-            {
-                dealerData.Reputation += 10;
-                MelonLogger.Msg($"   Updated Reputation: {dealerData.Reputation}");
-                if (Contacts.GetBuyer(Data.DealerName) is BlackmarketBuyer buyer)
-                {
-                    buyer.SendDeliverySuccess(Data.DealerName, Data.ProductID);
-                    buyer.SendRewardDropped(Data.DealerName);
-                }
-                CheckUnlocks(dealerData);
-            }
+            var buyer= Contacts.GetBuyer(Data.DealerName);
+            buyer.SendCustomMessage("Reward", Data.ProductID);
+            buyer.GiveReputation((int)Data.RepReward);
+            MelonLogger.Msg($"   Rewarded : ${rewardAmount} and Rep {Data.RepReward} to {Data.DealerName}");
+            buyer.UnlockDrug();
+            
 
             QuestActive = false;
             CompletedQuestKeys.Add($"{Data.ProductID}_{Data.RequiredAmount}");
-            rewardEntry.Complete();
+            rewardEntry?.Complete();
             Complete();
             OnQuestCompleted?.Invoke();
+            // Based on New Reputations, Check JSON to see if new NPC unlocked - Remove and Replace with button if slow/crash
+            Contacts.Initialize();
         }
 
-        private void CheckUnlocks(DealerSaveData dealerData)
-        {
-            // Get the original dealer data from the JSON to check unlocks
-            var jsonPath = Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad/empire.json");
-            if (!File.Exists(jsonPath)) return;
 
-            var jsonText = File.ReadAllText(jsonPath);
-            var dealerConfig = JsonConvert.DeserializeObject<DealerData>(jsonText);
-
-            if (dealerConfig?.Dealers == null) return;
-
-            var dealer = dealerConfig.Dealers.FirstOrDefault(d => d.Name == Data.DealerName);
-            if (dealer == null) return;
-
-            // Check for new drug unlocks
-            foreach (var drug in dealerConfig.Dealers.FirstOrDefault(d => d.Name == Data.DealerName)?.Drugs ?? Enumerable.Empty<Drug>())
-            {
-                if (drug.UnlockRep <= dealerData.Reputation && !dealerData.UnlockedDrugs.Contains(drug.Type))
-                {
-                    if (Contacts.GetBuyer(Data.DealerName) is BlackmarketBuyer buyer)
-                    {
-                        buyer.UnlockDrug(Data.DealerName, drug.Type);
-                    }
-                }
-            }
-
-            // Check for new quality unlocks
-            foreach (var drug in dealerConfig.Dealers.FirstOrDefault(d => d.Name == Data.DealerName)?.Drugs ?? Enumerable.Empty<Drug>())
-            {
-                foreach (var quality in drug.Qualities)
-                {
-                    if (quality.UnlockRep <= dealerData.Reputation &&
-                        (!dealerData.UnlockedQuality.ContainsKey(drug.Type) ||
-                         dealerData.UnlockedQuality[drug.Type] != quality.Type))
-                    {
-                        if (Contacts.GetBuyer(Data.DealerName) is BlackmarketBuyer buyer)
-                        {
-                            buyer.UnlockQuality(Data.DealerName, drug.Type, quality.Type);
-                        }
-                    }
-                }
-            }
-
-            // Check for new effect unlocks
-            foreach (var drug in dealerConfig.Dealers.FirstOrDefault(d => d.Name == Data.DealerName)?.Drugs ?? Enumerable.Empty<Drug>())
-            {
-                foreach (var effect in drug.Effects)
-                {
-                    if (effect.UnlockRep <= dealerData.Reputation)
-                    {
-                        if (effect.Probability >= 1.0f)
-                        {
-                            if (!dealerData.NecessaryEffects.Any(e => e.Name == effect.Name))
-                            {
-                                if (Contacts.GetBuyer(Data.DealerName) is BlackmarketBuyer buyer)
-                                {
-                                    buyer.UnlockNecessaryEffect(Data.DealerName, effect.Name);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (!dealerData.OptionalEffects.Any(e => e.Name == effect.Name))
-                            {
-                                if (Contacts.GetBuyer(Data.DealerName) is BlackmarketBuyer buyer)
-                                {
-                                    buyer.UnlockOptionalEffect(Data.DealerName, effect.Name);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Check for new dealer unlocks
-            foreach (var _dealer in dealerConfig.Dealers)
-            {
-                if (_dealer.UnlockRequirements == null || BlackmarketBuyer.Buyers.ContainsKey(_dealer.Name))
-                    continue;
-
-                bool allRequirementsMet = _dealer.UnlockRequirements.All(req =>
-                    BlackmarketBuyer.Buyers.TryGetValue(req.Name, out var requiredDealer) &&
-                    requiredDealer.Reputation >= req.MinRep);
-
-                if (allRequirementsMet)
-                {
-                    // Unlock the dealer
-                    var newBuyer = new BlackmarketBuyer(_dealer);
-                    MelonLogger.Msg($"✅ New dealer unlocked: {_dealer.Name}");
-                }
-            }
-
-            // Check for new shipping unlocks
-
-            if (dealerConfig.Dealers.FirstOrDefault(d => d.Name == Data.DealerName) != null)
-            {
-                // Directly update shipping amounts based on the dealer’s shipping list and current reputation.
-                dealerData.UpdateDeliveryAmounts(dealer.Shippings ?? new List<Shipping>(), dealerData.Reputation);
-                MelonLogger.Msg($"   Updated delivery amounts: {dealerData.MinDeliveryAmount}-{dealerData.MaxDeliveryAmount}");
-            }
-
-            // Update delivery amounts based on unlocked shipping
-
-            MelonLogger.Msg($"   Updated delivery amounts: {dealerData.MinDeliveryAmount}-{dealerData.MaxDeliveryAmount}");
-
-            MelonLogger.Msg($"   Unlocked Drugs: {string.Join(", ", dealerData.UnlockedDrugs)}");
-            MelonLogger.Msg($"   Unlocked Qualities: {string.Join(", ", dealerData.UnlockedQuality.Keys)}");
-        }
 
         // NEW: Force-complete the active quest (i.e. give the reward immediately)
         public static void ForceCompleteQuest()
@@ -292,12 +287,12 @@ namespace Silkroad
 
         protected override string Title =>
             !string.IsNullOrEmpty(Data?.ProductID)
-                ? $"Deliver {Data.RequiredAmount}x {Data.ProductID} bricks"
+                ? $"Deliver {Data.RequiredAmount}x {Data.ProductID} to {Data.DealerName}"
                 : "Silkroad Delivery";
 
         protected override string Description =>
             !string.IsNullOrEmpty(Data?.ProductID) && Data.RequiredAmount > 0
-                ? $"Deliver {Data.RequiredAmount}x bricks of {Data.ProductID} to the drop point."
+                ? $"{Data.Task}"
                 : "Deliver the assigned product to the stash location.";
     }
 }
