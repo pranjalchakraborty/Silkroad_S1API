@@ -140,7 +140,7 @@ namespace Silkroad
 
             MelonLogger.Msg("📦 QuestDelivery started with drop locations assigned.");
         }
-        private int PackageAmount(string packaging)
+        private uint PackageAmount(string packaging)
         {
             // Return the amount based on the packaging type
             return packaging switch
@@ -156,14 +156,14 @@ namespace Silkroad
         {
             MelonLogger.Msg("CheckDelivery called.");
             MelonLogger.Msg($"Expecting ProductID: {Data.ProductID}, RequiredAmount: {Data.RequiredAmount}");
-             //necessary and optional effects are based on Data.RequiredDrug.Effects => Effect.Probability ==1 means necessary, else optional
+            //necessary and optional effects are based on Data.RequiredDrug.Effects => Effect.Probability ==1 means necessary, else optional
             List<string> necessaryEffects = Data.RequiredDrug.Effects.Where(e => e.Probability == 1).Select(e => e.Name).ToList();
             List<string> optionalEffects = Data.RequiredDrug.Effects.Where(e => e.Probability < 1).Select(e => e.Name).ToList();
-               
+
             foreach (var slot in deliveryDrop.Storage.Slots)
             {
                 bool isProductInstance = slot.ItemInstance is ProductInstance;
-                var item =((ProductInstance)slot.ItemInstance);
+                var item = ((ProductInstance)slot.ItemInstance);
                 string slotProductID = isProductInstance ? item.Definition.Name : "null";
                 string packaging = isProductInstance ? item.AppliedPackaging.Name : "null";
                 int quantity = slot.Quantity;
@@ -173,18 +173,22 @@ namespace Silkroad
                 //ADD non-dummy check for quality and effects
                 if (isProductInstance && necessaryEffects.All(effect => productEffects.Contains(effect)))
                 {
-                    int total = quantity * PackageAmount(packaging);
+                    uint total = (uint)(quantity * PackageAmount(packaging));
                     if (total <= Data.RequiredAmount)
                     {
-                        slot.AddQuantity(-quantity);    
-                        Data.RequiredAmount -= (uint)total;
-                        UpdateReward(total,item);
+                        slot.AddQuantity(-quantity);
+                        UpdateReward(total, item);
+                        Data.RequiredAmount -= total;
+
+                        MelonLogger.Msg($"✅ Delivered {total}x {slotProductID} to the stash. Remaining: {Data.RequiredAmount}. Reward now: {Data.Reward}");
                     }
-                    else{  
-                        var toRemove = (int)(-Data.RequiredAmount / PackageAmount(packaging))-1;//Deal with it
+                    else
+                    {
+                        var toRemove = (int)(-Data.RequiredAmount / PackageAmount(packaging)) - 1;//Deal with it
                         slot.AddQuantity(toRemove);
+                        UpdateReward(Data.RequiredAmount, item);
                         Data.RequiredAmount = 0;
-                        UpdateReward(total,item);
+                        MelonLogger.Msg($"✅ Delivered {total}x {slotProductID} to the stash. Remaining: {Data.RequiredAmount}. Reward now: {Data.Reward}");
                         break;
                     }
                 }
@@ -208,20 +212,20 @@ namespace Silkroad
             MelonCoroutines.Start(DelayedReward());
         }
 
-//Update Dummy with real effect and quality calculation
-        private void UpdateReward(int total, ProductInstance? item)
+        //Update Dummy with real effect and quality calculation
+        private void UpdateReward(uint total, ProductInstance? item)
         {
             if (item?.Definition is ProductDefinition itemDefinition)
             {
                 // Dummy Reward calculation - to be replaced with effects and quality calculation
                 MelonLogger.Msg($"Item Definition: {itemDefinition.Name}");
                 MelonLogger.Msg($"Item Quality: {itemDefinition.Price}");
-                Data.Reward = total * (int)itemDefinition.Price;
+                Data.Reward += (int)(total * itemDefinition.Price);
             }
             else
             {
                 MelonLogger.Error("❌ Item definition is not a ProductDefinition. Reward calculation skipped.");
-                Data.Reward = total * 200;
+                Data.Reward += (int)(total * 200);
             }
         }
 
@@ -235,13 +239,14 @@ namespace Silkroad
         {
             var rewardAmount = Data.Reward;
             ConsoleHelper.RunCashCommand(rewardAmount);
-            var buyer= Contacts.GetBuyer(Data.DealerName);
+            var buyer = Contacts.GetBuyer(Data.DealerName);
             buyer.SendCustomMessage("Reward", Data.ProductID);
-            buyer.GiveReputation((int)Data.RepReward);
-            MelonLogger.Msg($"   Rewarded : ${rewardAmount} and Rep {Data.RepReward} to {Data.DealerName}");
+            buyer.GiveReputation((int)Data.RepReward + 10);
+            MelonLogger.Msg($"   Rewarded : ${rewardAmount} and Rep {Data.RepReward + 10} to {Data.DealerName}");
             buyer.UnlockDrug();
+            buyer.IncreaseCompletedDeals(1);
             buyer.SaveDealerData();
-            
+
 
             QuestActive = false;
             CompletedQuestKeys.Add($"{Data.ProductID}_{Data.RequiredAmount}");

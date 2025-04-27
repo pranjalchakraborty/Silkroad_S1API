@@ -13,6 +13,7 @@ public class DealerSaveData
     public int StepDeliveryAmount; // Step delivery amount for this dealer
     public int MaxDeliveryAmount; // Maximum delivery amount for this dealer
     public List<Drug> UnlockedDrugs; // List of unlocked drug types with unlcoked qualities and effects only
+    public int DealsCompleted; // Number of deals completed with this dealer
 
     [JsonConstructor]
     public DealerSaveData()
@@ -23,6 +24,7 @@ public class DealerSaveData
         MinDeliveryAmount = 0;
         StepDeliveryAmount = 0;
         MaxDeliveryAmount = 0;
+        DealsCompleted = 0;
         // Initialize lists to avoid null reference exceptions
         UnlockedDrugs = new List<Drug>();
 

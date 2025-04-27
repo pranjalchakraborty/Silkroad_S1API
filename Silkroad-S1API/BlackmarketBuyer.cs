@@ -17,7 +17,6 @@ namespace Silkroad
     public class BlackmarketBuyer : NPC
     {
         public bool IsInitialized { get; private set; } = false;
-        //[SaveableField("DealerSaveData")]
         public DealerSaveData _DealerData;
         public List<UnlockRequirement> UnlockRequirements { get; set; } = new List<UnlockRequirement>();
         // Updated to match JSON structure
@@ -25,6 +24,7 @@ namespace Silkroad
         public List<Shipping> Shippings { get; set; } = new List<Shipping>(); // Initialize Shippings list
         private Dialogue Dialogues = new Dialogue();
         public static string SavedNPCName { get; private set; } = "Blackmarket Buyer"; // Static string to set save/load directory
+        public DrugTest TestDrug = new DrugTest(); // Initialize TestDrug with default values
         public string DealerName { get; private set; } = SavedNPCName;
         public string? DealerImage { get; private set; } = Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", "SilkRoadIcon_quest.png");
         [SaveableField("BuyerSaveData")]
@@ -182,6 +182,11 @@ namespace Silkroad
         }
         //Saves the current dealer data to the BuyerSaveData Saveable Field dictionary
 
+public void IncreaseCompletedDeals(int amount)
+        {
+            _DealerData.DealsCompleted += amount;
+            MelonLogger.Msg($"✅ {DealerName}'s completed deals increased by {amount}. Total Completed Deals: {_DealerData.DealsCompleted}");
+        }
         public void GiveReputation(int amount)
         {
             _DealerData.Reputation += amount;
@@ -300,4 +305,6 @@ namespace Silkroad
             // For example, syncing reputation, unlocks, etc.
         }
     }
+
+
 }
