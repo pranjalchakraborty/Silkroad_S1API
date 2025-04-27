@@ -30,12 +30,12 @@ Any Dialogue string can have (product} and {amount} which will be replaced appro
 Tasks:
 
 Functions:
-Save/Load
+\\Save/Load
 \\change placeholder dummy product effects and quality with real effects from s1api once supported
 \\Implement rewards based on effects and quality
 
 Tests:
-test - progression, rewards, save/load logic
+\\test - progression, rewards, save/load logic
 
 UI Tracker:
 add ui panel to show relations, product, quality, shipping, effects unlocks with drop down selector for each npc

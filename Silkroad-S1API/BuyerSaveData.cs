@@ -6,11 +6,10 @@ using System.Collections.Generic;
 
 
 [Serializable]
-public class BuyerSaveData : Dictionary<string, DealerSaveData>
+public class BuyerSaveData 
 {
+    public Dictionary<string, DealerSaveData> Dealers;
+    
     [JsonConstructor]
-    public BuyerSaveData() : base()
-    {
-        
-    }
+    public BuyerSaveData() {}
 }

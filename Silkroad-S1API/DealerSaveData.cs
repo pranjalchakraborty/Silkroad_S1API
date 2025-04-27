@@ -3,6 +3,7 @@ using Silkroad;
 using System;
 using System.Collections.Generic;
 
+[Serializable]
 public class DealerSaveData
 {
     public string DealerName; // The name of the dealer
@@ -13,6 +14,7 @@ public class DealerSaveData
     public int MaxDeliveryAmount; // Maximum delivery amount for this dealer
     public List<Drug> UnlockedDrugs; // List of unlocked drug types with unlcoked qualities and effects only
 
+    [JsonConstructor]
     public DealerSaveData()
     {
         DealerName = string.Empty;

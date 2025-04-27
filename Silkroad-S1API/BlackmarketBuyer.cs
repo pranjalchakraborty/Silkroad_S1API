@@ -17,9 +17,10 @@ namespace Silkroad
     public class BlackmarketBuyer : NPC
     {
         public bool IsInitialized { get; private set; } = false;
+        //[SaveableField("DealerSaveData")]
         public DealerSaveData _DealerData;
         public List<UnlockRequirement> UnlockRequirements { get; set; } = new List<UnlockRequirement>();
-         // Updated to match JSON structure
+        // Updated to match JSON structure
         private List<Drug> Drugs = new List<Drug>(); // Initialize Drugs list
         public List<Shipping> Shippings { get; set; } = new List<Shipping>(); // Initialize Shippings list
         private Dialogue Dialogues = new Dialogue();
@@ -35,19 +36,36 @@ namespace Silkroad
             SavedNPCName.Contains(' ') ? SavedNPCName.Substring(SavedNPCName.IndexOf(' ') + 1) : "")
         {
             Contacts.Buyers[SavedNPCName] = this;
+
+            // Ensure BuyerSaveData is initialized
+            if (BuyerSaveData == null)
+            {
+                BuyerSaveData = new BuyerSaveData();
+                MelonLogger.Warning($"⚠️ BuyerSaveData was null. Initialized a new BuyerSaveData.");
+            }
+
+            // Ensure Dealers dictionary is initialized
+            if (BuyerSaveData.Dealers == null)
+            {
+                BuyerSaveData.Dealers = new Dictionary<string, DealerSaveData>();
+                MelonLogger.Warning($"⚠️ Dealers dictionary was null. Initialized a new dictionary.");
+            }
+
             LoadDealerData();
+
             if (_DealerData == null)
             {
                 _DealerData = new DealerSaveData
                 {
                     DealerName = DealerName
                 };
-                MelonLogger.Msg($"✅ ship tier {_DealerData.ShippingTier} initialized with default data.");
                 SaveDealerData();
             }
-            else{
+            else
+            {
                 MelonLogger.Msg($"⚠️ Dealer {DealerName} already exists in BuyerSaveData dictionary.");
             }
+
             IsInitialized = true;
         }
         public BlackmarketBuyer(Dealer dealer) : base(
@@ -99,11 +117,17 @@ namespace Silkroad
 
             if (buyer.BuyerSaveData == null)
             {
-                MelonLogger.Error($"❌ BuyerSaveData is null for buyer '{SavedNPCName}'.");
-                return;
+                MelonLogger.Error($"❌ BuyerSaveData is null for buyer '{SavedNPCName}'. Initializing a new BuyerSaveData.");
+                buyer.BuyerSaveData = new BuyerSaveData(); // Ensure BuyerSaveData is initialized
             }
 
-            if (buyer.BuyerSaveData.TryGetValue(DealerName, out var dealerData))
+            if (buyer.BuyerSaveData.Dealers == null)
+            {
+                MelonLogger.Error($"❌ Dealers dictionary is null for buyer '{SavedNPCName}'. Initializing a new dictionary.");
+                buyer.BuyerSaveData.Dealers = new Dictionary<string, DealerSaveData>(); // Ensure Dealers is initialized
+            }
+
+            if (buyer.BuyerSaveData.Dealers.TryGetValue(DealerName, out var dealerData))
             {
                 _DealerData = dealerData;
                 MelonLogger.Msg($"✅ Dealer data loaded for {DealerName}.");
@@ -129,7 +153,7 @@ namespace Silkroad
                 MelonLogger.Warning($"⚠️ BuyerSaveData was null for buyer '{SavedNPCName}'. Initialized a new dictionary.");
             }
 
-            buyer.BuyerSaveData[DealerName] = _DealerData;
+            buyer.BuyerSaveData.Dealers[DealerName] = _DealerData;
             MelonLogger.Msg($"✅ Dealer data saved for {DealerName}.");
         }
         protected override Sprite? NPCIcon
