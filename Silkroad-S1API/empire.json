@@ -1,0 +1,1812 @@
+{
+  "dealers": [
+    {
+      "name": "Combo 'Costco'",
+      "image": "combo.png",
+      "resetSave": false,
+      "unlockRequirements": [],
+      "drugs": [
+        {
+          "type": "weed",
+          "bonus_dollar": 0,
+          "bonus_rep": 0,
+          "base_dollar_mult": 1,
+          "base_rep_mult": 1,
+          "unlockRep": 0,
+          "qualities": [
+            {
+              "type": "poor",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 0
+            },
+            {
+              "type": "standard",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 20
+            },
+            {
+              "type": "premium",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 40
+            }
+          ],
+          "effects": [
+            {
+              "type": "Munchies",
+              "unlockRep": 0,
+              "probability": 1,
+              "dollar_mult": 0.38,
+              "rep_mult": 0.05
+            },
+            {
+              "type": "Calming",
+              "unlockRep": 10,
+              "probability": 1,
+              "dollar_mult": 0.40,
+              "rep_mult": 0.05
+            },
+            {
+              "type": "Sneaky",
+              "unlockRep": 20,
+              "probability": 0.5,
+              "dollar_mult": 0.26,
+              "rep_mult": 0.05
+            },
+            {
+              "type": "Refreshing",
+              "unlockRep": 0,
+              "probability": 0.5,
+              "dollar_mult": 0.36,
+              "rep_mult": 0.05
+            }
+          ]
+        },
+        {
+          "type": "meth",
+          "bonus_dollar": 0,
+          "bonus_rep": 0,
+          "base_dollar_mult": 1,
+          "base_rep_mult": 1,
+          "unlockRep": 30,
+          "qualities": [
+            {
+              "type": "poor",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 30
+            },
+            {
+              "type": "standard",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 40
+            },
+            {
+              "type": "premium",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 60
+            }
+          ],
+          "effects": [
+            {
+              "type": "Euphoric",
+              "unlockRep": 30,
+              "probability": 1,
+              "dollar_mult": 0.32,
+              "rep_mult": 0.05
+            },
+            {
+              "type": "Paranoia",
+              "unlockRep": 40,
+              "probability": 0.5,
+              "dollar_mult": 0.50,
+              "rep_mult": 0.05
+            },
+            {
+              "type": "Disorienting",
+              "unlockRep": 50,
+              "probability": 0.5,
+              "dollar_mult": 0.50,
+              "rep_mult": 0.05
+            },
+            {
+              "type": "Focused",
+              "unlockRep": 60,
+              "probability": 1,
+              "dollar_mult": 0.34,
+              "rep_mult": 0.05
+            }
+          ]
+        }
+      ],
+      "shipping": [
+        {
+          "name": "Skateboard Couriers",
+          "cost": 0,
+          "unlockRep": 0,
+          "minAmount": 1,
+          "stepAmount": 1,
+          "maxAmount": 10
+        },
+        {
+          "name": "Taco Truck",
+          "cost": 1000,
+          "unlockRep": 40,
+          "minAmount": 10,
+          "stepAmount": 1,
+          "maxAmount": 30
+        }
+      ],
+      "dialogue": {
+        "intro": [
+          "Yo, Uncle Nelson gave me your number. You got the stuff?"
+        ],
+        "dealStart": [
+          "Yo, you got {amount} of that {product} ready?",
+          "I need {amount} {product}, let’s see it!",
+          "Gimme {amount} of that blue {product}, yo!",
+          "You better have {amount} {product} on deck!"
+        ],
+        "accept": [
+          "Deal’s on, man!",
+          "Cool, let’s roll with it!"
+        ],
+        "reject": [
+          "Nah, not feeling it, bro.",
+          "Pass, that’s not my vibe."
+        ],
+        "expire": [
+          "Too slow, man, you’re out.",
+          "Took too long, deal’s off."
+        ],
+        "fail": [
+          "You messed up, big time!",
+          "What the hell, man? Total screw-up!"
+        ],
+        "success": [
+          "placeholder_success1",
+          "placeholder_success2"
+        ],
+        "reward": [
+          "placeholder_reward1",
+          "placeholder_reward2"
+        ]
+      }
+    },
+    {
+      "name": "Badger",
+      "image": "badger.png",
+      "resetSave": false,
+      "unlockRequirements": [
+        {
+          "name": "Combo 'Costco'",
+          "minRep": 0
+        }
+      ],
+      "drugs": [
+        {
+          "type": "meth",
+          "bonus_dollar": 0,
+          "bonus_rep": 0,
+          "base_dollar_mult": 1,
+          "base_rep_mult": 1,
+          "unlockRep": 0,
+          "qualities": [
+            {
+              "type": "poor",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 0
+            },
+            {
+              "type": "standard",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 20
+            },
+            {
+              "type": "premium",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 40
+            }
+          ],
+          "effects": [
+            {
+              "type": "Euphoric",
+              "unlockRep": 0,
+              "probability": 1,
+              "dollar_mult": 0.32,
+              "rep_mult": 0.05
+            },
+            {
+              "type": "Foggy",
+              "unlockRep": 10,
+              "probability": 1,
+              "dollar_mult": 0.14,
+              "rep_mult": 0.05
+            },
+            {
+              "type": "Paranoia",
+              "unlockRep": 20,
+              "probability": 0.5,
+              "dollar_mult": 0.50,
+              "rep_mult": 0.05
+            },
+            {
+              "type": "Disorienting",
+              "unlockRep": 30,
+              "probability": 0.5,
+              "dollar_mult": 0.50,
+              "rep_mult": 0.05
+            }
+          ]
+        }
+      ],
+      "shipping": [
+        {
+          "name": "Star Trek Scooter",
+          "cost": 0,
+          "unlockRep": 0,
+          "minAmount": 1,
+          "stepAmount": 1,
+          "maxAmount": 10
+        },
+        {
+          "name": "VRBO Van",
+          "cost": 1000,
+          "unlockRep": 40,
+          "minAmount": 10,
+          "stepAmount": 1,
+          "maxAmount": 30
+        }
+      ],
+      "dialogue": {
+        "intro": [
+          "Hey man, you got the goods?"
+        ],
+        "dealStart": [
+          "Dude, I need {amount} of that {product} to party!",
+          "Got {amount} {product} to kick things off?"
+        ],
+        "accept": [
+          "Awesome, let’s do this!",
+          "Sweet, I’m totally in!"
+        ],
+        "reject": [
+          "Maybe next time, dude.",
+          "Nah, not today, man."
+        ],
+        "expire": [
+          "You snooze, you lose, bro.",
+          "Too late, deal’s gone."
+        ],
+        "fail": [
+          "Oh man, that’s not good.",
+          "You totally tanked it, dude!"
+        ],
+        "success": [
+          "placeholder_success1",
+          "placeholder_success2"
+        ],
+        "reward": [
+          "placeholder_reward1",
+          "placeholder_reward2"
+        ]
+      }
+    },
+    {
+      "name": "Skinny Pete",
+      "image": "skinny_pete.png",
+      "resetSave": false,
+      "unlockRequirements": [
+        {
+          "name": "Combo 'Costco'",
+          "minRep": 0
+        }
+      ],
+      "drugs": [
+        {
+          "type": "weed",
+          "bonus_dollar": 0,
+          "bonus_rep": 0,
+          "base_dollar_mult": 1,
+          "base_rep_mult": 1,
+          "unlockRep": 0,
+          "qualities": [
+            {
+              "type": "poor",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 0
+            },
+            {
+              "type": "standard",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 20
+            },
+            {
+              "type": "premium",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 40
+            }
+          ],
+          "effects": [
+            {
+              "type": "Munchies",
+              "unlockRep": 10,
+              "probability": 1,
+              "dollar_mult": 0.38,
+              "rep_mult": 0.05
+            },
+            {
+              "type": "Calming",
+              "unlockRep": 0,
+              "probability": 1,
+              "dollar_mult": 0.40,
+              "rep_mult": 0.05
+            },
+            {
+              "type": "Sneaky",
+              "unlockRep": 0,
+              "probability": 0.5,
+              "dollar_mult": 0.26,
+              "rep_mult": 0.05
+            },
+            {
+              "type": "Refreshing",
+              "unlockRep": 30,
+              "probability": 0.5,
+              "dollar_mult": 0.36,
+              "rep_mult": 0.05
+            }
+          ]
+        }
+      ],
+      "shipping": [
+        {
+          "name": "Piano Delivery Van",
+          "cost": 0,
+          "unlockRep": 0,
+          "minAmount": 1,
+          "stepAmount": 1,
+          "maxAmount": 10
+        },
+        {
+          "name": "Biker Gang Convoy",
+          "cost": 1000,
+          "unlockRep": 40,
+          "minAmount": 10,
+          "stepAmount": 1,
+          "maxAmount": 30
+        }
+      ],
+      "dialogue": {
+        "intro": [
+          "Yo, what’s up? You got the stash?"
+        ],
+        "dealStart": [
+          "Let’s blaze {amount} of that {product}, yo!",
+          "You got {amount} {product} to spark up?"
+        ],
+        "accept": [
+          "Sweet, let’s roll, man!",
+          "I’m down, let’s do it!"
+        ],
+        "reject": [
+          "Not today, bro.",
+          "Gonna pass, maybe later."
+        ],
+        "expire": [
+          "Time’s up, man, you’re out.",
+          "Missed it, deal’s off."
+        ],
+        "fail": [
+          "Dude, you blew it big time!",
+          "That’s a total bust, yo!"
+        ],
+        "success": [
+          "placeholder_success1",
+          "placeholder_success2"
+        ],
+        "reward": [
+          "placeholder_reward1",
+          "placeholder_reward2"
+        ]
+      }
+    },
+    {
+      "name": "Domingo 'Krazy-8' Molina",
+      "image": "krazy.png",
+      "resetSave": false,
+      "unlockRequirements": [
+        {
+          "name": "Jesse Pinkman",
+          "minRep": 0
+        }
+      ],
+      "drugs": [
+        {
+          "type": "meth",
+          "bonus_dollar": 0,
+          "bonus_rep": 0,
+          "base_dollar_mult": 1,
+          "base_rep_mult": 1,
+          "unlockRep": 0,
+          "qualities": [
+            {
+              "type": "standard",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 0
+            },
+            {
+              "type": "premium",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 30
+            },
+            {
+              "type": "heavenly",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 60
+            }
+          ],
+          "effects": [
+            {
+              "type": "Explosive",
+              "unlockRep": 0,
+              "probability": 1,
+              "dollar_mult": 0.50,
+              "rep_mult": 0.07
+            },
+            {
+              "type": "Lethal",
+              "unlockRep": 20,
+              "probability": 1,
+              "dollar_mult": 0.50,
+              "rep_mult": 0.07
+            },
+            {
+              "type": "Paranoia",
+              "unlockRep": 40,
+              "probability": 0.5,
+              "dollar_mult": 0.50,
+              "rep_mult": 0.07
+            },
+            {
+              "type": "Disorienting",
+              "unlockRep": 60,
+              "probability": 0.5,
+              "dollar_mult": 0.50,
+              "rep_mult": 0.07
+            }
+          ]
+        },
+        {
+          "type": "weed",
+          "bonus_dollar": 0,
+          "bonus_rep": 0,
+          "base_dollar_mult": 1,
+          "base_rep_mult": 1,
+          "unlockRep": 20,
+          "qualities": [
+            {
+              "type": "standard",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 20
+            },
+            {
+              "type": "premium",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 40
+            },
+            {
+              "type": "heavenly",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 60
+            }
+          ],
+          "effects": [
+            {
+              "type": "Sneaky",
+              "unlockRep": 20,
+              "probability": 1,
+              "dollar_mult": 0.26,
+              "rep_mult": 0.07
+            },
+            {
+              "type": "Munchies",
+              "unlockRep": 30,
+              "probability": 1,
+              "dollar_mult": 0.38,
+              "rep_mult": 0.07
+            },
+            {
+              "type": "Calming",
+              "unlockRep": 40,
+              "probability": 0.5,
+              "dollar_mult": 0.40,
+              "rep_mult": 0.07
+            },
+            {
+              "type": "Refreshing",
+              "unlockRep": 50,
+              "probability": 0.5,
+              "dollar_mult": 0.36,
+              "rep_mult": 0.07
+            }
+          ]
+        },
+        {
+          "type": "cocaine",
+          "bonus_dollar": 0,
+          "bonus_rep": 0,
+          "base_dollar_mult": 1,
+          "base_rep_mult": 1,
+          "unlockRep": 40,
+          "qualities": [
+            {
+              "type": "standard",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 40
+            },
+            {
+              "type": "premium",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 60
+            },
+            {
+              "type": "heavenly",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 80
+            }
+          ],
+          "effects": [
+            {
+              "type": "Energizing",
+              "unlockRep": 40,
+              "probability": 1,
+              "dollar_mult": 0.28,
+              "rep_mult": 0.07
+            },
+            {
+              "type": "Euphoric",
+              "unlockRep": 50,
+              "probability": 0.5,
+              "dollar_mult": 0.32,
+              "rep_mult": 0.07
+            },
+            {
+              "type": "Jennerising",
+              "unlockRep": 60,
+              "probability": 0.5,
+              "dollar_mult": 0.10,
+              "rep_mult": 0.07
+            },
+            {
+              "type": "Glowing",
+              "unlockRep": 70,
+              "probability": 1,
+              "dollar_mult": 0.10,
+              "rep_mult": 0.07
+            }
+          ]
+        }
+      ],
+      "shipping": [
+        {
+          "name": "Furniture Truck",
+          "cost": 5000,
+          "unlockRep": 0,
+          "minAmount": 10,
+          "stepAmount": 1,
+          "maxAmount": 40
+        },
+        {
+          "name": "Tow Truck Fleet",
+          "cost": 15000,
+          "unlockRep": 40,
+          "minAmount": 20,
+          "stepAmount": 1,
+          "maxAmount": 80
+        },
+        {
+          "name": "Armored Van",
+          "cost": 30000,
+          "unlockRep": 60,
+          "minAmount": 50,
+          "stepAmount": 1,
+          "maxAmount": 150
+        }
+      ],
+      "dialogue": {
+        "intro": [
+          "You better have what I need."
+        ],
+        "dealStart": [
+          "I want {amount} of that {product}, and it better be good.",
+          "You got {amount} {product} worth my time?",
+          "Show me {amount} of quality {product}.",
+          "I need {amount} {product}, top-grade only.",
+          "Move {amount} of that {product} now.",
+          "You better have {amount} {product} ready to ship."
+        ],
+        "accept": [
+          "Good, let’s proceed.",
+          "Deal’s set, move it."
+        ],
+        "reject": [
+          "Not worth my time.",
+          "This is trash, no deal."
+        ],
+        "expire": [
+          "You wasted my time.",
+          "Too slow, I’m done."
+        ],
+        "fail": [
+          "You’re dead to me.",
+          "Big mistake, you’re out."
+        ],
+        "success": [
+          "placeholder_success1",
+          "placeholder_success2"
+        ],
+        "reward": [
+          "placeholder_reward1",
+          "placeholder_reward2"
+        ]
+      }
+    },
+    {
+      "name": "Tuco Salamanca",
+      "image": "tuco.png",
+      "resetSave": false,
+      "unlockRequirements": [
+        {
+          "name": "Domingo 'Krazy-8' Molina",
+          "minRep": 0
+        },
+        {
+          "name": "Jesse Pinkman",
+          "minRep": 0
+        }
+      ],
+      "drugs": [
+        {
+          "type": "meth",
+          "bonus_dollar": 0,
+          "bonus_rep": 0,
+          "base_dollar_mult": 1,
+          "base_rep_mult": 1,
+          "unlockRep": 0,
+          "qualities": [
+            {
+              "type": "premium",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 0
+            },
+            {
+              "type": "heavenly",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 40
+            }
+          ],
+          "effects": [
+            {
+              "type": "Explosive",
+              "unlockRep": 0,
+              "probability": 1,
+              "dollar_mult": 0.50,
+              "rep_mult": 0.07
+            },
+            {
+              "type": "Disorienting",
+              "unlockRep": 20,
+              "probability": 1,
+              "dollar_mult": 0.50,
+              "rep_mult": 0.07
+            },
+            {
+              "type": "Lethal",
+              "unlockRep": 40,
+              "probability": 0.5,
+              "dollar_mult": 0.50,
+              "rep_mult": 0.07
+            },
+            {
+              "type": "Paranoia",
+              "unlockRep": 60,
+              "probability": 0.5,
+              "dollar_mult": 0.50,
+              "rep_mult": 0.07
+            }
+          ]
+        },
+        {
+          "type": "cocaine",
+          "bonus_dollar": 0,
+          "bonus_rep": 0,
+          "base_dollar_mult": 1,
+          "base_rep_mult": 1,
+          "unlockRep": 20,
+          "qualities": [
+            {
+              "type": "premium",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 20
+            },
+            {
+              "type": "heavenly",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 50
+            }
+          ],
+          "effects": [
+            {
+              "type": "Energizing",
+              "unlockRep": 20,
+              "probability": 1,
+              "dollar_mult": 0.28,
+              "rep_mult": 0.07
+            },
+            {
+              "type": "Euphoric",
+              "unlockRep": 30,
+              "probability": 1,
+              "dollar_mult": 0.32,
+              "rep_mult": 0.07
+            },
+            {
+              "type": "Glowing",
+              "unlockRep": 40,
+              "probability": 0.5,
+              "dollar_mult": 0.10,
+              "rep_mult": 0.07
+            },
+            {
+              "type": "Jennerising",
+              "unlockRep": 50,
+              "probability": 0.5,
+              "dollar_mult": 0.10,
+              "rep_mult": 0.07
+            }
+          ]
+        }
+      ],
+      "shipping": [
+        {
+          "name": "Salamanca Muscle Cars",
+          "cost": 10000,
+          "unlockRep": 0,
+          "minAmount": 20,
+          "stepAmount": 1,
+          "maxAmount": 80
+        },
+        {
+          "name": "Border Tunnel System",
+          "cost": 30000,
+          "unlockRep": 40,
+          "minAmount": 50,
+          "stepAmount": 1,
+          "maxAmount": 150
+        },
+        {
+          "name": "Private Jet",
+          "cost": 100000,
+          "unlockRep": 60,
+          "minAmount": 100,
+          "stepAmount": 1,
+          "maxAmount": 300
+        }
+      ],
+      "dialogue": {
+        "intro": [
+          "You think you can handle this?"
+        ],
+        "dealStart": [
+          "I want {amount} of that blue {product}, now!",
+          "Get me {amount} {product}, the good stuff!",
+          "Show me {amount} of pure {product} or else!",
+          "I need {amount} {product}, no junk!"
+        ],
+        "accept": [
+          "You’re in, for now.",
+          "Deal’s on, don’t screw it up!"
+        ],
+        "reject": [
+          "Get out of my sight!",
+          "You’re wasting my time, punk!"
+        ],
+        "expire": [
+          "You’re wasting my time!",
+          "Too slow, you’re done!"
+        ],
+        "fail": [
+          "You’re done, finito!",
+          "You crossed me, that’s it!"
+        ],
+        "success": [
+          "placeholder_success1",
+          "placeholder_success2"
+        ],
+        "reward": [
+          "placeholder_reward1",
+          "placeholder_reward2"
+        ]
+      }
+    },
+    {
+      "name": "Jesse Pinkman",
+      "image": "jesse.png",
+      "resetSave": false,
+      "unlockRequirements": [
+        {
+          "name": "Combo 'Costco'",
+          "minRep": 0
+        },
+        {
+          "name": "Badger",
+          "minRep": 0
+        },
+        {
+          "name": "Skinny Pete",
+          "minRep": 0
+        }
+      ],
+      "drugs": [
+        {
+          "type": "meth",
+          "bonus_dollar": 0,
+          "bonus_rep": 0,
+          "base_dollar_mult": 1,
+          "base_rep_mult": 1,
+          "unlockRep": 0,
+          "qualities": [
+            {
+              "type": "standard",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 0
+            },
+            {
+              "type": "premium",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 40
+            },
+            {
+              "type": "heavenly",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 80
+            }
+          ],
+          "effects": [
+            {
+              "type": "Euphoric",
+              "unlockRep": 0,
+              "probability": 1,
+              "dollar_mult": 0.32,
+              "rep_mult": 0.07
+            },
+            {
+              "type": "Focused",
+              "unlockRep": 30,
+              "probability": 1,
+              "dollar_mult": 0.34,
+              "rep_mult": 0.07
+            },
+            {
+              "type": "Paranoia",
+              "unlockRep": 0,
+              "probability": 0.5,
+              "dollar_mult": 0.50,
+              "rep_mult": 0.07
+            },
+            {
+              "type": "Disorienting",
+              "unlockRep": 90,
+              "probability": 0.5,
+              "dollar_mult": 0.50,
+              "rep_mult": 0.07
+            }
+          ]
+        },
+        {
+          "type": "weed",
+          "bonus_dollar": 0,
+          "bonus_rep": 0,
+          "base_dollar_mult": 1,
+          "base_rep_mult": 1,
+          "unlockRep": 20,
+          "qualities": [
+            {
+              "type": "standard",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 20
+            },
+            {
+              "type": "premium",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 40
+            },
+            {
+              "type": "heavenly",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 80
+            }
+          ],
+          "effects": [
+            {
+              "type": "Calming",
+              "unlockRep": 20,
+              "probability": 1,
+              "dollar_mult": 0.40,
+              "rep_mult": 0.07
+            },
+            {
+              "type": "Munchies",
+              "unlockRep": 40,
+              "probability": 1,
+              "dollar_mult": 0.38,
+              "rep_mult": 0.07
+            },
+            {
+              "type": "Sneaky",
+              "unlockRep": 60,
+              "probability": 0.5,
+              "dollar_mult": 0.26,
+              "rep_mult": 0.07
+            },
+            {
+              "type": "Refreshing",
+              "unlockRep": 90,
+              "probability": 0.5,
+              "dollar_mult": 0.36,
+              "rep_mult": 0.07
+            }
+          ]
+        }
+      ],
+      "shipping": [
+        {
+          "name": "Cap'n Cook RV",
+          "cost": 5000,
+          "unlockRep": 0,
+          "minAmount": 10,
+          "stepAmount": 1,
+          "maxAmount": 40
+        },
+        {
+          "name": "Lowrider Network",
+          "cost": 15000,
+          "unlockRep": 40,
+          "minAmount": 20,
+          "stepAmount": 1,
+          "maxAmount": 80
+        },
+        {
+          "name": "Woodworking Van",
+          "cost": 30000,
+          "unlockRep": 80,
+          "minAmount": 50,
+          "stepAmount": 1,
+          "maxAmount": 150
+        }
+      ],
+      "dialogue": {
+        "intro": [
+          "Yo, Mr. White, let’s cook!"
+        ],
+        "dealStart": [
+          "I need {amount} of that {product}, yo!",
+          "Let’s break bad with {amount} {product}!",
+          "You got {amount} of that {product}, man?",
+          "I want {amount} {product}, make it good!"
+        ],
+        "accept": [
+          "Yeah, science, bitch!",
+          "Let’s do this, yo!"
+        ],
+        "reject": [
+          "I’m out, man.",
+          "Not vibin’ with it, dude."
+        ],
+        "expire": [
+          "We’re done here, yo.",
+          "Took too long, I’m out."
+        ],
+        "fail": [
+          "You ruined it, dude!",
+          "This is messed up, yo!"
+        ],
+        "success": [
+          "placeholder_success1",
+          "placeholder_success2"
+        ],
+        "reward": [
+          "placeholder_reward1",
+          "placeholder_reward2"
+        ],
+        "reward": [
+          "placeholder_reward1",
+          "placeholder_reward2"
+        ]
+      }
+    },
+    {
+      "name": "Gustavo Fring",
+      "image": "SilkRoadIcon_quest.png",
+      "resetSave": false,
+      "unlockRequirements": [
+        {
+          "name": "Jesse Pinkman",
+          "minRep": 0
+        },
+        {
+          "name": "Tuco Salamanca",
+          "minRep": 0
+        }
+      ],
+      "drugs": [
+        {
+          "type": "meth",
+          "bonus_dollar": 0,
+          "bonus_rep": 0,
+          "base_dollar_mult": 1,
+          "base_rep_mult": 1,
+          "unlockRep": 0,
+          "qualities": [
+            {
+              "type": "premium",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 0
+            },
+            {
+              "type": "heavenly",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 60
+            }
+          ],
+          "effects": [
+            {
+              "type": "Focused",
+              "unlockRep": 0,
+              "probability": 1,
+              "dollar_mult": 0.34,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Calming",
+              "unlockRep": 20,
+              "probability": 1,
+              "dollar_mult": 0.40,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Thought-Provoking",
+              "unlockRep": 40,
+              "probability": 1,
+              "dollar_mult": 0.10,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Euphoric",
+              "unlockRep": 60,
+              "probability": 0.5,
+              "dollar_mult": 0.32,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Paranoia",
+              "unlockRep": 80,
+              "probability": 0.5,
+              "dollar_mult": 0.50,
+              "rep_mult": 0.10
+            }
+          ]
+        },
+        {
+          "type": "cocaine",
+          "bonus_dollar": 0,
+          "bonus_rep": 0,
+          "base_dollar_mult": 1,
+          "base_rep_mult": 1,
+          "unlockRep": 30,
+          "qualities": [
+            {
+              "type": "premium",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 30
+            },
+            {
+              "type": "heavenly",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 60
+            }
+          ],
+          "effects": [
+            {
+              "type": "Energizing",
+              "unlockRep": 30,
+              "probability": 1,
+              "dollar_mult": 0.28,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Jennerising",
+              "unlockRep": 40,
+              "probability": 1,
+              "dollar_mult": 0.10,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Glowing",
+              "unlockRep": 50,
+              "probability": 1,
+              "dollar_mult": 0.10,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Euphoric",
+              "unlockRep": 60,
+              "probability": 0.5,
+              "dollar_mult": 0.32,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Refreshing",
+              "unlockRep": 80,
+              "probability": 0.5,
+              "dollar_mult": 0.36,
+              "rep_mult": 0.10
+            }
+          ]
+        }
+      ],
+      "shipping": [
+        {
+          "name": "Pollos Refrigerated Trucks",
+          "cost": 50000,
+          "unlockRep": 0,
+          "minAmount": 50,
+          "stepAmount": 1,
+          "maxAmount": 200
+        },
+        {
+          "name": "Madrigal Air Freight",
+          "cost": 100000,
+          "unlockRep": 50,
+          "minAmount": 100,
+          "stepAmount": 1,
+          "maxAmount": 400
+        },
+        {
+          "name": "Underground Superlab",
+          "cost": 200000,
+          "unlockRep": 70,
+          "minAmount": 200,
+          "stepAmount": 1,
+          "maxAmount": 600
+        }
+      ],
+      "dialogue": {
+        "intro": [
+          "Let’s discuss business."
+        ],
+        "dealStart": [
+          "I expect {amount} of the finest {product}.",
+          "Deliver {amount} {product} of impeccable quality.",
+          "I require {amount} of top-tier {product}.",
+          "Ensure {amount} {product} meets my standards."
+        ],
+        "accept": [
+          "Proceed.",
+          "This is acceptable, move forward."
+        ],
+        "reject": [
+          "Unacceptable.",
+          "This does not meet my expectations."
+        ],
+        "expire": [
+          "Time is money.",
+          "You’ve delayed too long."
+        ],
+        "fail": [
+          "You’ve failed me.",
+          "This is a serious disappointment."
+        ],
+        "success": [
+          "placeholder_success1",
+          "placeholder_success2"
+        ],
+        "reward": [
+          "placeholder_reward1",
+          "placeholder_reward2"
+        ]
+      }
+    },
+    {
+      "name": "Lydia Rodarte-Quayle",
+      "image": "SilkRoadIcon_quest.png",
+      "resetSave": false,
+      "unlockRequirements": [
+        {
+          "name": "Gustavo Fring",
+          "minRep": 0
+        },
+        {
+          "name": "Jesse Pinkman",
+          "minRep": 0
+        }
+      ],
+      "drugs": [
+        {
+          "type": "weed",
+          "bonus_dollar": 0,
+          "bonus_rep": 0,
+          "base_dollar_mult": 1,
+          "base_rep_mult": 1,
+          "unlockRep": 0,
+          "qualities": [
+            {
+              "type": "premium",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 0
+            },
+            {
+              "type": "heavenly",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 50
+            }
+          ],
+          "effects": [
+            {
+              "type": "Jennerising",
+              "unlockRep": 0,
+              "probability": 1,
+              "dollar_mult": 0.10,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Refreshing",
+              "unlockRep": 20,
+              "probability": 1,
+              "dollar_mult": 0.36,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Calming",
+              "unlockRep": 40,
+              "probability": 0.5,
+              "dollar_mult": 0.40,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Munchies",
+              "unlockRep": 60,
+              "probability": 0.5,
+              "dollar_mult": 0.38,
+              "rep_mult": 0.10
+            }
+          ]
+        },
+        {
+          "type": "meth",
+          "bonus_dollar": 0,
+          "bonus_rep": 0,
+          "base_dollar_mult": 1,
+          "base_rep_mult": 1,
+          "unlockRep": 20,
+          "qualities": [
+            {
+              "type": "premium",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 20
+            },
+            {
+              "type": "heavenly",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 50
+            }
+          ],
+          "effects": [
+            {
+              "type": "Focused",
+              "unlockRep": 20,
+              "probability": 1,
+              "dollar_mult": 0.34,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Thought-Provoking",
+              "unlockRep": 30,
+              "probability": 1,
+              "dollar_mult": 0.10,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Balding",
+              "unlockRep": 40,
+              "probability": 0.5,
+              "dollar_mult": 0.20,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Paranoia",
+              "unlockRep": 50,
+              "probability": 0.5,
+              "dollar_mult": 0.50,
+              "rep_mult": 0.10
+            }
+          ]
+        },
+        {
+          "type": "cocaine",
+          "bonus_dollar": 0,
+          "bonus_rep": 0,
+          "base_dollar_mult": 1,
+          "base_rep_mult": 1,
+          "unlockRep": 30,
+          "qualities": [
+            {
+              "type": "premium",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 30
+            },
+            {
+              "type": "heavenly",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 60
+            }
+          ],
+          "effects": [
+            {
+              "type": "Glowing",
+              "unlockRep": 30,
+              "probability": 1,
+              "dollar_mult": 0.10,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Energizing",
+              "unlockRep": 40,
+              "probability": 1,
+              "dollar_mult": 0.28,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Zombifying",
+              "unlockRep": 50,
+              "probability": 0.5,
+              "dollar_mult": 0.10,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Electrifying",
+              "unlockRep": 60,
+              "probability": 0.5,
+              "dollar_mult": 0.10,
+              "rep_mult": 0.10
+            }
+          ]
+        }
+      ],
+      "shipping": [
+        {
+          "name": "Diplomatic Pouches",
+          "cost": 50000,
+          "unlockRep": 0,
+          "minAmount": 60,
+          "stepAmount": 1,
+          "maxAmount": 200
+        },
+        {
+          "name": "Submarine Network",
+          "cost": 100000,
+          "unlockRep": 50,
+          "minAmount": 100,
+          "stepAmount": 1,
+          "maxAmount": 400
+        },
+        {
+          "name": "Cargo Ship Containers",
+          "cost": 200000,
+          "unlockRep": 70,
+          "minAmount": 200,
+          "stepAmount": 1,
+          "maxAmount": 600
+        }
+      ],
+      "dialogue": {
+        "intro": [
+          "I need this to be discreet."
+        ],
+        "dealStart": [
+          "I require {amount} of organic {product}.",
+          "Is {amount} {product} ethically sourced?",
+          "I need {amount} of pure {product}, please.",
+          "Ensure {amount} {product} is high-grade.",
+          "I want {amount} of clean {product}.",
+          "Verify {amount} {product} is uncontaminated."
+        ],
+        "accept": [
+          "Good, let’s move forward.",
+          "This meets my needs, proceed."
+        ],
+        "reject": [
+          "This won’t work.",
+          "It’s below my standards."
+        ],
+        "expire": [
+          "You’re too late.",
+          "Time’s up, no deal."
+        ],
+        "fail": [
+          "You’ve compromised everything!",
+          "This is a complete disaster!"
+        ],
+        "success": [
+          "placeholder_success1",
+          "placeholder_success2"
+        ],
+        "reward": [
+          "placeholder_reward1",
+          "placeholder_reward2"
+        ]
+      }
+    },
+    {
+      "name": "Don Eladio Vuente",
+      "image": "SilkRoadIcon_quest.png",
+      "resetSave": false,
+      "unlockRequirements": [
+        {
+          "name": "Gustavo Fring",
+          "minRep": 0
+        },
+        {
+          "name": "Lydia Rodarte-Quayle",
+          "minRep": 0
+        }
+      ],
+      "drugs": [
+        {
+          "type": "cocaine",
+          "bonus_dollar": 0,
+          "bonus_rep": 0,
+          "base_dollar_mult": 1,
+          "base_rep_mult": 1,
+          "unlockRep": 0,
+          "qualities": [
+            {
+              "type": "heavenly",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 0
+            }
+          ],
+          "effects": [
+            {
+              "type": "Energizing",
+              "unlockRep": 0,
+              "probability": 1,
+              "dollar_mult": 0.28,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Euphoric",
+              "unlockRep": 20,
+              "probability": 1,
+              "dollar_mult": 0.32,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Glowing",
+              "unlockRep": 40,
+              "probability": 1,
+              "dollar_mult": 0.10,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Jennerising",
+              "unlockRep": 60,
+              "probability": 1,
+              "dollar_mult": 0.10,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Zombifying",
+              "unlockRep": 80,
+              "probability": 0.5,
+              "dollar_mult": 0.10,
+              "rep_mult": 0.10
+            }
+          ]
+        }
+      ],
+      "shipping": [
+        {
+          "name": "Cartel Helicopter Fleet",
+          "cost": 100000,
+          "unlockRep": 0,
+          "minAmount": 100,
+          "stepAmount": 1,
+          "maxAmount": 400
+        },
+        {
+          "name": "Narco Sub Armada",
+          "cost": 250000,
+          "unlockRep": 60,
+          "minAmount": 200,
+          "stepAmount": 1,
+          "maxAmount": 600
+        },
+        {
+          "name": "Diplomatic Convoy",
+          "cost": 500000,
+          "unlockRep": 80,
+          "minAmount": 400,
+          "stepAmount": 1,
+          "maxAmount": 1000
+        }
+      ],
+      "dialogue": {
+        "intro": [
+          "You dare to approach me?"
+        ],
+        "dealStart": [
+          "I demand {amount} of the finest {product}.",
+          "Bring me {amount} {product}, the best only!"
+        ],
+        "accept": [
+          "You may proceed.",
+          "Good enough, for now."
+        ],
+        "reject": [
+          "You insult me with this!",
+          "This is beneath my dignity."
+        ],
+        "expire": [
+          "You’re too slow, fool!",
+          "You’ve wasted my time!"
+        ],
+        "fail": [
+          "You’re finished!",
+          "You’ve disrespected me!"
+        ],
+        "success": [
+          "placeholder_success1",
+          "placeholder_success2"
+        ],
+        "reward": [
+          "placeholder_reward1",
+          "placeholder_reward2"
+        ]
+      }
+    },
+    {
+      "name": "Heisenberg",
+      "image": "SilkRoadIcon_quest.png",
+      "resetSave": false,
+      "unlockRequirements": [
+        {
+          "name": "Don Eladio Vuente",
+          "minRep": 0
+        }
+      ],
+      "drugs": [
+        {
+          "type": "meth",
+          "bonus_dollar": 0,
+          "bonus_rep": 0,
+          "base_dollar_mult": 1,
+          "base_rep_mult": 1,
+          "unlockRep": 0,
+          "qualities": [
+            {
+              "type": "premium",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 0
+            },
+            {
+              "type": "heavenly",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 50
+            }
+          ],
+          "effects": [
+            {
+              "type": "Anti-Gravity",
+              "unlockRep": 0,
+              "probability": 1,
+              "dollar_mult": 0.10,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Zombifying",
+              "unlockRep": 20,
+              "probability": 1,
+              "dollar_mult": 0.10,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Shrinking",
+              "unlockRep": 40,
+              "probability": 1,
+              "dollar_mult": 0.10,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Euphoric",
+              "unlockRep": 60,
+              "probability": 0.5,
+              "dollar_mult": 0.32,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Focused",
+              "unlockRep": 80,
+              "probability": 0.5,
+              "dollar_mult": 0.34,
+              "rep_mult": 0.10
+            }
+          ]
+        },
+        {
+          "type": "cocaine",
+          "bonus_dollar": 0,
+          "bonus_rep": 0,
+          "base_dollar_mult": 1,
+          "base_rep_mult": 1,
+          "unlockRep": 30,
+          "qualities": [
+            {
+              "type": "premium",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 30
+            },
+            {
+              "type": "heavenly",
+              "dollar_mult": 0.1,
+              "rep_mult": 0.1,
+              "unlockRep": 60
+            }
+          ],
+          "effects": [
+            {
+              "type": "Glowing",
+              "unlockRep": 30,
+              "probability": 1,
+              "dollar_mult": 0.10,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Electrifying",
+              "unlockRep": 40,
+              "probability": 1,
+              "dollar_mult": 0.10,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Tropic Thunder",
+              "unlockRep": 50,
+              "probability": 1,
+              "dollar_mult": 0.10,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Energizing",
+              "unlockRep": 60,
+              "probability": 0.5,
+              "dollar_mult": 0.28,
+              "rep_mult": 0.10
+            },
+            {
+              "type": "Jennerising",
+              "unlockRep": 70,
+              "probability": 0.5,
+              "dollar_mult": 0.10,
+              "rep_mult": 0.10
+            }
+          ]
+        }
+      ],
+      "shipping": [
+        {
+          "name": "Heisenberg's RV Fleet",
+          "cost": 100000,
+          "unlockRep": 0,
+          "minAmount": 100,
+          "stepAmount": 1,
+          "maxAmount": 400
+        },
+        {
+          "name": "Underground Lab Network",
+          "cost": 250000,
+          "unlockRep": 60,
+          "minAmount": 200,
+          "stepAmount": 1,
+          "maxAmount": 600
+        },
+        {
+          "name": "International Smuggling Ring",
+          "cost": 500000,
+          "unlockRep": 80,
+          "minAmount": 400,
+          "stepAmount": 1,
+          "maxAmount": 1000
+        }
+      ],
+      "dialogue": {
+        "intro": [
+          "I am the one who knocks."
+        ],
+        "dealStart": [
+          "I require {amount} of premium {product}.",
+          "Show me {amount} {product}, my formula.",
+          "I need {amount} of that {product}, carefully handled.",
+          "You have {amount} {product} ready for me?"
+        ],
+        "accept": [
+          "Let’s proceed.",
+          "We have a deal, excellent."
+        ],
+        "reject": [
+          "You’re not ready.",
+          "This isn’t up to my standard."
+        ],
+        "expire": [
+          "Time’s up.",
+          "You’ve lost your window."
+        ],
+        "fail": [
+          "You’ve failed.",
+          "This is unacceptable."
+        ],
+        "success": [
+          "placeholder_success1",
+          "placeholder_success2"
+        ],
+        "reward": [
+          "placeholder_reward1",
+          "placeholder_reward2"
+        ]
+      }
+    }
+  ]
+}

@@ -184,8 +184,8 @@ namespace Silkroad
             }
             var tempMult11 = randomDrug.BaseDollarMult;//min
             var tempMult12 = randomDrug.BaseRepMult;//min
-            var tempMult21 = randomDrug.BaseDollarMult ;//max
-            var tempMult22 = randomDrug.BaseRepMult ;//max
+            var tempMult21 = randomDrug.BaseDollarMult;//max
+            var tempMult22 = randomDrug.BaseRepMult;//max
             //Iterate through randomDrug.Effects and check if the effect is necessary or optional. Also multiply aggregate dollar and rep multipliers with base dollar+sum of effects dollar mult. Same for rep.
             foreach (var effect in randomDrug.Effects)
             {
@@ -205,9 +205,9 @@ namespace Silkroad
                         optionalEffects.Add(effect.Name);
                         tempMult21 += effect.DollarMult;
                         tempMult22 += effect.RepMult;
-                        
+
                     }
-                    
+
                 }
             }
             aggregateDollarMultMin *= tempMult11;
@@ -244,11 +244,11 @@ namespace Silkroad
 
             quests.Add(quest);
 
-            MelonLogger.Msg($"✅ Quest generated:");
-            MelonLogger.Msg($"   Title: {quest.Title}");
-            MelonLogger.Msg($"   Task: {quest.Task}");
-            MelonLogger.Msg($"   Amount Required: {quest.AmountRequired}");
-            MelonLogger.Msg($"   Required Drug: {quest.RequiredDrug}");
+            //MelonLogger.Msg($"✅ Quest generated:");
+            //MelonLogger.Msg($"   Title: {quest.Title}");
+            //MelonLogger.Msg($"   Task: {quest.Task}");
+            //MelonLogger.Msg($"   Amount Required: {quest.AmountRequired}");
+            //MelonLogger.Msg($"   Required Drug: {quest.RequiredDrug}");
         }
 
 
@@ -277,7 +277,8 @@ namespace Silkroad
         {
             questTitle.text = quest.Title;
             questTask.text = $"Task: {quest.Task}";
-            questReward.text = $"Rewards: ${quest.BonusDollar} + {quest.BonusRep} Rep\n" +
+            questReward.text = $"Base Rewards: ${quest.BonusDollar} + {quest.BonusRep} Rep\n" +
+            "Rewards on Total Item Price:\n" +
                 $"Dollar Multiplier: {quest.DollarMultiplierMin} - {quest.DollarMultiplierMax}\n" +
                 $"Rep Multiplier: {quest.RepMultiplierMin} - {quest.RepMultiplierMax}";
             deliveryStatus.text = "";

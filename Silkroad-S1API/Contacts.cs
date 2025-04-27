@@ -12,12 +12,12 @@ namespace Silkroad
     {
         //Bypass to set NPC image as override is called before constructor
         public static string CurrentBuyerImage { get; private set; }
+        
         public static Dictionary<string, BlackmarketBuyer> Buyers { get; private set; } = new Dictionary<string, BlackmarketBuyer>();
 
         public static void Initialize()
         {
-            Buyers = new Dictionary<string, BlackmarketBuyer>();
-
+            Buyers[BlackmarketBuyer.SavedNPCName]= new BlackmarketBuyer();
             // Load dealer data
             string jsonPath = Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", "empire.json");
             if (!File.Exists(jsonPath))
@@ -39,6 +39,7 @@ namespace Silkroad
 
                 foreach (var dealer in dealerData.Dealers)
                 {
+                    
                     CurrentBuyerImage = Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", dealer.Image ?? string.Empty);
                     // Check if dealer has no unlock requirements (initially available)
                     // or if all their unlock requirements are met

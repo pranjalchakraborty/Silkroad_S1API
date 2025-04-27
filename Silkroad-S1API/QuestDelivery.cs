@@ -174,14 +174,14 @@ namespace Silkroad
                 if (isProductInstance && necessaryEffects.All(effect => productEffects.Contains(effect)))
                 {
                     int total = quantity * PackageAmount(packaging);
-                    if (total < Data.RequiredAmount)
+                    if (total <= Data.RequiredAmount)
                     {
                         slot.AddQuantity(-quantity);    
                         Data.RequiredAmount -= (uint)total;
                         UpdateReward(total,item);
                     }
                     else{  
-                        var toRemove = (int)(-Data.RequiredAmount / PackageAmount(packaging));
+                        var toRemove = (int)(-Data.RequiredAmount / PackageAmount(packaging))-1;//Deal with it
                         slot.AddQuantity(toRemove);
                         Data.RequiredAmount = 0;
                         UpdateReward(total,item);
@@ -208,15 +208,21 @@ namespace Silkroad
             MelonCoroutines.Start(DelayedReward());
         }
 
+//Update Dummy with real effect and quality calculation
         private void UpdateReward(int total, ProductInstance? item)
         {
-            ProductDefinition itemDefinition = (ProductDefinition)(item?.Definition);
-            //Dummy Reward calculation - to be replaced with effects and quality calculation
-            MelonLogger.Msg($"Item Definition: {itemDefinition?.Name}");
-            MelonLogger.Msg($"Item Quality: {itemDefinition?.Price}");
-            Data.Reward = total * (int)itemDefinition.Price;
-            return;
-            //throw new NotImplementedException();
+            if (item?.Definition is ProductDefinition itemDefinition)
+            {
+                // Dummy Reward calculation - to be replaced with effects and quality calculation
+                MelonLogger.Msg($"Item Definition: {itemDefinition.Name}");
+                MelonLogger.Msg($"Item Quality: {itemDefinition.Price}");
+                Data.Reward = total * (int)itemDefinition.Price;
+            }
+            else
+            {
+                MelonLogger.Error("❌ Item definition is not a ProductDefinition. Reward calculation skipped.");
+                Data.Reward = total * 200;
+            }
         }
 
         private System.Collections.IEnumerator DelayedReward()
@@ -234,6 +240,7 @@ namespace Silkroad
             buyer.GiveReputation((int)Data.RepReward);
             MelonLogger.Msg($"   Rewarded : ${rewardAmount} and Rep {Data.RepReward} to {Data.DealerName}");
             buyer.UnlockDrug();
+            buyer.SaveDealerData();
             
 
             QuestActive = false;

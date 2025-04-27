@@ -17,40 +17,38 @@ namespace Silkroad
     public class BlackmarketBuyer : NPC
     {
         public bool IsInitialized { get; private set; } = false;
-        [SaveableField("DealerSaveData")]
         public DealerSaveData _DealerData;
-        public List<UnlockRequirement> UnlockRequirements { get; set; } = new List<UnlockRequirement>(); // Updated to match JSON structure
-        public List<Drug> Drugs { get; set; } = new List<Drug>(); // Initialize Drugs list
+        public List<UnlockRequirement> UnlockRequirements { get; set; } = new List<UnlockRequirement>();
+         // Updated to match JSON structure
+        private List<Drug> Drugs = new List<Drug>(); // Initialize Drugs list
         public List<Shipping> Shippings { get; set; } = new List<Shipping>(); // Initialize Shippings list
-        public Dialogue Dialogues { get; set; } = new Dialogue();
-
-        public static string CurrentNPC = "Blackmarket Buyer";
-        public string DealerName { get; private set; } = "Blackmarket Buyer";
+        private Dialogue Dialogues = new Dialogue();
+        public static string SavedNPCName { get; private set; } = "Blackmarket Buyer"; // Static string to set save/load directory
+        public string DealerName { get; private set; } = SavedNPCName;
         public string? DealerImage { get; private set; } = Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", "SilkRoadIcon_quest.png");
+        [SaveableField("BuyerSaveData")]
+        private BuyerSaveData BuyerSaveData = new BuyerSaveData();
+
         //Parameterless Constructor for the S1API call
-        public BlackmarketBuyer() : base(CurrentNPC.ToLower().Replace(" ", "_"),
-            CurrentNPC.Split(' ')[0],
-            CurrentNPC.Contains(' ') ? CurrentNPC.Substring(CurrentNPC.IndexOf(' ') + 1) : "")
+        public BlackmarketBuyer() : base(SavedNPCName.ToLower().Replace(" ", "_"),
+            SavedNPCName.Split(' ')[0],
+            SavedNPCName.Contains(' ') ? SavedNPCName.Substring(SavedNPCName.IndexOf(' ') + 1) : "")
         {
-
-            if (_DealerData != null)
+            Contacts.Buyers[SavedNPCName] = this;
+            LoadDealerData();
+            if (_DealerData == null)
             {
-                MelonLogger.Msg($"⚠️ Dealer {DealerName} already exists in Buyers dictionary.");
-                return;
+                _DealerData = new DealerSaveData
+                {
+                    DealerName = DealerName
+                };
+                MelonLogger.Msg($"✅ ship tier {_DealerData.ShippingTier} initialized with default data.");
+                SaveDealerData();
             }
-            // Create default DealerSaveData with valid non-null collections.
-            _DealerData = new DealerSaveData
-            {
-                DealerName = DealerName,
-                Reputation = 0,
-                ShippingTier = 0,
-                MinDeliveryAmount = 1,
-                StepDeliveryAmount = 1,
-                MaxDeliveryAmount = 5
-            };
-            IsInitialized = true; // Set the initialized flag to true
-                                  // Register the default dealer save data so that later lookups won't return null.
-
+            else{
+                MelonLogger.Msg($"⚠️ Dealer {DealerName} already exists in BuyerSaveData dictionary.");
+            }
+            IsInitialized = true;
         }
         public BlackmarketBuyer(Dealer dealer) : base(
             dealer.Name.ToLower().Replace(" ", "_"),
@@ -60,17 +58,15 @@ namespace Silkroad
             if (dealer == null)
                 throw new ArgumentNullException(nameof(dealer));
             DealerName = dealer.Name;
-            //CurrentNPC = dealer.Name;// Use static string to set save/load directory
-            //new BlackmarketBuyer(); // Call the parameterless constructor to initialize the base class and save/load
             DealerImage = Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", dealer.Image);
             Dialogues = dealer.Dialogue;
             UnlockRequirements = dealer.UnlockRequirements ?? new List<UnlockRequirement>();
             Drugs = dealer.Drugs ?? new List<Drug>();
             Shippings = dealer.Shippings ?? new List<Shipping>();
-
-            if (_DealerData != null && !dealer.resetSave)
+            LoadDealerData();
+            if (_DealerData != null || dealer.resetSave)
             {
-                MelonLogger.Msg($"⚠️ Dealer {dealer.Name} already exists in Buyers dictionary.");
+                MelonLogger.Msg($"⚠️ Dealer {dealer.Name} already exists in BuyerSaveData dictionary.");
                 return;
             }
             dealer.resetSave = false; // Reset the save flag to false after using it
@@ -82,7 +78,8 @@ namespace Silkroad
             SendCustomMessage("Intro");
             UnlockDrug(); // Check if the dealer has any unlocked drugs based on reputation
             UpgradeShipping(); // Upgrade the shipping tier if possible
-                               // Save the dealer data to the Buyers dictionary
+                               // Save the dealer data to the BuyerSaveData dictionary
+            SaveDealerData();
             IsInitialized = true;
 
             // Log initialization details
@@ -91,7 +88,50 @@ namespace Silkroad
             //MelonLogger.Msg($"   MinDeliveryAmount: {_DealerData.MinDeliveryAmount}, MaxDeliveryAmount: {_DealerData.MaxDeliveryAmount}");
 
         }
+        public void LoadDealerData()
+        {
+            var buyer = Contacts.GetBuyer(SavedNPCName);
+            if (buyer == null)
+            {
+                MelonLogger.Error($"❌ Buyer with name '{SavedNPCName}' not found.");
+                return;
+            }
 
+            if (buyer.BuyerSaveData == null)
+            {
+                MelonLogger.Error($"❌ BuyerSaveData is null for buyer '{SavedNPCName}'.");
+                return;
+            }
+
+            if (buyer.BuyerSaveData.TryGetValue(DealerName, out var dealerData))
+            {
+                _DealerData = dealerData;
+                MelonLogger.Msg($"✅ Dealer data loaded for {DealerName}.");
+            }
+            else
+            {
+                MelonLogger.Error($"❌ Dealer data not found for {DealerName}.");
+            }
+        }
+
+        public void SaveDealerData()
+        {
+            var buyer = Contacts.GetBuyer(SavedNPCName);
+            if (buyer == null)
+            {
+                MelonLogger.Error($"❌ Buyer with name '{SavedNPCName}' not found. Cannot save dealer data.");
+                return;
+            }
+
+            if (buyer.BuyerSaveData == null)
+            {
+                buyer.BuyerSaveData = new BuyerSaveData();
+                MelonLogger.Warning($"⚠️ BuyerSaveData was null for buyer '{SavedNPCName}'. Initialized a new dictionary.");
+            }
+
+            buyer.BuyerSaveData[DealerName] = _DealerData;
+            MelonLogger.Msg($"✅ Dealer data saved for {DealerName}.");
+        }
         protected override Sprite? NPCIcon
         {
             get
@@ -116,7 +156,7 @@ namespace Silkroad
         {
             return Contacts.GetBuyer(dealerName)._DealerData;
         }
-        //Saves the current dealer data to the Buyers Saveable Field dictionary
+        //Saves the current dealer data to the BuyerSaveData Saveable Field dictionary
 
         public void GiveReputation(int amount)
         {
