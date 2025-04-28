@@ -27,7 +27,6 @@ namespace Silkroad
         public List<float> DealTimesMult { get; set; } = new List<float>(); // List of Reward Multiplier for each Deal Time
         public List<int> Penalties { get; set; } = new List<int>(); // Money and Rep Penalties for failing Deal
         public static string SavedNPCName { get; private set; } = "Blackmarket Buyer"; // Static string to set save/load directory
-        public DrugTest TestDrug = new DrugTest(); // Initialize TestDrug with default values
         public string DealerName { get; private set; } = SavedNPCName;
         public string? DealerImage { get; private set; } = Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", "SilkRoadIcon_quest.png");
         [SaveableField("BuyerSaveData")]

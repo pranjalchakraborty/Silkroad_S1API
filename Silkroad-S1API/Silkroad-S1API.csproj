@@ -114,6 +114,9 @@
     <Target Name="PostBuildIl2Cpp" AfterTargets="Build" Condition=" '$(AutomateLocalDeployment)' == 'true' and '$(Configuration)' == 'Il2Cpp' ">
         <Copy SourceFiles=".\bin\Il2Cpp\netstandard2.1\SilkRoad-S1API.dll" DestinationFiles="$(LocalIl2CppDeploymentPath)\Mods\Silkroad.dll" />
         <Copy SourceFiles=".\bin\Il2Cpp\netstandard2.1\SilkRoad-S1API.dll" DestinationFiles="$(LocalMonoDeploymentPath)\Mods\Silkroad.dll" />
-
+		<Copy SourceFiles=".\References\empire.json" DestinationFiles="$(LocalIl2CppDeploymentPath)\Mods\Silkroad\empire.json" />
+		<Copy SourceFiles=".\References\empire.json" DestinationFiles="$(LocalMonoDeploymentPath)\Mods\Silkroad\empire.json" />
+		<Copy SourceFiles=".\bin\Il2Cpp\netstandard2.1\SilkRoad-S1API.dll" DestinationFiles="..\Mods\Silkroad.dll" />
+		<Copy SourceFiles=".\References\empire.json" DestinationFiles="..\Mods\Silkroad\empire.json" />
     </Target>
 </Project>
