@@ -16,6 +16,7 @@ Generates one quest for each npc for each drug type.
 If multiple definitions of same product type exists, random one will be chosen.
 money reward = bonus_dollar + (price of all products delivered)*(base_dollar_mult+sum of all effects' dollar_mult)*(1+quality's dollar_mult)
 rep reward = bonus_rep + (price of all products delivered)*(base_rep_mult+sum of all effects' rep_mult)*(1+quality's rep_mult)
+Multiply both by (1+dealTimesMult)
 
 JSON Assumptions:
 Each dealer has atleast one drug type+quality unlocked at rep 0 - to grow in rep with him and one shipping tier at rep 0 - to decide initial quantity. 
@@ -23,6 +24,7 @@ Qualities are sorted in increasing order in the JSON.
 Effects at rep 0 are optional.
 Drug Type, Effects and Quality name strings should match in game code strings.
 Any Dialogue string can have (product} and {amount} which will be replaced appropriately ingame.
+dealTimes and dealTimesMult should be same size.penalties should be size 2.
 
 
 
@@ -31,16 +33,23 @@ Tasks:
 
 Functions:
 \\change placeholder dummy product effects and quality with real effects from s1api once supported
-\\Implement rewards based on effects and quality
-deal time limits 
+\\Implement rewards based on effects and quality from s1api once supported
+deal time limits - dialogues - json + code
+reward - dialogues - json
 
 Tests:
-\\test - progression, rewards
+\\test - progression, rewards, save/load
+
+Design:
+NPCs,Dialogues,Balance
 
 UI Tracker:
 add ui panel to show relations, product, quality, shipping, effects unlocks with drop down selector for each npc
-add shipping unlock costs - now free - on button press deduct corresponding fee and call shipping upgrade function
+add shipping unlock costs - now unavailable - on button press deduct corresponding fee and call shipping upgrade function
 
-UI/Performance:
+
+
+
+UI/Performance Improvements:
 //add button in app to check if NPC unlock criteria met/update - Initialize()/Update from JSON in delivery rewards to be replaced
 

@@ -62,6 +62,20 @@ namespace Silkroad
         public static bool QuestActive = false;
         public static event Action OnQuestCompleted;
 
+private void OnDayPass()
+        {
+            // Reduce the quest time by 1 day
+            Data.DealTime -= 1;
+            // Check if the quest time has expired
+            if (Data.DealTime <= 0)
+            {
+                // If the quest time has expired, fail the quest
+                ForceFailQuest();
+                Data.Reward = -Data.Penalties[0];
+                Data.RepReward = -Data.Penalties[1];
+                MelonCoroutines.Start(DelayedReward());
+            }
+    }
         protected override Sprite? QuestIcon
         {
             get
@@ -102,7 +116,7 @@ namespace Silkroad
         }
         // Add a static instance to access the current quest from UI / Force Complete/Fail Quests
         public static QuestDelivery Instance { get; private set; }
-
+        
         protected override void OnCreated()
         {
 
@@ -156,6 +170,14 @@ namespace Silkroad
         {
             MelonLogger.Msg("CheckDelivery called.");
             MelonLogger.Msg($"Expecting ProductID: {Data.ProductID}, RequiredAmount: {Data.RequiredAmount}");
+            if (Data.RequiredAmount <= 0)
+            {
+                MelonLogger.Msg("❌ No required amount to deliver. Quest done.");
+                deliveryEntry.Complete();
+            rewardEntry.SetState(QuestState.Active);
+            MelonCoroutines.Start(DelayedReward());
+                return;
+            }
             //necessary and optional effects are based on Data.RequiredDrug.Effects => Effect.Probability ==1 means necessary, else optional
             List<string> necessaryEffects = Data.RequiredDrug.Effects.Where(e => e.Probability == 1).Select(e => e.Name).ToList();
             List<string> optionalEffects = Data.RequiredDrug.Effects.Where(e => e.Probability < 1).Select(e => e.Name).ToList();
@@ -164,6 +186,7 @@ namespace Silkroad
             {
                 bool isProductInstance = slot.ItemInstance is ProductInstance;
                 var item = ((ProductInstance)slot.ItemInstance);
+                MelonLogger.Msg($"Slot: {item.Definition.Category} - {slot.Quantity}");
                 string slotProductID = isProductInstance ? item.Definition.Name : "null";
                 string packaging = isProductInstance ? item.AppliedPackaging.Name : "null";
                 int quantity = slot.Quantity;
@@ -207,20 +230,19 @@ namespace Silkroad
             }
 
 
-            deliveryEntry.Complete();
-            rewardEntry.SetState(QuestState.Active);
-            MelonCoroutines.Start(DelayedReward());
+            
         }
 
         //Update Dummy with real effect and quality calculation
         private void UpdateReward(uint total, ProductInstance? item)
         {
-            if (item?.Definition is ProductDefinition itemDefinition)
+            var itemDef=ItemManager.GetItemDefinition(item?.Definition.ID);
+            if (itemDef is ProductDefinition productDef)
             {
                 // Dummy Reward calculation - to be replaced with effects and quality calculation
-                MelonLogger.Msg($"Item Definition: {itemDefinition.Name}");
-                MelonLogger.Msg($"Item Quality: {itemDefinition.Price}");
-                Data.Reward += (int)(total * itemDefinition.Price);
+                MelonLogger.Msg($"Item Definition: {productDef.Name}");
+                MelonLogger.Msg($"Item Quality: {productDef.Price}");
+                Data.Reward += (int)(total * productDef.Price);
             }
             else
             {
@@ -271,6 +293,7 @@ namespace Silkroad
             {
                 MelonLogger.Msg("No active quest to complete.");
             }
+            
         }
 
         // NEW: Force-fail the active quest (i.e. mark as complete without reward)

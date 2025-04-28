@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using Silkroad;
+using System.Collections.Generic;
 
 [Serializable]
 public class DeliverySaveData
@@ -16,7 +17,14 @@ public class DeliverySaveData
     public int Reward;
     public float RepReward;
     public string Task;
-
+    public int DealTime;
+    public float DealTimeMultiplier;
+    public List<int> Penalties; // Money and Rep Penalties for failing Deal
+    
     [JsonConstructor]
-    public DeliverySaveData() { }
+    public DeliverySaveData() 
+    { 
+        Penalties = new List<int>(); // Initialize the list to avoid null reference
+    }
+
 }

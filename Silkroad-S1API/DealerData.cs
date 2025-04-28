@@ -9,6 +9,9 @@ namespace Silkroad
         public string? Image { get; set; }
 
         public bool resetSave { get; set; } // Indicates if the save should be reset
+        public List<int> DealTimes { get; set; } // List of Deal Times
+        public List<float> DealTimesMult { get; set; } // List of Reward Multiplier for each Deal Time
+        public List<int> Penalties { get; set; } // Money and Rep Penalties for failing Deal
         public List<UnlockRequirement> UnlockRequirements { get; set; } // Updated to match JSON structure
         public List<Drug> Drugs { get; set; }
 

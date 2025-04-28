@@ -4,6 +4,20 @@
       "name": "Combo 'Costco'",
       "image": "combo.png",
       "resetSave": false,
+      "dealTimes": [
+        2,
+        3,
+        4
+      ],
+      "dealTimesMult": [
+        1.5,
+        1.2,
+        1
+      ],
+      "penalties": [
+        1000,
+        5
+      ],
       "unlockRequirements": [],
       "drugs": [
         {
@@ -181,6 +195,20 @@
       "name": "Badger",
       "image": "badger.png",
       "resetSave": false,
+      "dealTimes": [
+        2,
+        3,
+        4
+      ],
+      "dealTimesMult": [
+        1.5,
+        1.2,
+        1
+      ],
+      "penalties": [
+        1000,
+        5
+      ],
       "unlockRequirements": [
         {
           "name": "Combo 'Costco'",
@@ -303,6 +331,20 @@
       "name": "Skinny Pete",
       "image": "skinny_pete.png",
       "resetSave": false,
+      "dealTimes": [
+        2,
+        3,
+        4
+      ],
+      "dealTimesMult": [
+        1.5,
+        1.2,
+        1
+      ],
+      "penalties": [
+        1000,
+        5
+      ],
       "unlockRequirements": [
         {
           "name": "Combo 'Costco'",
@@ -423,8 +465,22 @@
     },
     {
       "name": "Domingo 'Krazy-8' Molina",
-      "image": "krazy.png",
+      "image": "krazy8.png",
       "resetSave": false,
+      "dealTimes": [
+        2,
+        3,
+        4
+      ],
+      "dealTimesMult": [
+        1.5,
+        1.2,
+        1
+      ],
+      "penalties": [
+        1000,
+        5
+      ],
       "unlockRequirements": [
         {
           "name": "Jesse Pinkman",
@@ -675,6 +731,20 @@
       "name": "Tuco Salamanca",
       "image": "tuco.png",
       "resetSave": false,
+      "dealTimes": [
+        2,
+        3,
+        4
+      ],
+      "dealTimesMult": [
+        1.5,
+        1.2,
+        1
+      ],
+      "penalties": [
+        1000,
+        5
+      ],
       "unlockRequirements": [
         {
           "name": "Domingo 'Krazy-8' Molina",
@@ -857,6 +927,20 @@
       "name": "Jesse Pinkman",
       "image": "jesse.png",
       "resetSave": false,
+      "dealTimes": [
+        2,
+        3,
+        4
+      ],
+      "dealTimesMult": [
+        1.5,
+        1.2,
+        1
+      ],
+      "penalties": [
+        1000,
+        5
+      ],
       "unlockRequirements": [
         {
           "name": "Combo 'Costco'",
@@ -1057,8 +1141,22 @@
     },
     {
       "name": "Gustavo Fring",
-      "image": "SilkRoadIcon_quest.png",
+      "image": "gus.png",
       "resetSave": false,
+      "dealTimes": [
+        2,
+        3,
+        4
+      ],
+      "dealTimesMult": [
+        1.5,
+        1.2,
+        1
+      ],
+      "penalties": [
+        1000,
+        5
+      ],
       "unlockRequirements": [
         {
           "name": "Jesse Pinkman",
@@ -1253,8 +1351,22 @@
     },
     {
       "name": "Lydia Rodarte-Quayle",
-      "image": "SilkRoadIcon_quest.png",
+      "image": "lydia.png",
       "resetSave": false,
+      "dealTimes": [
+        2,
+        3,
+        4
+      ],
+      "dealTimesMult": [
+        1.5,
+        1.2,
+        1
+      ],
+      "penalties": [
+        1000,
+        5
+      ],
       "unlockRequirements": [
         {
           "name": "Gustavo Fring",
@@ -1491,6 +1603,20 @@
       "name": "Don Eladio Vuente",
       "image": "SilkRoadIcon_quest.png",
       "resetSave": false,
+      "dealTimes": [
+        2,
+        3,
+        4
+      ],
+      "dealTimesMult": [
+        1.5,
+        1.2,
+        1
+      ],
+      "penalties": [
+        1000,
+        5
+      ],
       "unlockRequirements": [
         {
           "name": "Gustavo Fring",
@@ -1620,6 +1746,20 @@
       "name": "Heisenberg",
       "image": "SilkRoadIcon_quest.png",
       "resetSave": false,
+      "dealTimes": [
+        2,
+        3,
+        4
+      ],
+      "dealTimesMult": [
+        1.5,
+        1.2,
+        1
+      ],
+      "penalties": [
+        1000,
+        5
+      ],
       "unlockRequirements": [
         {
           "name": "Don Eladio Vuente",

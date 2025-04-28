@@ -23,6 +23,9 @@ namespace Silkroad
         private List<Drug> Drugs = new List<Drug>(); // Initialize Drugs list
         public List<Shipping> Shippings { get; set; } = new List<Shipping>(); // Initialize Shippings list
         private Dialogue Dialogues = new Dialogue();
+        public List<int> DealTimes { get; set; } = new List<int>(); // List of Deal Times
+        public List<float> DealTimesMult { get; set; } = new List<float>(); // List of Reward Multiplier for each Deal Time
+        public List<int> Penalties { get; set; } = new List<int>(); // Money and Rep Penalties for failing Deal
         public static string SavedNPCName { get; private set; } = "Blackmarket Buyer"; // Static string to set save/load directory
         public DrugTest TestDrug = new DrugTest(); // Initialize TestDrug with default values
         public string DealerName { get; private set; } = SavedNPCName;
@@ -81,6 +84,9 @@ namespace Silkroad
             UnlockRequirements = dealer.UnlockRequirements ?? new List<UnlockRequirement>();
             Drugs = dealer.Drugs ?? new List<Drug>();
             Shippings = dealer.Shippings ?? new List<Shipping>();
+            DealTimes = dealer.DealTimes ?? new List<int>();
+            DealTimesMult = dealer.DealTimesMult ?? new List<float>();
+            Penalties = dealer.Penalties ?? new List<int>();
             LoadDealerData();
             if (_DealerData != null || dealer.resetSave)
             {

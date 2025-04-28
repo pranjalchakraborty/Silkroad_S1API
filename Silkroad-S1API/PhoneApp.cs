@@ -223,6 +223,12 @@ namespace Silkroad
             if (optionalEffects.Count > 0)
                 effectDesc += (effectDesc.Length > 0 ? "; " : "") + $"Optional: {string.Join(", ", optionalEffects)}";
 
+            var TimeLimit = 3;
+            var TimeLimitMult=1f;
+            var Penalties=new List<int> { 0, 0 };
+            //Roll a random index for buyer.DealTimes
+            var randomIndex = UnityEngine.Random.Range(0, buyer.DealTimes.Count);
+
 
             var quest = new QuestData
             {
@@ -240,6 +246,9 @@ namespace Silkroad
                 RepMultiplierMin = aggregateRepMultMin,
                 DollarMultiplierMax = aggregateDollarMultMax,
                 RepMultiplierMax = aggregateRepMultMax,
+                DealTime = buyer.DealTimes[randomIndex],
+                DealTimeMultiplier = buyer.DealTimesMult[randomIndex],
+                Penalties = buyer.Penalties,
             };
 
             quests.Add(quest);
@@ -280,7 +289,10 @@ namespace Silkroad
             questReward.text = $"Base Rewards: ${quest.BonusDollar} + {quest.BonusRep} Rep\n" +
             "Rewards on Total Item Price:\n" +
                 $"Dollar Multiplier: {quest.DollarMultiplierMin} - {quest.DollarMultiplierMax}\n" +
-                $"Rep Multiplier: {quest.RepMultiplierMin} - {quest.RepMultiplierMax}";
+                $"Rep Multiplier: {quest.RepMultiplierMin} - {quest.RepMultiplierMax}\n\n" +
+                $"Deal Expiry: {quest.DealTime} Day(s)\n" +
+                $"Time Reward Multiplier: {quest.DealTimeMultiplier}\n"+
+                $"Failure Penalties: ${quest.Penalties[0]} + {quest.Penalties[1]} Rep\n" ;
             deliveryStatus.text = "";
             ButtonUtils.Enable(acceptButton, acceptLabel, "Accept Delivery");
             ButtonUtils.ClearListeners(acceptButton);
@@ -306,6 +318,9 @@ namespace Silkroad
                 delivery.Data.Reward = quest.BonusDollar;
                 delivery.Data.RepReward = quest.BonusRep;
                 delivery.Data.Task = quest.Task;
+                delivery.Data.DealTime = quest.DealTime;
+                delivery.Data.DealTimeMultiplier = quest.DealTimeMultiplier;
+                delivery.Data.Penalties = quest.Penalties;
 
                 if (Contacts.GetBuyer(quest.DealerName) is BlackmarketBuyer buyer)
                 {

@@ -50,7 +50,7 @@ namespace Silkroad
                     if (canUnlock)
                     {
                         var buyer = new BlackmarketBuyer(dealer);
-                        Buyers[dealer.Name] = buyer;
+                        Buyers[dealer.Name] = buyer; 
 
                         MelonLogger.Msg($"✅ Initialized dealer: {dealer.Name}");
                     }
