@@ -52,8 +52,16 @@ namespace Silkroad
                 BuyerSaveData.Dealers = new Dictionary<string, DealerSaveData>();
                 MelonLogger.Warning($"⚠️ Dealers dictionary was null. Initialized a new dictionary.");
             }
+            //try to load the dealer data from the save file with error catch - overwrite save
+            try
+            {
+                LoadDealerData();
+            }
+            catch (Exception ex)
+            {
+                MelonLogger.Error($"❌ Error loading dealer data: {ex.Message}");
 
-            LoadDealerData();
+            }
 
             if (_DealerData == null)
             {
@@ -86,13 +94,21 @@ namespace Silkroad
             DealTimes = dealer.DealTimes ?? new List<int>();
             DealTimesMult = dealer.DealTimesMult ?? new List<float>();
             Penalties = dealer.Penalties ?? new List<int>();
-            LoadDealerData();
-            if (_DealerData != null || dealer.resetSave)
+            try
+            {
+                LoadDealerData();
+            }
+            catch (Exception ex)
+            {
+                MelonLogger.Error($"❌ Error loading dealer data: {ex.Message}");
+
+            }
+            if (_DealerData != null )
             {
                 MelonLogger.Msg($"⚠️ Dealer {dealer.Name} already exists in BuyerSaveData dictionary.");
                 return;
             }
-            dealer.resetSave = false; // Reset the save flag to false after using it
+            
             // Create DealerSaveData with safe enumeration for dialogue, drugs, and effects.
             _DealerData = new DealerSaveData
             {
@@ -259,7 +275,8 @@ public void IncreaseCompletedDeals(int amount)
             }
         }
 
-        public void SendCustomMessage(string messageType, string product = "", int amount = 0)
+    //Send the message to the player using the phone app or return the message string only if returnMessage is true
+        public string SendCustomMessage(string messageType, string product = "", int amount = 0, string quality = "", List<string>? necessaryEffects = null, List<string> optionalEffects = null, bool returnMessage=false)
         {
 
             List<string> messages = Dialogues.GetType().GetProperty(messageType)?.GetValue(Dialogues) as List<string>;
@@ -268,16 +285,47 @@ public void IncreaseCompletedDeals(int amount)
             if (messages == null)
             {
                 MelonLogger.Error($"❌ Message type '{messageType}' not found in Dialogue.");
-                SendTextMessage(messageType);
-                return;
+                if (returnMessage)
+                {
+                    return messageType;
+                }
+                else{
+                    SendTextMessage(messageType);
+                    return null;
+                }
             }
             string line = messages[RandomUtils.RangeInt(0, messages.Count)];
 
             string formatted = line
                 .Replace("{product}", $"<color=#34AD33>{product}</color>")
-                .Replace("{amount}", $"<color=#FF0004>{amount}x</color>");
-
-            SendTextMessage(formatted);
+                .Replace("{amount}", $"<color=#FF0004>{amount}x</color>")
+                .Replace("{quality}", $"<color=#FF0004>{quality}x</color>");
+            if (necessaryEffects != null && necessaryEffects.Count > 0)
+            {
+                string effects = string.Join(", ", necessaryEffects.Select(e => $"<color=#FF0004>{e}</color>"));
+                formatted = formatted.Replace("{effects}", effects);
+            }
+            else
+            {
+                formatted = formatted.Replace("{effects}", "none");
+            }
+            if (optionalEffects != null && optionalEffects.Count > 0)
+            {
+                string effects = string.Join(", ", optionalEffects.Select(e => $"<color=#FF0004>{e}</color>"));
+                formatted = formatted.Replace("{optionalEffects}", effects);
+            }
+            else
+            {
+                formatted = formatted.Replace("{optionalEffects}", "none");
+            }
+            if (returnMessage)
+            {
+                return formatted;
+            }
+            else{
+                SendTextMessage(formatted);
+                return null;
+            }
         }
 
 

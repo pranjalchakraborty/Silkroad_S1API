@@ -13,17 +13,18 @@ Initial JSON is based on Breaking Bad.
 Current Code:
 Only one quest can be taken at a time. Complete it to take another.
 Generates one quest for each npc for each drug type.
-If multiple definitions of same product type exists, random one will be chosen.
+If multiple definitions of same product type exists, a random one will be chosen.
 money reward = bonus_dollar + (price of all products delivered)*(base_dollar_mult+sum of all effects' dollar_mult)*(1+quality's dollar_mult)
 rep reward = bonus_rep + (price of all products delivered)*(base_rep_mult+sum of all effects' rep_mult)*(1+quality's rep_mult)
 Multiply both by (1+dealTimesMult)
+UPDATABLE comments show parts of code to update with new game updates
 
 JSON Assumptions:
 Each dealer has atleast one drug type+quality unlocked at rep 0 - to grow in rep with him and one shipping tier at rep 0 - to decide initial quantity. 
 Qualities are sorted in increasing order in the JSON.
 Effects at rep 0 are optional.
-Drug Type, Effects and Quality name strings should match in game code strings.
-Any Dialogue string can have (product} and {amount} which will be replaced appropriately ingame.
+Drug Type, Effects and Quality name strings should match S1API code strings.
+Any Dialogue string can have (product}, {amount}, {quality}, {effects}, {optionalEffects} which will be replaced appropriately ingame.
 dealTimes and dealTimesMult should be same size.penalties should be size 2.
 
 
@@ -33,9 +34,17 @@ Tasks:
 
 Functions:
 \\change placeholder dummy product effects and quality with real effects from s1api once supported
-\\Implement rewards based on effects and quality from s1api once supported
-deal time limits - dialogues - json + code
-reward - dialogues - json
+Implement rewards based on effects and quality 
+=deal time limits, incomplete, success - dialogues - code
+json - balancing and design, dialogues -reward,success,incomplete, dealStart
+=quest app dialogues - code 
+update for s1api - silkroad
+=move drug type to from unique types 
+=icon
+=ui changes
+create real NPCs
+make refresh cost 420 and refrer implementation
+re-visit TODO comments
 
 Tests:
 \\test - progression, rewards, save/load
@@ -46,7 +55,7 @@ NPCs,Dialogues,Balance
 UI Tracker:
 add ui panel to show relations, product, quality, shipping, effects unlocks with drop down selector for each npc
 add shipping unlock costs - now unavailable - on button press deduct corresponding fee and call shipping upgrade function
-
+replace refresh with management button
 
 
 

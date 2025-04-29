@@ -15,16 +15,17 @@ namespace Silkroad
         public Drug RequiredDrug;
         public string? QuestImage;
         public int DealTime;
-        public float DealTimeMultiplier;
+        public float DealTimeMult;
         public List<int> Penalties; // Money and Rep Penalties for failing Deal
 
-        // No need to save. Only to show Rewards in Journal
+        // No need to save. Only to show entries in PhoneApp
         public int BonusDollar;
         public float BonusRep;
         public float DollarMultiplierMin;
         public float RepMultiplierMin;
         public float DollarMultiplierMax;
         public float RepMultiplierMax;
-
+        public BlackmarketBuyer Buyer; 
+        public string DealStart;
     }
 }

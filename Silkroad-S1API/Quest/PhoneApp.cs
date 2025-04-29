@@ -52,14 +52,19 @@ namespace Silkroad
             questListContainer = UIFactory.ScrollableVerticalList("QuestListScroll", leftPanel.transform, out _);
             UIFactory.FitContentHeight(questListContainer);
 
-            var rightPanel = UIFactory.Panel("DetailPanel", bg.transform, new Color(0.12f, 0.12f, 0.12f),
+            var rightPanel = UIFactory.Panel("DetailPanel", bg.transform, Color.white,
                 new Vector2(0.49f, 0f), new Vector2(0.98f, 0.82f));
 
             UIFactory.VerticalLayoutOnGO(rightPanel, spacing: 12, padding: new RectOffset(10, 40, 10, 65));
 
-            questTitle = UIFactory.Text("Title", "Select a quest", rightPanel.transform, 22, TextAnchor.UpperLeft, FontStyle.Bold);
-            questTask = UIFactory.Text("Task", "Task: --", rightPanel.transform, 18);
-            questReward = UIFactory.Text("Reward", "Reward: --", rightPanel.transform, 18);
+            //questTitle = UIFactory.Text("Title", "Select a quest", rightPanel.transform, 22, TextAnchor.UpperLeft, FontStyle.Bold);
+            //questTask = UIFactory.Text("Task", "Task: --", rightPanel.transform, 18);
+            //questReward = UIFactory.Text("Reward", "Reward: --", rightPanel.transform, 18);
+            //deliveryStatus = UIFactory.Text("Delivery", "", rightPanel.transform, 16);
+
+            questTitle = UIFactory.Text("Title", "", rightPanel.transform, 22, TextAnchor.UpperLeft, FontStyle.Bold);
+            questTask = UIFactory.Text("Task", "", rightPanel.transform, 18);
+            questReward = UIFactory.Text("Reward", "", rightPanel.transform, 18);
             deliveryStatus = UIFactory.Text("Delivery", "", rightPanel.transform, 16);
 
             var (acceptGO, acceptBtn, acceptLbl) = UIFactory.ButtonWithLabel("AcceptBtn", "Accept Delivery", rightPanel.transform, new Color(0.2f, 0.6f, 0.2f), 160, 100);
@@ -129,10 +134,16 @@ namespace Silkroad
                 MelonLogger.Msg($"   Unlocked Drugs: {string.Join(", ", dealerSaveData.UnlockedDrugs)}");
                 MelonLogger.Msg($"   MinDeliveryAmount: {dealerSaveData.MinDeliveryAmount}, MaxDeliveryAmount: {dealerSaveData.MaxDeliveryAmount}");
 
-                // Iterate through unlocked drugs and generate a quest for each
-                foreach (var drug in dealerSaveData.UnlockedDrugs)
+                //drugTypes are unique dealerSaveData.UnlockedDrugs.Type
+                var drugTypes = dealerSaveData.UnlockedDrugs.Select(d => d.Type).Distinct().ToArray();
+
+                // Iterate through unlocked drugs and generate a quest for each drugTypes in dealerSaveData
+                foreach (var drugType in drugTypes)
                 {
-                    GenerateQuest(buyer, dealerSaveData, drug.Type);
+                    if (dealerSaveData.UnlockedDrugs.Any(d => d.Type == drugType))
+                    {
+                        GenerateQuest(buyer, dealerSaveData, drugType);
+                    }
                 }
             }
 
@@ -169,15 +180,18 @@ namespace Silkroad
             var aggregateDollarMultMax = 0f;
             var aggregateRepMultMin = 0f;
             var aggregateRepMultMax = 0f;
+            var randomIndex = UnityEngine.Random.Range(0, buyer.DealTimes.Count);
+            var dealTime = buyer.DealTimes[randomIndex];
+            var dealTimesMult = buyer.DealTimesMult[randomIndex];
             //Get a random drug from the unlocked drugs
             var randomDrug = unlockedDrugs[RandomUtils.RangeInt(0, unlockedDrugs.Count)];
-            //Store the last quality. Also store 1+ dollar and rep multiplier
+            //Store the last quality. Also store dollar and rep multiplier
             var lastQuality = randomDrug.Qualities.LastOrDefault();
             if (lastQuality != null)
             {
                 quality = lastQuality.Type;
-                aggregateDollarMultMin = 1 + lastQuality.DollarMult;
-                aggregateRepMultMin = 1 + lastQuality.RepMult;
+                aggregateDollarMultMin = (1 + lastQuality.DollarMult)*(1+dealTimesMult);
+                aggregateRepMultMin = (1 + lastQuality.RepMult)*(1+dealTimesMult);
                 aggregateDollarMultMax = aggregateDollarMultMin;
                 aggregateRepMultMax = aggregateRepMultMin;
 
@@ -227,8 +241,17 @@ namespace Silkroad
             var TimeLimitMult=1f;
             var Penalties=new List<int> { 0, 0 };
             //Roll a random index for buyer.DealTimes
-            var randomIndex = UnityEngine.Random.Range(0, buyer.DealTimes.Count);
-
+            var dealStart="";
+            if (buyer.SendCustomMessage("DealStart", drugType, (int)amount, quality, necessaryEffects, optionalEffects, true) is string msg)
+                {
+                    
+                    MelonLogger.Msg($"✅ Deal started: {msg}");
+                    dealStart = msg;
+                }
+            else
+            {
+                MelonLogger.Error($"❌ Deal Msg for Dealer '{buyer.DealerName}' not found.");
+            }
 
             var quest = new QuestData
             {
@@ -246,9 +269,11 @@ namespace Silkroad
                 RepMultiplierMin = aggregateRepMultMin,
                 DollarMultiplierMax = aggregateDollarMultMax,
                 RepMultiplierMax = aggregateRepMultMax,
-                DealTime = buyer.DealTimes[randomIndex],
-                DealTimeMultiplier = buyer.DealTimesMult[randomIndex],
+                DealTime = dealTime,
+                DealTimeMult = dealTimesMult,
                 Penalties = buyer.Penalties,
+                Buyer = buyer,
+                DealStart = dealStart,
             };
 
             quests.Add(quest);
@@ -284,14 +309,14 @@ namespace Silkroad
 
         private void OnSelectQuest(QuestData quest)
         {
+            
+            
+            
             questTitle.text = quest.Title;
             questTask.text = $"Task: {quest.Task}";
-            questReward.text = $"Base Rewards: ${quest.BonusDollar} + {quest.BonusRep} Rep\n" +
-            "Rewards on Total Item Price:\n" +
-                $"Dollar Multiplier: {quest.DollarMultiplierMin} - {quest.DollarMultiplierMax}\n" +
-                $"Rep Multiplier: {quest.RepMultiplierMin} - {quest.RepMultiplierMax}\n\n" +
+            questReward.text = $" Rewards: ${quest.BonusDollar} + Pricex({quest.DollarMultiplierMin} - {quest.DollarMultiplierMax})\n" +
+                $"Rep :{quest.BonusRep} + Pricex({quest.RepMultiplierMin} - {quest.RepMultiplierMax})\n\n" +
                 $"Deal Expiry: {quest.DealTime} Day(s)\n" +
-                $"Time Reward Multiplier: {quest.DealTimeMultiplier}\n"+
                 $"Failure Penalties: ${quest.Penalties[0]} + {quest.Penalties[1]} Rep\n" ;
             deliveryStatus.text = "";
             ButtonUtils.Enable(acceptButton, acceptLabel, "Accept Delivery");
@@ -306,28 +331,31 @@ namespace Silkroad
                 deliveryStatus.text = "⚠️ Finish your current job first!";
                 return;
             }
-            QuestImage = quest.QuestImage ?? Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", "SilkRoadIcon_quest.png");
             var q = S1API.Quests.QuestManager.CreateQuest<QuestDelivery>();
             if (q is QuestDelivery delivery)
             {
                 delivery.Data.ProductID = quest.ProductID;
                 delivery.Data.RequiredAmount = quest.AmountRequired;
                 delivery.Data.DealerName = quest.DealerName;
-                delivery.Data.QuestImage = QuestImage;
+                delivery.Data.QuestImage = quest.QuestImage;
                 delivery.Data.RequiredDrug = quest.RequiredDrug;
                 delivery.Data.Reward = quest.BonusDollar;
                 delivery.Data.RepReward = quest.BonusRep;
                 delivery.Data.Task = quest.Task;
                 delivery.Data.DealTime = quest.DealTime;
-                delivery.Data.DealTimeMultiplier = quest.DealTimeMultiplier;
+                delivery.Data.DealTimeMult = quest.DealTimeMult;
                 delivery.Data.Penalties = quest.Penalties;
 
-                if (Contacts.GetBuyer(quest.DealerName) is BlackmarketBuyer buyer)
+                if (quest.Buyer is BlackmarketBuyer buyer)
                 {
-                    buyer.SendCustomMessage("DealStart", quest.ProductID, (int)quest.AmountRequired);
+                    buyer.SendCustomMessage("Accept", quest.ProductID, (int)quest.AmountRequired);
                 }
             }
-
+            else
+            {
+                MelonLogger.Error("❌ Failed to create QuestDelivery instance - Accept Quest.");
+                return;
+            }
             deliveryStatus.text = "📦 Delivery started!";
         }
     }

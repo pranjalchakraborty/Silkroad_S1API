@@ -3,7 +3,6 @@
     {
       "name": "Combo 'Costco'",
       "image": "combo.png",
-      "resetSave": false,
       "dealTimes": [
         2,
         3,
@@ -169,7 +168,7 @@
           "Deal’s on, man!",
           "Cool, let’s roll with it!"
         ],
-        "reject": [
+        "incomplete": [
           "Nah, not feeling it, bro.",
           "Pass, that’s not my vibe."
         ],
@@ -194,7 +193,6 @@
     {
       "name": "Badger",
       "image": "badger.png",
-      "resetSave": false,
       "dealTimes": [
         2,
         3,
@@ -305,7 +303,7 @@
           "Awesome, let’s do this!",
           "Sweet, I’m totally in!"
         ],
-        "reject": [
+        "incomplete": [
           "Maybe next time, dude.",
           "Nah, not today, man."
         ],
@@ -330,7 +328,6 @@
     {
       "name": "Skinny Pete",
       "image": "skinny_pete.png",
-      "resetSave": false,
       "dealTimes": [
         2,
         3,
@@ -441,7 +438,7 @@
           "Sweet, let’s roll, man!",
           "I’m down, let’s do it!"
         ],
-        "reject": [
+        "incomplete": [
           "Not today, bro.",
           "Gonna pass, maybe later."
         ],
@@ -466,7 +463,6 @@
     {
       "name": "Domingo 'Krazy-8' Molina",
       "image": "krazy8.png",
-      "resetSave": false,
       "dealTimes": [
         2,
         3,
@@ -705,7 +701,7 @@
           "Good, let’s proceed.",
           "Deal’s set, move it."
         ],
-        "reject": [
+        "incomplete": [
           "Not worth my time.",
           "This is trash, no deal."
         ],
@@ -730,7 +726,6 @@
     {
       "name": "Tuco Salamanca",
       "image": "tuco.png",
-      "resetSave": false,
       "dealTimes": [
         2,
         3,
@@ -901,7 +896,7 @@
           "You’re in, for now.",
           "Deal’s on, don’t screw it up!"
         ],
-        "reject": [
+        "incomplete": [
           "Get out of my sight!",
           "You’re wasting my time, punk!"
         ],
@@ -926,7 +921,6 @@
     {
       "name": "Jesse Pinkman",
       "image": "jesse.png",
-      "resetSave": false,
       "dealTimes": [
         2,
         3,
@@ -1113,7 +1107,7 @@
           "Yeah, science, bitch!",
           "Let’s do this, yo!"
         ],
-        "reject": [
+        "incomplete": [
           "I’m out, man.",
           "Not vibin’ with it, dude."
         ],
@@ -1142,7 +1136,6 @@
     {
       "name": "Gustavo Fring",
       "image": "gus.png",
-      "resetSave": false,
       "dealTimes": [
         2,
         3,
@@ -1327,7 +1320,7 @@
           "Proceed.",
           "This is acceptable, move forward."
         ],
-        "reject": [
+        "incomplete": [
           "Unacceptable.",
           "This does not meet my expectations."
         ],
@@ -1352,7 +1345,6 @@
     {
       "name": "Lydia Rodarte-Quayle",
       "image": "lydia.png",
-      "resetSave": false,
       "dealTimes": [
         2,
         3,
@@ -1577,7 +1569,7 @@
           "Good, let’s move forward.",
           "This meets my needs, proceed."
         ],
-        "reject": [
+        "incomplete": [
           "This won’t work.",
           "It’s below my standards."
         ],
@@ -1602,7 +1594,6 @@
     {
       "name": "Don Eladio Vuente",
       "image": "don_eladio.png",
-      "resetSave": false,
       "dealTimes": [
         2,
         3,
@@ -1720,7 +1711,7 @@
           "You may proceed.",
           "Good enough, for now."
         ],
-        "reject": [
+        "incomplete": [
           "You insult me with this!",
           "This is beneath my dignity."
         ],
@@ -1745,7 +1736,6 @@
     {
       "name": "Heisenberg",
       "image": "heisenberg.png",
-      "resetSave": false,
       "dealTimes": [
         2,
         3,
@@ -1926,7 +1916,7 @@
           "Let’s proceed.",
           "We have a deal, excellent."
         ],
-        "reject": [
+        "incomplete": [
           "You’re not ready.",
           "This isn’t up to my standard."
         ],

@@ -18,7 +18,7 @@ public class DeliverySaveData
     public float RepReward;
     public string Task;
     public int DealTime;
-    public float DealTimeMultiplier;
+    public float DealTimeMult;
     public List<int> Penalties; // Money and Rep Penalties for failing Deal
     
     [JsonConstructor]

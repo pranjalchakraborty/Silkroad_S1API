@@ -22,6 +22,7 @@ namespace Silkroad
 
     // This is a temporary mock method to test the logic. Will be replaced with the actual method to get the complete list of strings.
     // A method that returns a list of strings randomly selected from the complete list of strings 
+    //TODO
     public static class RandomEffectSelector
     {
         //Create default values for completeList and count
@@ -54,7 +55,7 @@ namespace Silkroad
     {
         [SaveableField("DeliveryData")]
         public DeliverySaveData Data = new DeliverySaveData();
-
+        public BlackmarketBuyer buyer = new BlackmarketBuyer();
         private DeadDropInstance deliveryDrop;
         public static HashSet<string> CompletedQuestKeys = new HashSet<string>();
         private QuestEntry deliveryEntry;
@@ -62,15 +63,19 @@ namespace Silkroad
         public static bool QuestActive = false;
         public static event Action OnQuestCompleted;
 
-private void OnDayPass()
+//move to time manager 
+//TODO
+private void TimeManagerOnDayPass()
         {
+            //use syntax like += to add a new event handler to the DayPass event
             // Reduce the quest time by 1 day
             Data.DealTime -= 1;
             // Check if the quest time has expired
-            if (Data.DealTime <= 0)
+            if (Data.DealTime < 0)
             {
+                //var buyer = Contacts.GetBuyer(Data.DealerName);
                 // If the quest time has expired, fail the quest
-                ForceFailQuest();
+                buyer.SendCustomMessage("Expire", Data.ProductID);
                 Data.Reward = -Data.Penalties[0];
                 Data.RepReward = -Data.Penalties[1];
                 MelonCoroutines.Start(DelayedReward());
@@ -80,13 +85,16 @@ private void OnDayPass()
         {
             get
             {
+                MelonLogger.Msg($"QuestIcon: {Data.QuestImage??"null"}");
                 // Dynamically load the image based on the DealerImage of the current instance - Doesn't work
+                //TODO
                 return ImageUtils.LoadImage(Data.QuestImage ?? Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", "SilkRoadIcon_quest.png"));
             }
         }
         protected override void OnLoaded()
         {
             base.OnLoaded();
+            buyer = Contacts.GetBuyer(Data.DealerName);
             MelonCoroutines.Start(WaitForBuyerAndSendStatus());
         }
 
@@ -115,13 +123,13 @@ private void OnDayPass()
 
         }
         // Add a static instance to access the current quest from UI / Force Complete/Fail Quests
-        public static QuestDelivery Instance { get; private set; }
+        
         
         protected override void OnCreated()
         {
 
             base.OnCreated();
-            Instance = this;
+            buyer = Contacts.GetBuyer(Data.DealerName);
             QuestActive = true;
 
 
@@ -156,7 +164,7 @@ private void OnDayPass()
         }
         private uint PackageAmount(string packaging)
         {
-            // Return the amount based on the packaging type
+            // Return the amount based on the packaging type - UPDATABLE
             return packaging switch
             {
                 "Brick" => 20,
@@ -172,6 +180,8 @@ private void OnDayPass()
             MelonLogger.Msg($"Expecting ProductID: {Data.ProductID}, RequiredAmount: {Data.RequiredAmount}");
             if (Data.RequiredAmount <= 0)
             {
+                
+                buyer.SendCustomMessage("Incomplete", Data.ProductID);
                 MelonLogger.Msg("❌ No required amount to deliver. Quest done.");
                 deliveryEntry.Complete();
             rewardEntry.SetState(QuestState.Active);
@@ -186,7 +196,7 @@ private void OnDayPass()
             {
                 bool isProductInstance = slot.ItemInstance is ProductInstance;
                 var item = ((ProductInstance)slot.ItemInstance);
-                MelonLogger.Msg($"Slot: {item.Definition.Category} - {slot.Quantity}");
+                MelonLogger.Msg($"Slot: {item.Definition.Category} - {slot.Quantity} - {item.Definition.Name} ");
                 string slotProductID = isProductInstance ? item.Definition.Name : "null";
                 string packaging = isProductInstance ? item.AppliedPackaging.Name : "null";
                 int quantity = slot.Quantity;
@@ -261,9 +271,8 @@ private void OnDayPass()
         {
             var rewardAmount = Data.Reward;
             ConsoleHelper.RunCashCommand(rewardAmount);
-            var buyer = Contacts.GetBuyer(Data.DealerName);
             buyer.SendCustomMessage("Reward", Data.ProductID);
-            buyer.GiveReputation((int)Data.RepReward + 10);
+            buyer.GiveReputation((int)Data.RepReward + 10);//todo
             MelonLogger.Msg($"   Rewarded : ${rewardAmount} and Rep {Data.RepReward + 10} to {Data.DealerName}");
             buyer.UnlockDrug();
             buyer.IncreaseCompletedDeals(1);
@@ -281,41 +290,11 @@ private void OnDayPass()
 
 
 
-        // NEW: Force-complete the active quest (i.e. give the reward immediately)
-        public static void ForceCompleteQuest()
-        {
-            if (QuestActive && Instance != null)
-            {
-                Instance.GiveReward();
-                MelonLogger.Msg("Quest force-completed.");
-            }
-            else
-            {
-                MelonLogger.Msg("No active quest to complete.");
-            }
-            
-        }
-
-        // NEW: Force-fail the active quest (i.e. mark as complete without reward)
-        public static void ForceFailQuest()
-        {
-            if (QuestActive && Instance != null)
-            {
-                QuestActive = false;
-                MelonLogger.Msg("Quest force-failed.");
-                // Set the reward entry inactive and complete the quest, marking it as failed.
-                Instance.rewardEntry.SetState(QuestState.Inactive);
-                Instance.Complete();
-            }
-            else
-            {
-                MelonLogger.Msg("No active quest to fail.");
-            }
-        }
+        
 
         protected override string Title =>
             !string.IsNullOrEmpty(Data?.ProductID)
-                ? $"Deliver {Data.RequiredAmount}x {Data.ProductID} to {Data.DealerName}"
+                ? $"Deliver {Data.ProductID} to {Data.DealerName}"
                 : "Silkroad Delivery";
 
         protected override string Description =>
