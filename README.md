@@ -50,6 +50,7 @@ json - balancing and design, dialogues -reward,success,incomplete, dealStart
 =make refresh cost 420 and refrer implementation
 =quest expiry func sub/unsub
 =remove taken quest
+=remove free refresh on cancel
 
 
 Optional:
