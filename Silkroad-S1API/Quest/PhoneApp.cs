@@ -164,7 +164,7 @@ namespace Silkroad
             // Log the count of initialized buyers
             MelonLogger.Msg($"✅ Buyer with save data initialized: {Contacts.Buyers.Count} buyers found.");
             
-            // Call InitializeDealers after all buyers are initialized
+            // Call InitializeDealers after all save data buyers are initialized
             InitializeDealers();
             MelonLogger.Msg("Dealers initialized successfully.");
 

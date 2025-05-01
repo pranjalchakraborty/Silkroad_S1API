@@ -104,25 +104,26 @@ namespace Silkroad
                 MelonLogger.Error($"❌ Error loading dealer data: {ex.Message}");
 
             }
-
-
-            // Create DealerSaveData with safe enumeration for dialogue, drugs, and effects.
-            _DealerData = new DealerSaveData
+            if (_DealerData != null)
             {
-                DealerName = dealer.Name,
-            };
-            SendCustomMessage("Intro");
+                MelonLogger.Msg($"⚠️ Dealer {DealerName} already exists in BuyerSaveData dictionary.");
+            }
+            else
+            {
+                // Create DealerSaveData with safe enumeration for dialogue, drugs, and effects.
+                _DealerData = new DealerSaveData
+                {
+                    DealerName = dealer.Name,
+                };
+                SendCustomMessage("Intro");
+
+            }
             UnlockDrug(); // Check if the dealer has any unlocked drugs based on reputation
             UpgradeShipping(); // Upgrade the shipping tier if possible
                                // Save the dealer data to the BuyerSaveData dictionary
             SaveDealerData();
             IsInitialized = true;
-
-            // Log initialization details
             MelonLogger.Msg($"✅ Dealer initialized: {DealerName}");
-            //MelonLogger.Msg($"   Unlocked Drugs: {string.Join(", ", _DealerData.UnlockedDrugs)}");
-            //MelonLogger.Msg($"   MinDeliveryAmount: {_DealerData.MinDeliveryAmount}, MaxDeliveryAmount: {_DealerData.MaxDeliveryAmount}");
-
         }
         public void LoadDealerData()
         {
@@ -149,8 +150,10 @@ namespace Silkroad
 
             if (buyer.BuyerSaveData.Dealers.TryGetValue(DealerName, out var dealerData))
             {
+                //DebugUtils.LogObjectJson(dealerData, $"{DealerName} DealerSaveData");
                 _DealerData = dealerData;
                 MelonLogger.Msg($"✅ Dealer data loaded for {DealerName}.");
+                //DebugUtils.LogObjectJson(_DealerData, $"{DealerName} DealerSaveData");
             }
             else
             {
@@ -190,8 +193,7 @@ namespace Silkroad
             base.OnLoaded();
             IsInitialized = true;
             MelonCoroutines.Start(WaitForDealerSaveDataAndSendStatus());
-
-
+            //DebugUtils.LogObjectJson(Contacts.GetBuyer(SavedNPCName).BuyerSaveData, "BlackmarketBuyer DealerSaveData");
         }
 
         protected override void OnCreated()

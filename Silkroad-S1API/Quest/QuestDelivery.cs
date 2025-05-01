@@ -85,8 +85,7 @@ namespace Silkroad
             Fail();
         }
 
-        //move to time manager 
-        //TODO
+
         private void ExpireCountdown()
         {
             //use syntax like += to add a new event handler to the DayPass event
@@ -114,8 +113,6 @@ namespace Silkroad
         {
             get
             {
-                //MelonLogger.Msg($"QuestIcon: {Data.QuestImage ?? "null"}");
-                // Dynamically load the image based on the DealerImage of the current instance - Doesn't work
                 //Use static image setting from PhoneApp Accept Quest
                 //TODO - Do I even want dealer image for this or the standard image - Optional
                 return ImageUtils.LoadImage(Data.QuestImage ?? Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", "SilkRoadIcon_quest.png"));
@@ -211,14 +208,12 @@ namespace Silkroad
         private void CheckDelivery()
         {
             MelonLogger.Msg("CheckDelivery called.");
-
             // Add null checks
             if (deliveryDrop?.Storage?.Slots == null)
             {
                 MelonLogger.Error("❌ Storage or slots are null in CheckDelivery");
                 return;
             }
-
             MelonLogger.Msg($"Expecting ProductID: {Data.ProductID}, RequiredAmount: {Data.RequiredAmount}");
 
             foreach (var slot in deliveryDrop.Storage.Slots)
@@ -229,7 +224,6 @@ namespace Silkroad
                     MelonLogger.Warning("⚠️ Encountered null slot or item instance, skipping...");
                     continue;
                 }
-
                 bool isProductInstance = slot.ItemInstance is ProductInstance;
                 // Add null check and safe cast
                 var item = slot.ItemInstance as ProductInstance;
@@ -238,19 +232,16 @@ namespace Silkroad
                     MelonLogger.Warning("⚠️ Item is not a ProductInstance, skipping...");
                     continue;
                 }
-
                 MelonLogger.Msg($"Slot: {item.Definition?.Category} - {slot.Quantity} - {item.Definition?.Name} ");
                 string slotProductID = isProductInstance ? item.Definition?.Name : "null";
                 string packaging = isProductInstance ? item.AppliedPackaging?.Name : "null";
                 int quantity = slot.Quantity;
-
                 // Add null check for Data.NecessaryEffects
                 if (Data?.NecessaryEffects == null)
                 {
                     MelonLogger.Error("❌ NecessaryEffects is null");
                     return;
                 }
-
                 //Temporary list to hold the effects and test with dummy values
                 //TODO
                 List<string> productEffects = RandomEffectSelector.GetRandomEffects(Data.NecessaryEffects, 8);
@@ -270,19 +261,16 @@ namespace Silkroad
                     }
                     else
                     {
-                        var toRemove = (int)(-Data.RequiredAmount / PackageAmount(packaging)) - 1;//Deal with it
-                        slot.AddQuantity(toRemove);
+                        //FLOOR of the negative of the division to get the number of packages to remove
+                        int toRemove = (int)Math.Ceiling((double)(Data.RequiredAmount / PackageAmount(packaging)));
+                        toRemove = Math.Min(toRemove, slot.Quantity);
+                        slot.AddQuantity(-toRemove);
                         UpdateReward(Data.RequiredAmount, item);
                         Data.RequiredAmount = 0;
                         MelonLogger.Msg($"✅ Delivered {total}x {slotProductID} to the stash. Remaining: {Data.RequiredAmount}. Reward now: {Data.Reward}");
                         break;
                     }
                 }
-
-                //MelonLogger.Msg($"Total Amount: {total}");
-                //var definition = ((ProductInstance)slot.ItemInstance);
-                //DebugUtils.LogObjectJson(definition, "Slot ItemInstance Definition");
-                //MelonLogger.Msg($"Slot: isProductInstance={isProductInstance}, productID={slotProductID}, packaging={packaging}, quantity={quantity}");
             }
             if (Data.RequiredAmount <= 0)
             {
@@ -291,14 +279,13 @@ namespace Silkroad
                 deliveryEntry.Complete();
                 rewardEntry.SetState(QuestState.Active);
                 MelonCoroutines.Start(DelayedReward("Completed"));
-
+                deliveryDrop.Storage.OnClosed -= CheckDelivery;
             }
             else
             {
                 buyer.SendCustomMessage("Incomplete", Data.ProductID, (int)Data.RequiredAmount, Data.Quality, Data.NecessaryEffects, Data.OptionalEffects);
                 MelonLogger.Msg($"Continue delivery. Remaining amount: {Data.RequiredAmount}");
             }
-
         }
 
         //Update Dummy with real effect and quality calculation
@@ -330,10 +317,10 @@ namespace Silkroad
         private void GiveReward(string source)
         {
             TimeManager.OnDayPass -= ExpireCountdown;
-            deliveryDrop.Storage.OnClosed -= CheckDelivery;
+
             ConsoleHelper.RunCashCommand(Data.Reward);
-            buyer.GiveReputation((int)Data.RepReward + 10);//TODO - remove 10
-            MelonLogger.Msg($"   Rewarded : ${Data.Reward} and Rep {Data.RepReward + 10} to {Data.DealerName}");
+            buyer.GiveReputation((int)Data.RepReward );
+            MelonLogger.Msg($"   Rewarded : ${Data.Reward} and Rep {Data.RepReward} to {Data.DealerName}");
 
             if (source == "Expired")
             {
@@ -347,29 +334,22 @@ namespace Silkroad
             {
                 buyer.SendCustomMessage("Reward", Data.ProductID, (int)Data.RequiredAmount, Data.Quality, Data.NecessaryEffects, Data.OptionalEffects);
                 buyer.IncreaseCompletedDeals(1);
+                buyer.UnlockDrug();
+                Contacts.Initialize();
             }
             else
             {
                 MelonLogger.Error($"❌ Unknown source: {source}.");
                 return;
             }
-            //buyer.IncreaseCompletedDeals(1);
-
-            buyer.UnlockDrug();
-            Contacts.Initialize();
             buyer.SaveDealerData();
             QuestActive = false;
             //CompletedQuestKeys.Add($"{Data.ProductID}_{Data.RequiredAmount}");
             rewardEntry?.Complete();
             Complete();
             OnQuestCompleted?.Invoke();
-            // Based on New Reputations, Check JSON to see if new NPC unlocked - Remove and Replace with button if slow/crash
-           
+
         }
-
-
-
-
 
         protected override string Title =>
             !string.IsNullOrEmpty(Data?.ProductID)

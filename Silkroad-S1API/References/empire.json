@@ -21,8 +21,8 @@
       "drugs": [
         {
           "type": "weed",
-          "bonus_dollar": 0,
-          "bonus_rep": 0,
+          "bonus_dollar": 1000,
+          "bonus_rep": 10,
           "base_dollar_mult": 1,
           "base_rep_mult": 1,
           "unlockRep": 0,
@@ -79,8 +79,8 @@
         },
         {
           "type": "meth",
-          "bonus_dollar": 0,
-          "bonus_rep": 0,
+          "bonus_dollar": 1000,
+          "bonus_rep": 10,
           "base_dollar_mult": 1,
           "base_rep_mult": 1,
           "unlockRep": 30,
@@ -210,14 +210,14 @@
       "unlockRequirements": [
         {
           "name": "Combo 'Costco'",
-          "minRep": 0
+          "minRep": 10
         }
       ],
       "drugs": [
         {
           "type": "meth",
-          "bonus_dollar": 0,
-          "bonus_rep": 0,
+          "bonus_dollar": 1000,
+          "bonus_rep": 10,
           "base_dollar_mult": 1,
           "base_rep_mult": 1,
           "unlockRep": 0,
@@ -351,8 +351,8 @@
       "drugs": [
         {
           "type": "weed",
-          "bonus_dollar": 0,
-          "bonus_rep": 0,
+          "bonus_dollar": 1000,
+          "bonus_rep": 10,
           "base_dollar_mult": 1,
           "base_rep_mult": 1,
           "unlockRep": 0,
@@ -486,8 +486,8 @@
       "drugs": [
         {
           "type": "meth",
-          "bonus_dollar": 0,
-          "bonus_rep": 0,
+          "bonus_dollar": 1000,
+          "bonus_rep": 10,
           "base_dollar_mult": 1,
           "base_rep_mult": 1,
           "unlockRep": 0,
@@ -544,8 +544,8 @@
         },
         {
           "type": "weed",
-          "bonus_dollar": 0,
-          "bonus_rep": 0,
+          "bonus_dollar": 1000,
+          "bonus_rep": 10,
           "base_dollar_mult": 1,
           "base_rep_mult": 1,
           "unlockRep": 20,
@@ -602,8 +602,8 @@
         },
         {
           "type": "cocaine",
-          "bonus_dollar": 0,
-          "bonus_rep": 0,
+          "bonus_dollar": 1000,
+          "bonus_rep": 10,
           "base_dollar_mult": 1,
           "base_rep_mult": 1,
           "unlockRep": 40,
@@ -753,8 +753,8 @@
       "drugs": [
         {
           "type": "meth",
-          "bonus_dollar": 0,
-          "bonus_rep": 0,
+          "bonus_dollar": 1000,
+          "bonus_rep": 10,
           "base_dollar_mult": 1,
           "base_rep_mult": 1,
           "unlockRep": 0,
@@ -805,8 +805,8 @@
         },
         {
           "type": "cocaine",
-          "bonus_dollar": 0,
-          "bonus_rep": 0,
+          "bonus_dollar": 1000,
+          "bonus_rep": 10,
           "base_dollar_mult": 1,
           "base_rep_mult": 1,
           "unlockRep": 20,
@@ -952,8 +952,8 @@
       "drugs": [
         {
           "type": "meth",
-          "bonus_dollar": 0,
-          "bonus_rep": 0,
+          "bonus_dollar": 1000,
+          "bonus_rep": 10,
           "base_dollar_mult": 1,
           "base_rep_mult": 1,
           "unlockRep": 0,
@@ -1010,8 +1010,8 @@
         },
         {
           "type": "weed",
-          "bonus_dollar": 0,
-          "bonus_rep": 0,
+          "bonus_dollar": 1000,
+          "bonus_rep": 10,
           "base_dollar_mult": 1,
           "base_rep_mult": 1,
           "unlockRep": 20,
@@ -1163,8 +1163,8 @@
       "drugs": [
         {
           "type": "meth",
-          "bonus_dollar": 0,
-          "bonus_rep": 0,
+          "bonus_dollar": 1000,
+          "bonus_rep": 10,
           "base_dollar_mult": 1,
           "base_rep_mult": 1,
           "unlockRep": 0,
@@ -1222,8 +1222,8 @@
         },
         {
           "type": "cocaine",
-          "bonus_dollar": 0,
-          "bonus_rep": 0,
+          "bonus_dollar": 1000,
+          "bonus_rep": 10,
           "base_dollar_mult": 1,
           "base_rep_mult": 1,
           "unlockRep": 30,
@@ -1372,8 +1372,8 @@
       "drugs": [
         {
           "type": "weed",
-          "bonus_dollar": 0,
-          "bonus_rep": 0,
+          "bonus_dollar": 1000,
+          "bonus_rep": 10,
           "base_dollar_mult": 1,
           "base_rep_mult": 1,
           "unlockRep": 0,
@@ -1424,8 +1424,8 @@
         },
         {
           "type": "meth",
-          "bonus_dollar": 0,
-          "bonus_rep": 0,
+          "bonus_dollar": 1000,
+          "bonus_rep": 10,
           "base_dollar_mult": 1,
           "base_rep_mult": 1,
           "unlockRep": 20,
@@ -1476,8 +1476,8 @@
         },
         {
           "type": "cocaine",
-          "bonus_dollar": 0,
-          "bonus_rep": 0,
+          "bonus_dollar": 1000,
+          "bonus_rep": 10,
           "base_dollar_mult": 1,
           "base_rep_mult": 1,
           "unlockRep": 30,
@@ -1621,8 +1621,8 @@
       "drugs": [
         {
           "type": "cocaine",
-          "bonus_dollar": 0,
-          "bonus_rep": 0,
+          "bonus_dollar": 1000,
+          "bonus_rep": 10,
           "base_dollar_mult": 1,
           "base_rep_mult": 1,
           "unlockRep": 0,
@@ -1759,8 +1759,8 @@
       "drugs": [
         {
           "type": "meth",
-          "bonus_dollar": 0,
-          "bonus_rep": 0,
+          "bonus_dollar": 1000,
+          "bonus_rep": 10,
           "base_dollar_mult": 1,
           "base_rep_mult": 1,
           "unlockRep": 0,
@@ -1818,8 +1818,8 @@
         },
         {
           "type": "cocaine",
-          "bonus_dollar": 0,
-          "bonus_rep": 0,
+          "bonus_dollar": 1000,
+          "bonus_rep": 10,
           "base_dollar_mult": 1,
           "base_rep_mult": 1,
           "unlockRep": 30,
