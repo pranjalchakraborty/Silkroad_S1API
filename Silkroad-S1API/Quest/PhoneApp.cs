@@ -27,8 +27,8 @@ namespace Silkroad
 
         private List<QuestData> quests;
         private RectTransform questListContainer;
-        private Text questTitle, questTask, questReward, deliveryStatus, acceptLabel, cancelLabel, refreshLabel, detailsLabel;
-        private Button acceptButton, cancelButton, refreshButton, detailsButton;
+        private Text questTitle, questTask, questReward, deliveryStatus, acceptLabel, cancelLabel, refreshLabel, manageLabel, relationsLabel;
+        private Button acceptButton, cancelButton, refreshButton, manageButton, relationsButton;
         private Text statusText;
         public static int Index;
 
@@ -106,12 +106,13 @@ namespace Silkroad
             // Create horizontal row for top buttons
             var buttonRow = UIFactory.ButtonRow("TopButtons", rightPanel.transform, spacing: 14);
 
-            // Refresh Button
-            var (refreshGO, refreshBtn, refreshLbl) = UIFactory.RoundedButtonWithLabel("RefreshBtn", "Refresh Order list", buttonRow.transform, new Color32(32, 0x82, 0xF6, 0xff), 300, 90, 18, Color.white);
-            refreshButton = refreshBtn;
-            refreshLabel = refreshLbl;
+            //Manage button
+            var (manageGO, manageBtn, ManageLbl) = UIFactory.RoundedButtonWithLabel("ManageBtn", "Manage", rightPanel.transform, new Color32(32, 0x82, 0xF6, 0xff), 460f, 60f, 22, Color.black);
 
-            ButtonUtils.AddListener(refreshButton, () => RefreshButton());
+            manageButton = manageBtn;
+            manageLabel = ManageLbl;
+
+            ButtonUtils.AddListener(manageButton, () => OpenManageUI(bg));
 
             // Cancel Button
 
@@ -129,26 +130,26 @@ namespace Silkroad
             acceptLabel = acceptLbl;
             ButtonUtils.Disable(acceptBtn, acceptLabel, "No quest selected");
 
-            var (detailsUI, detailsBtn, detailsLbl) = UIFactory.RoundedButtonWithLabel("detailsBtn", "Details", rightPanel.transform, new Color32(32, 0x82, 0xF6, 0xff), 460f, 60f, 22, Color.black);
+            // Refresh Button
+            var (refreshGO, refreshBtn, refreshLbl) = UIFactory.RoundedButtonWithLabel("RefreshBtn", "Refresh Order list", buttonRow.transform, new Color32(32, 0x82, 0xF6, 0xff), 300, 90, 18, Color.black);
+            refreshButton = refreshBtn;
+            refreshLabel = refreshLbl;
 
-            detailsButton = detailsBtn;
-            detailsLabel = detailsLbl;
-
-            ButtonUtils.AddListener(detailsButton, () => OpenDetailsUI(bg));
+            ButtonUtils.AddListener(refreshButton, () => RefreshButton());
 
             MelonCoroutines.Start(WaitForBuyerAndInitialize());
         }
 
-        private void OpenDetailsUI(GameObject bg)
+        private void OpenManageUI(GameObject bg)
         {
             // Create a modal panel
-            var modalPanel = UIFactory.Panel("ModalPanel", bg.transform, new Color(200, 200, 200, 0.3f), fullAnchor: true);
-            modalPanel.gameObject.SetActive(true);
+            var managementPanel = UIFactory.Panel("ManagementPanel", bg.transform, new Color(200, 200, 200, 0.3f), fullAnchor: true);
+            managementPanel.gameObject.SetActive(true);
 
-            modalPanel.transform.SetAsLastSibling();
+            managementPanel.transform.SetAsLastSibling();
 
             // Add a background to the modal content
-            var contentBackground = UIFactory.Panel("ContentBackground", modalPanel.transform, new Color(0.2f, 0.2f, 0.2f, 1f));
+            var contentBackground = UIFactory.Panel("ContentBackground", managementPanel.transform, new Color(0.2f, 0.2f, 0.2f, 1f));
             var contentRect = contentBackground.GetComponent<RectTransform>();
             contentRect.anchorMin = new Vector2(0.0f, 0.0f);
             contentRect.anchorMax = new Vector2(1f, 1f);
@@ -156,44 +157,64 @@ namespace Silkroad
             contentRect.offsetMax = Vector2.zero;
 
             // Add a top bar to the modal
-            var topBar = UIFactory.Panel("TopBar", modalPanel.transform, new Color(0.1f, 0.1f, 0.1f, 1f));
+            var topBar = UIFactory.Panel("TopBar", managementPanel.transform, new Color(0.1f, 0.1f, 0.1f, 1f));
             var topBarRect = topBar.GetComponent<RectTransform>();
             topBarRect.anchorMin = new Vector2(0f, 0.9f); // Top 10% of the modal
             topBarRect.anchorMax = new Vector2(1f, 1f);   // Full width
             topBarRect.offsetMin = Vector2.zero;
             topBarRect.offsetMax = Vector2.zero;
 
+            var buttonRow = UIFactory.ButtonRow("TopButtons", topBar.transform, spacing: 14);
+
             // Add a "Relations" button to the top bar
             var (relationsGO, relationsBtn, relationsLbl) = UIFactory.RoundedButtonWithLabel(
                 "RelationsButton",
                 "Relations",
-                topBar.transform,
-                new Color32(32, 130, 246, 255), // Button color
-                50, // Width
-                25, // Height
+                buttonRow.transform,
+                new Color(0.5f, 0.2f, 0.2f, 1f), // Button color
+                100, // Width
+                100, // Height
+                18, // Font size
+                Color.white // Text color
+            );
+
+            var relationsRect = relationsGO.GetComponent<RectTransform>();
+            relationsRect.anchorMin = new Vector2(0.05f, 0.5f);
+            relationsRect.anchorMax = new Vector2(0.05f, 0.5f);
+            relationsRect.anchoredPosition = new Vector2(10f, 10f);
+            relationsRect.sizeDelta = new Vector2(100, 60);
+
+            relationsButton = relationsBtn;
+            relationsLabel = relationsLbl;
+
+            //Test with another button
+            var (relationsGO2, relationsBtn2, relationsLbl2) = UIFactory.RoundedButtonWithLabel(
+                "RelationsButton2",
+                "Relations2",
+                buttonRow.transform,
+                new Color(0.5f, 0.2f, 0.2f, 1f), // Button color
+                100, // Width
+                100, // Height
                 18, // Font size
                 Color.white // Text color
             );
 
             // Position the button in the top bar
-            var relationsRect = relationsGO.GetComponent<RectTransform>();
-            relationsRect.anchorMin = new Vector2(0.05f, 0.5f); // Slightly inset from the left
-            relationsRect.anchorMax = new Vector2(0.05f, 0.5f); // Centered vertically
-            relationsRect.pivot = new Vector2(0.5f, 0.5f);      // Center pivot
-            relationsRect.anchoredPosition = Vector2.zero;      // No additional offset
-
-            // Add a listener to the "Relations" button
-            ButtonUtils.AddListener(relationsBtn, () => MelonLogger.Msg("Relations button clicked!"));
+            var relationsRect2 = relationsGO2.GetComponent<RectTransform>();
+            relationsRect2.anchorMin = new Vector2(0.05f, 0.5f);
+            relationsRect2.anchorMax = new Vector2(0.05f, 0.5f);
+            relationsRect2.anchoredPosition = new Vector2(10f, 10f);
+            relationsRect2.sizeDelta = new Vector2(100, 60);
 
             // Add a close button (red "X") to the top-right corner
             var (closeGO, closeBtn, closeLbl) = UIFactory.RoundedButtonWithLabel(
                 "CloseButton",
                 "X",
-                modalPanel.transform,
+                managementPanel.transform,
                 new Color32(235, 53, 56, 255), // Red color
                 50, // Width
-                25, // Height
-                18, // Font size
+                20, // Height
+                12, // Font size
                 Color.white // Text color
             );
 
@@ -203,16 +224,16 @@ namespace Silkroad
             closeRect.anchorMax = new Vector2(1f, 1f);
             closeRect.pivot = new Vector2(1f, 1f);
             closeRect.anchoredPosition = new Vector2(-10f, -10f);
-            closeRect.sizeDelta = new Vector2(50, 50);
+            closeRect.sizeDelta = new Vector2(25, 25);
 
             // Add a listener to the close button to destroy the modal panel
-            ButtonUtils.AddListener(closeBtn, () => Object.Destroy(modalPanel.gameObject));
+            ButtonUtils.AddListener(closeBtn, () => Object.Destroy(managementPanel.gameObject));
 
             // Add content to the modal
             var description = UIFactory.Text(
                 "ModalDescription",
-                "This is a detailed description of the selected quest or feature.",
-                modalPanel.transform,
+                "This description text will be replaced with a panel full of detailed information, default relations.",
+                managementPanel.transform,
                 18,
                 TextAnchor.UpperLeft,
                 FontStyle.Normal
@@ -224,6 +245,22 @@ namespace Silkroad
             descriptionRect.anchorMax = new Vector2(0.9f, 0.7f);
             descriptionRect.offsetMin = Vector2.zero;
             descriptionRect.offsetMax = Vector2.zero;
+
+            // Set listeners on navigation buttons to show descriptions
+            ButtonUtils.AddListener(relationsButton, () => SetDetailsContent(description, "Relations"));
+        }
+
+        private void SetDetailsContent(Text description, string tab)
+        {
+            switch (tab)
+            {
+                case "Relations":
+                    description.text = "Relations content goes here.";
+                    break;
+                default:
+                    description.text = "No content available.";
+                    break;
+            }
         }
 
         private System.Collections.IEnumerator WaitForBuyerAndInitialize()
@@ -272,7 +309,7 @@ namespace Silkroad
         {
             if (Money.GetCashBalance() < 420)
             {
-                deliveryStatus.text = "Not Enough Money";
+                deliveryStatus.text = "You need 420 cash to refresh the list.";
                 return;
             }
             RefreshQuestList();
