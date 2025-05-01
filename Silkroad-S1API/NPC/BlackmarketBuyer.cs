@@ -1,10 +1,10 @@
-﻿using S1API.NPCs;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using S1API.Internal.Utils;
 using S1API.PhoneApp;
-using S1API.Utils;
+using S1API.Entities;
 using UnityEngine;
 using Silkroad;
 using S1API.Saveables;
@@ -31,27 +31,29 @@ namespace Silkroad
         public string? DealerImage { get; private set; } = Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", "SilkRoadIcon_quest.png");
         [SaveableField("BuyerSaveData")]
         private BuyerSaveData BuyerSaveData = new BuyerSaveData();
+        static Sprite? npcSprite => ImageUtils.LoadImage(Contacts.CurrentBuyerImage ?? Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", "SilkRoadIcon_quest.png"));
 
         //Parameterless Constructor for the S1API call
         public BlackmarketBuyer() : base(SavedNPCName.ToLower().Replace(" ", "_"),
             SavedNPCName.Split(' ')[0],
-            SavedNPCName.Contains(' ') ? SavedNPCName.Substring(SavedNPCName.IndexOf(' ') + 1) : "")
+            SavedNPCName.Contains(' ') ? SavedNPCName.Substring(SavedNPCName.IndexOf(' ') + 1) : "", npcSprite)
         {
+            MelonLogger.Msg($"BlackmarketBuyer () Constructor {SavedNPCName} created.");
             Contacts.Buyers[SavedNPCName] = this;
 
             // Ensure BuyerSaveData is initialized
             if (BuyerSaveData == null)
             {
-                BuyerSaveData = new BuyerSaveData();
-                MelonLogger.Warning($"⚠️ BuyerSaveData was null. Initialized a new BuyerSaveData.");
-            }
+                MelonLogger.Warning($"⚠️ BuyerSaveData was null. .");
 
-            // Ensure Dealers dictionary is initialized
-            if (BuyerSaveData.Dealers == null)
+            }
+            else if (BuyerSaveData.Dealers == null)
             {
                 BuyerSaveData.Dealers = new Dictionary<string, DealerSaveData>();
                 MelonLogger.Warning($"⚠️ Dealers dictionary was null. Initialized a new dictionary.");
             }
+            // Ensure Dealers dictionary is initialized
+
             //try to load the dealer data from the save file with error catch - overwrite save
             try
             {
@@ -76,12 +78,11 @@ namespace Silkroad
                 MelonLogger.Msg($"⚠️ Dealer {DealerName} already exists in BuyerSaveData dictionary.");
             }
 
-            IsInitialized = true;
         }
         public BlackmarketBuyer(Dealer dealer) : base(
             dealer.Name.ToLower().Replace(" ", "_"),
             dealer.Name.Split(' ')[0],
-            dealer.Name.Contains(' ') ? dealer.Name.Substring(dealer.Name.IndexOf(' ') + 1) : "")
+            dealer.Name.Contains(' ') ? dealer.Name.Substring(dealer.Name.IndexOf(' ') + 1) : "", npcSprite)
         {
             if (dealer == null)
                 throw new ArgumentNullException(nameof(dealer));
@@ -103,12 +104,8 @@ namespace Silkroad
                 MelonLogger.Error($"❌ Error loading dealer data: {ex.Message}");
 
             }
-            if (_DealerData != null )
-            {
-                MelonLogger.Msg($"⚠️ Dealer {dealer.Name} already exists in BuyerSaveData dictionary.");
-                return;
-            }
-            
+
+
             // Create DealerSaveData with safe enumeration for dialogue, drugs, and effects.
             _DealerData = new DealerSaveData
             {
@@ -139,13 +136,15 @@ namespace Silkroad
             if (buyer.BuyerSaveData == null)
             {
                 MelonLogger.Error($"❌ BuyerSaveData is null for buyer '{SavedNPCName}'. Initializing a new BuyerSaveData.");
-                buyer.BuyerSaveData = new BuyerSaveData(); // Ensure BuyerSaveData is initialized
+                //buyer.BuyerSaveData = new BuyerSaveData(); // Ensure BuyerSaveData is initialized
+                return;
             }
 
             if (buyer.BuyerSaveData.Dealers == null)
             {
                 MelonLogger.Error($"❌ Dealers dictionary is null for buyer '{SavedNPCName}'. Initializing a new dictionary.");
-                buyer.BuyerSaveData.Dealers = new Dictionary<string, DealerSaveData>(); // Ensure Dealers is initialized
+                //buyer.BuyerSaveData.Dealers = new Dictionary<string, DealerSaveData>(); // Ensure Dealers is initialized
+                return;
             }
 
             if (buyer.BuyerSaveData.Dealers.TryGetValue(DealerName, out var dealerData))
@@ -170,31 +169,36 @@ namespace Silkroad
 
             if (buyer.BuyerSaveData == null)
             {
-                buyer.BuyerSaveData = new BuyerSaveData();
                 MelonLogger.Warning($"⚠️ BuyerSaveData was null for buyer '{SavedNPCName}'. Initialized a new dictionary.");
+                return;
+            }
+
+            if (buyer.BuyerSaveData.Dealers == null)
+            {
+                MelonLogger.Warning($"⚠️ Dealers dictionary was null for buyer '{SavedNPCName}'. Initialized a new dictionary.");
+                //buyer.BuyerSaveData.Dealers = new Dictionary<string, DealerSaveData>();
+                return;
             }
 
             buyer.BuyerSaveData.Dealers[DealerName] = _DealerData;
             MelonLogger.Msg($"✅ Dealer data saved for {DealerName}.");
         }
-        protected override Sprite? NPCIcon
-        {
-            get
-            {
-                // Dynamically load the image based on the DealerImage of the current instance
-                return ImageUtils.LoadImage(Contacts.CurrentBuyerImage ?? Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", "SilkRoadIcon_quest.png"));
-            }
-        }
+
         protected override void OnLoaded()
         {
+            MelonLogger.Msg($"BlackmarketBuyer {DealerName} ONloaded.");
             base.OnLoaded();
+            IsInitialized = true;
             MelonCoroutines.Start(WaitForDealerSaveDataAndSendStatus());
+
+
         }
 
         protected override void OnCreated()
         {
             base.OnCreated();
-            Debug.Log($"BlackmarketBuyer {DealerName} created.");
+            Debug.Log($"BlackmarketBuyer {DealerName} ONcreated.");
+            IsInitialized = true;
         }
 
         public static DealerSaveData GetDealerSaveData(string dealerName)
@@ -203,7 +207,7 @@ namespace Silkroad
         }
         //Saves the current dealer data to the BuyerSaveData Saveable Field dictionary
 
-public void IncreaseCompletedDeals(int amount)
+        public void IncreaseCompletedDeals(int amount)
         {
             _DealerData.DealsCompleted += amount;
             MelonLogger.Msg($"✅ {DealerName}'s completed deals increased by {amount}. Total Completed Deals: {_DealerData.DealsCompleted}");
@@ -275,8 +279,8 @@ public void IncreaseCompletedDeals(int amount)
             }
         }
 
-    //Send the message to the player using the phone app or return the message string only if returnMessage is true
-        public string SendCustomMessage(string messageType, string product = "", int amount = 0, string quality = "", List<string>? necessaryEffects = null, List<string> optionalEffects = null, bool returnMessage=false)
+        //Send the message to the player using the phone app or return the message string only if returnMessage is true
+        public string SendCustomMessage(string messageType, string product = "", int amount = 0, string quality = "", List<string>? necessaryEffects = null, List<string> optionalEffects = null, bool returnMessage = false)
         {
 
             List<string> messages = Dialogues.GetType().GetProperty(messageType)?.GetValue(Dialogues) as List<string>;
@@ -289,7 +293,8 @@ public void IncreaseCompletedDeals(int amount)
                 {
                     return messageType;
                 }
-                else{
+                else
+                {
                     SendTextMessage(messageType);
                     return null;
                 }
@@ -322,7 +327,8 @@ public void IncreaseCompletedDeals(int amount)
             {
                 return formatted;
             }
-            else{
+            else
+            {
                 SendTextMessage(formatted);
                 return null;
             }
@@ -336,15 +342,20 @@ public void IncreaseCompletedDeals(int amount)
             float timeout = 5f;
             float waited = 0f;
 
-            MelonLogger.Msg($"⏳ Waiting for dealer {DealerName} to be initialized...");
-            // Wait for this specific dealer's data to be initialized
-            while (!IsInitialized || _DealerData == null && waited < timeout)
+            MelonLogger.Msg($"⏳ WaitForDealerSaveDataAndSendStatus- Waiting for dealer {DealerName} to be initialized...");
+            // Check if all buyer.IsInitialised is false in Contacts.Buyers 
+            // If it is, wait until it is true or the timeout is reached
+            foreach (var buyer in Contacts.Buyers.Values)
             {
-                waited += Time.deltaTime;
-                yield return null;
+                if (!buyer.IsInitialized && waited < timeout)
+                {
+                    MelonLogger.Msg($"⏳ Waiting for dealer {buyer.DealerName} to be initialized...");
+                    waited += Time.deltaTime;
+                    yield return null;
+                }
             }
 
-            if (!IsInitialized || _DealerData == null)
+            if (!IsInitialized)
             {
                 // If the dealer data is still not initialized after the timeout, log a warning
                 MelonLogger.Warning($"⚠️ Dealer {DealerName} not initialized after timeout");

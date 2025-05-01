@@ -3,24 +3,26 @@ using System.Linq;
 using UnityEngine;
 using MelonLoader;
 using S1API.Items;
+using S1API.Money;
 using S1API.Storages;
 using S1API.DeadDrops;
 using S1API.Quests;
+using S1API.Products;
 using S1API.Saveables;
-using S1API.NPCs;
 using System.Collections.Generic;
+using S1API.Console;
 using S1API.GameTime;
 using S1API.Internal.Utils;
-using S1API.Products;
-using S1API.Utils;
-using Newtonsoft.Json;
-using MelonLoader.Utils;
+using S1API.PhoneApp;
+//using S1API.Quests.Constants;
+using Random = UnityEngine.Random;
 using System.IO;
+using MelonLoader.Utils;
 
 namespace Silkroad
 {
 
-    // This is a temporary mock method to test the logic. Will be replaced with the actual method to get the complete list of strings.
+    // This is temporary mock method to test the logic. Will be replaced with the actual method to get the complete list of strings.
     // A method that returns a list of strings randomly selected from the complete list of strings 
     //TODO
     public static class RandomEffectSelector
@@ -55,17 +57,37 @@ namespace Silkroad
     {
         [SaveableField("DeliveryData")]
         public DeliverySaveData Data = new DeliverySaveData();
-        public BlackmarketBuyer buyer = new BlackmarketBuyer();
+        public BlackmarketBuyer buyer;
         private DeadDropInstance deliveryDrop;
         public static HashSet<string> CompletedQuestKeys = new HashSet<string>();
-        private QuestEntry deliveryEntry;
-        private QuestEntry rewardEntry;
+        public QuestEntry deliveryEntry;
+        public QuestEntry rewardEntry;
         public static bool QuestActive = false;
         public static event Action OnQuestCompleted;
+        public static QuestDelivery? Active { get; internal set; }
 
-//move to time manager 
-//TODO
-private void TimeManagerOnDayPass()
+        public QuestEntry GetDeliveryEntry() => deliveryEntry;
+        public QuestEntry GetRewardEntry() => rewardEntry;
+        public void ForceCancel()
+        {
+            MelonLogger.Msg("🚫 QuestDelivery.ForceCancel() called.");
+
+            Data.Reward = -Data.Penalties[0];
+            Data.RepReward = -Data.Penalties[1];
+            //MelonCoroutines.Start(DelayedReward("Failed"));
+            GiveReward("Failed");
+            if (deliveryEntry != null && deliveryEntry.State != QuestState.Completed)
+                rewardEntry.SetState(QuestState.Failed); // ✅
+            if (rewardEntry != null && rewardEntry.State != QuestState.Completed)
+                rewardEntry.SetState(QuestState.Failed);
+            QuestActive = false;
+            Active = null; // 👈 Reset after cancel
+            Fail();
+        }
+
+        //move to time manager 
+        //TODO
+        private void ExpireCountdown()
         {
             //use syntax like += to add a new event handler to the DayPass event
             // Reduce the quest time by 1 day
@@ -73,28 +95,39 @@ private void TimeManagerOnDayPass()
             // Check if the quest time has expired
             if (Data.DealTime < 0)
             {
-                //var buyer = Contacts.GetBuyer(Data.DealerName);
                 // If the quest time has expired, fail the quest
-                buyer.SendCustomMessage("Expire", Data.ProductID);
                 Data.Reward = -Data.Penalties[0];
                 Data.RepReward = -Data.Penalties[1];
-                MelonCoroutines.Start(DelayedReward());
+                MelonCoroutines.Start(DelayedReward("Expired"));
+                //GiveReward("Expired");
+                if (deliveryEntry != null && deliveryEntry.State != QuestState.Completed)
+                    rewardEntry.SetState(QuestState.Expired); // ✅
+                if (rewardEntry != null && rewardEntry.State != QuestState.Completed)
+                    rewardEntry.SetState(QuestState.Expired);
+                QuestActive = false;
+                Active = null; // 👈 Reset after cancel
+                Expire();
             }
-    }
+        }
+
         protected override Sprite? QuestIcon
         {
             get
             {
-                MelonLogger.Msg($"QuestIcon: {Data.QuestImage??"null"}");
+                //MelonLogger.Msg($"QuestIcon: {Data.QuestImage ?? "null"}");
                 // Dynamically load the image based on the DealerImage of the current instance - Doesn't work
-                //TODO
+                //Use static image setting from PhoneApp Accept Quest
+                //TODO - Do I even want dealer image for this or the standard image - Optional
                 return ImageUtils.LoadImage(Data.QuestImage ?? Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", "SilkRoadIcon_quest.png"));
             }
         }
         protected override void OnLoaded()
         {
+            MelonLogger.Msg("OnLoaded called.");
             base.OnLoaded();
+            MelonLogger.Msg($"OnLoaded() done.");
             buyer = Contacts.GetBuyer(Data.DealerName);
+            TimeManager.OnDayPass += ExpireCountdown;
             MelonCoroutines.Start(WaitForBuyerAndSendStatus());
         }
 
@@ -102,7 +135,7 @@ private void TimeManagerOnDayPass()
         {
             float timeout = 5f;
             float waited = 0f;
-            MelonLogger.Msg("Waiting for buyer to be initialized...");
+            MelonLogger.Msg("WaitForBuyerAndSendStatus-Waiting for buyer to be initialized...");
             // while (Contacts.Buyers == null OR For all key value pairs in Contacts.Buyers, check if the value.IsInitialized is false for at least one of them OR waited < timeqout)
             while ((Contacts.Buyers == null || !Contacts.Buyers.Values.All(buyer => buyer.IsInitialized)) && waited < timeout)
             {
@@ -122,17 +155,17 @@ private void TimeManagerOnDayPass()
             }
 
         }
-        // Add a static instance to access the current quest from UI / Force Complete/Fail Quests
-        
-        
+
+
         protected override void OnCreated()
         {
-
+            MelonLogger.Msg("OnCreated called.");
             base.OnCreated();
+            MelonLogger.Msg($"OnCreated() done.");
             buyer = Contacts.GetBuyer(Data.DealerName);
             QuestActive = true;
-
-
+            Active = this;
+            TimeManager.OnDayPass += ExpireCountdown;
             if (!Data.Initialized)
             {
                 var drops = DeadDropManager.All?.ToList();
@@ -150,12 +183,13 @@ private void TimeManagerOnDayPass()
             {
                 deliveryDrop = DeadDropManager.All.FirstOrDefault(d => d.GUID == Data.DeliveryDropGUID);
             }
-
+            MelonLogger.Msg("📦 Testing 1.");
             deliveryEntry = AddEntry($"{Data.Task} at the dead drop.");
             deliveryEntry.POIPosition = deliveryDrop.Position;
             deliveryEntry.Begin();
 
             rewardEntry = AddEntry($"Wait for the payment to arrive.");
+            MelonLogger.Msg("📦 Setting rewardEntry state to Inactive.");
             rewardEntry.SetState(QuestState.Inactive);
 
             deliveryDrop.Storage.OnClosed += CheckDelivery;
@@ -177,34 +211,53 @@ private void TimeManagerOnDayPass()
         private void CheckDelivery()
         {
             MelonLogger.Msg("CheckDelivery called.");
-            MelonLogger.Msg($"Expecting ProductID: {Data.ProductID}, RequiredAmount: {Data.RequiredAmount}");
-            if (Data.RequiredAmount <= 0)
+
+            // Add null checks
+            if (deliveryDrop?.Storage?.Slots == null)
             {
-                
-                buyer.SendCustomMessage("Incomplete", Data.ProductID);
-                MelonLogger.Msg("❌ No required amount to deliver. Quest done.");
-                deliveryEntry.Complete();
-            rewardEntry.SetState(QuestState.Active);
-            MelonCoroutines.Start(DelayedReward());
+                MelonLogger.Error("❌ Storage or slots are null in CheckDelivery");
                 return;
             }
-            //necessary and optional effects are based on Data.RequiredDrug.Effects => Effect.Probability ==1 means necessary, else optional
-            List<string> necessaryEffects = Data.RequiredDrug.Effects.Where(e => e.Probability == 1).Select(e => e.Name).ToList();
-            List<string> optionalEffects = Data.RequiredDrug.Effects.Where(e => e.Probability < 1).Select(e => e.Name).ToList();
+
+            MelonLogger.Msg($"Expecting ProductID: {Data.ProductID}, RequiredAmount: {Data.RequiredAmount}");
 
             foreach (var slot in deliveryDrop.Storage.Slots)
             {
+                // Add null check for slot
+                if (slot?.ItemInstance == null)
+                {
+                    MelonLogger.Warning("⚠️ Encountered null slot or item instance, skipping...");
+                    continue;
+                }
+
                 bool isProductInstance = slot.ItemInstance is ProductInstance;
-                var item = ((ProductInstance)slot.ItemInstance);
-                MelonLogger.Msg($"Slot: {item.Definition.Category} - {slot.Quantity} - {item.Definition.Name} ");
-                string slotProductID = isProductInstance ? item.Definition.Name : "null";
-                string packaging = isProductInstance ? item.AppliedPackaging.Name : "null";
+                // Add null check and safe cast
+                var item = slot.ItemInstance as ProductInstance;
+                if (item == null)
+                {
+                    MelonLogger.Warning("⚠️ Item is not a ProductInstance, skipping...");
+                    continue;
+                }
+
+                MelonLogger.Msg($"Slot: {item.Definition?.Category} - {slot.Quantity} - {item.Definition?.Name} ");
+                string slotProductID = isProductInstance ? item.Definition?.Name : "null";
+                string packaging = isProductInstance ? item.AppliedPackaging?.Name : "null";
                 int quantity = slot.Quantity;
+
+                // Add null check for Data.NecessaryEffects
+                if (Data?.NecessaryEffects == null)
+                {
+                    MelonLogger.Error("❌ NecessaryEffects is null");
+                    return;
+                }
+
                 //Temporary list to hold the effects and test with dummy values
-                List<string> productEffects = RandomEffectSelector.GetRandomEffects(necessaryEffects, 8);
+                //TODO
+                List<string> productEffects = RandomEffectSelector.GetRandomEffects(Data.NecessaryEffects, 8);
                 //Check isProductInstance AND if productEffects contains ALL of the necessary effects
                 //ADD non-dummy check for quality and effects
-                if (isProductInstance && necessaryEffects.All(effect => productEffects.Contains(effect)))
+                //TODO
+                if (isProductInstance && Data.NecessaryEffects.All(effect => Data.NecessaryEffects.Contains(effect)))
                 {
                     uint total = (uint)(quantity * PackageAmount(packaging));
                     if (total <= Data.RequiredAmount)
@@ -231,22 +284,28 @@ private void TimeManagerOnDayPass()
                 //DebugUtils.LogObjectJson(definition, "Slot ItemInstance Definition");
                 //MelonLogger.Msg($"Slot: isProductInstance={isProductInstance}, productID={slotProductID}, packaging={packaging}, quantity={quantity}");
             }
-
-
-            if (Data.RequiredAmount > 0)
+            if (Data.RequiredAmount <= 0)
             {
-                MelonLogger.Msg($"❌ Not enough amount delivered. {Data.RequiredAmount} remaining.");
-                return;
+                buyer.SendCustomMessage("Success", Data.ProductID, (int)Data.RequiredAmount, Data.Quality, Data.NecessaryEffects, Data.OptionalEffects);
+                MelonLogger.Msg("❌ No required amount to deliver. Quest done.");
+                deliveryEntry.Complete();
+                rewardEntry.SetState(QuestState.Active);
+                MelonCoroutines.Start(DelayedReward("Completed"));
+
+            }
+            else
+            {
+                buyer.SendCustomMessage("Incomplete", Data.ProductID, (int)Data.RequiredAmount, Data.Quality, Data.NecessaryEffects, Data.OptionalEffects);
+                MelonLogger.Msg($"Continue delivery. Remaining amount: {Data.RequiredAmount}");
             }
 
-
-            
         }
 
         //Update Dummy with real effect and quality calculation
+        //TODO
         private void UpdateReward(uint total, ProductInstance? item)
         {
-            var itemDef=ItemManager.GetItemDefinition(item?.Definition.ID);
+            var itemDef = ItemManager.GetItemDefinition(item?.Definition.ID);
             if (itemDef is ProductDefinition productDef)
             {
                 // Dummy Reward calculation - to be replaced with effects and quality calculation
@@ -261,36 +320,56 @@ private void TimeManagerOnDayPass()
             }
         }
 
-        private System.Collections.IEnumerator DelayedReward()
+        //Call with QuestState to be set as string - UPDATABLE
+        private System.Collections.IEnumerator DelayedReward(string source)
         {
-            yield return new WaitForSeconds(RandomUtils.RangeInt(120, 200));
-            GiveReward();
+            yield return new WaitForSeconds(RandomUtils.RangeInt(60, 120));
+            GiveReward(source);
         }
 
-        private void GiveReward()
+        private void GiveReward(string source)
         {
-            var rewardAmount = Data.Reward;
-            ConsoleHelper.RunCashCommand(rewardAmount);
-            buyer.SendCustomMessage("Reward", Data.ProductID);
-            buyer.GiveReputation((int)Data.RepReward + 10);//todo
-            MelonLogger.Msg($"   Rewarded : ${rewardAmount} and Rep {Data.RepReward + 10} to {Data.DealerName}");
+            TimeManager.OnDayPass -= ExpireCountdown;
+            deliveryDrop.Storage.OnClosed -= CheckDelivery;
+            ConsoleHelper.RunCashCommand(Data.Reward);
+            buyer.GiveReputation((int)Data.RepReward + 10);//TODO - remove 10
+            MelonLogger.Msg($"   Rewarded : ${Data.Reward} and Rep {Data.RepReward + 10} to {Data.DealerName}");
+
+            if (source == "Expired")
+            {
+                buyer.SendCustomMessage("Expire", Data.ProductID, (int)Data.RequiredAmount, Data.Quality, Data.NecessaryEffects, Data.OptionalEffects);
+            }
+            else if (source == "Failed")
+            {
+                buyer.SendCustomMessage("Fail", Data.ProductID, (int)Data.RequiredAmount, Data.Quality, Data.NecessaryEffects, Data.OptionalEffects);
+            }
+            else if (source == "Completed")
+            {
+                buyer.SendCustomMessage("Reward", Data.ProductID, (int)Data.RequiredAmount, Data.Quality, Data.NecessaryEffects, Data.OptionalEffects);
+                buyer.IncreaseCompletedDeals(1);
+            }
+            else
+            {
+                MelonLogger.Error($"❌ Unknown source: {source}.");
+                return;
+            }
+            //buyer.IncreaseCompletedDeals(1);
+
             buyer.UnlockDrug();
-            buyer.IncreaseCompletedDeals(1);
+            Contacts.Initialize();
             buyer.SaveDealerData();
-
-
             QuestActive = false;
-            CompletedQuestKeys.Add($"{Data.ProductID}_{Data.RequiredAmount}");
+            //CompletedQuestKeys.Add($"{Data.ProductID}_{Data.RequiredAmount}");
             rewardEntry?.Complete();
             Complete();
             OnQuestCompleted?.Invoke();
             // Based on New Reputations, Check JSON to see if new NPC unlocked - Remove and Replace with button if slow/crash
-            Contacts.Initialize();
+           
         }
 
 
 
-        
+
 
         protected override string Title =>
             !string.IsNullOrEmpty(Data?.ProductID)

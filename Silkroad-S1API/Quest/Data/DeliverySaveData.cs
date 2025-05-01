@@ -20,11 +20,17 @@ public class DeliverySaveData
     public int DealTime;
     public float DealTimeMult;
     public List<int> Penalties; // Money and Rep Penalties for failing Deal
-    
+    public List<string> OptionalEffects;
+    public List<string> NecessaryEffects;
+    public string Quality;
+
+
     [JsonConstructor]
-    public DeliverySaveData() 
-    { 
+    public DeliverySaveData()
+    {
         Penalties = new List<int>(); // Initialize the list to avoid null reference
+        OptionalEffects = new List<string>();
+        NecessaryEffects = new List<string>();
     }
 
 }

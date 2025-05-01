@@ -4,17 +4,22 @@ using MelonLoader;
 using UnityEngine;
 using UnityEngine.UI;
 using S1API.UI;
-using S1API.Utils;
+using S1API.Console;
+using S1API.GameTime;
 using Silkroad;
 using System.Linq;
 using MelonLoader.Utils;
 using System.IO;
 using S1API.Internal.Utils;
+using Object = UnityEngine.Object;
+using S1API.Money;
 
 namespace Silkroad
 {
+
     public class MyApp : S1API.PhoneApp.PhoneApp
     {
+        public static BlackmarketBuyer saveBuyer { get; set; }
         protected override string AppName => "Silkroad";
         protected override string AppTitle => "Silkroad";
         protected override string IconLabel => "Silkroad";
@@ -22,61 +27,19 @@ namespace Silkroad
 
         private List<QuestData> quests;
         private RectTransform questListContainer;
-        private Text questTitle, questTask, questReward, deliveryStatus, acceptLabel;
-        private Button acceptButton;
+        private Text questTitle, questTask, questReward, deliveryStatus, acceptLabel, cancelLabel, refreshLabel;
+        private Button acceptButton, cancelButton, refreshButton;
         private Text statusText;
+        public static int Index;
 
-        //Bypass method to set quest image dynamically from dealer icon
+        //Bypass method to set quest image dynamically from dealer icon - not used - TODO
         public static string QuestImage;
-
-        protected override void OnCreatedUI(GameObject container)
+        protected override void OnCreated()
         {
-            var bg = UIFactory.Panel("MainBG", container.transform, Color.black, fullAnchor: true);
-
-            // Top bar with refresh button
-            UIFactory.TopBar("TopBar", bg.transform, "Silk Road", 150f, 10f, 0.82f, 75, 75, 0, 35,
-                () =>
-                {
-                    RefreshQuestList();
-                    LoadQuests();
-                }, "Refresh Quests");
-
-            // Status text below top bar
-            statusText = UIFactory.Text("Status", "", bg.transform, 14);
-            statusText.rectTransform.anchorMin = new Vector2(0.7f, 0.85f);
-            statusText.rectTransform.anchorMax = new Vector2(0.98f, 0.9f);
-            statusText.alignment = TextAnchor.MiddleRight;
-
-            var leftPanel = UIFactory.Panel("QuestListPanel", bg.transform, new Color(0.1f, 0.1f, 0.1f),
-                new Vector2(0.02f, 0f), new Vector2(0.49f, 0.82f));
-            questListContainer = UIFactory.ScrollableVerticalList("QuestListScroll", leftPanel.transform, out _);
-            UIFactory.FitContentHeight(questListContainer);
-
-            var rightPanel = UIFactory.Panel("DetailPanel", bg.transform, Color.white,
-                new Vector2(0.49f, 0f), new Vector2(0.98f, 0.82f));
-
-            UIFactory.VerticalLayoutOnGO(rightPanel, spacing: 12, padding: new RectOffset(10, 40, 10, 65));
-
-            //questTitle = UIFactory.Text("Title", "Select a quest", rightPanel.transform, 22, TextAnchor.UpperLeft, FontStyle.Bold);
-            //questTask = UIFactory.Text("Task", "Task: --", rightPanel.transform, 18);
-            //questReward = UIFactory.Text("Reward", "Reward: --", rightPanel.transform, 18);
-            //deliveryStatus = UIFactory.Text("Delivery", "", rightPanel.transform, 16);
-
-            questTitle = UIFactory.Text("Title", "", rightPanel.transform, 22, TextAnchor.UpperLeft, FontStyle.Bold);
-            questTask = UIFactory.Text("Task", "", rightPanel.transform, 18);
-            questReward = UIFactory.Text("Reward", "", rightPanel.transform, 18);
-            deliveryStatus = UIFactory.Text("Delivery", "", rightPanel.transform, 16);
-
-            var (acceptGO, acceptBtn, acceptLbl) = UIFactory.ButtonWithLabel("AcceptBtn", "Accept Delivery", rightPanel.transform, new Color(0.2f, 0.6f, 0.2f), 160, 100);
-            acceptButton = acceptBtn;
-            acceptLabel = acceptLbl;
-
-            // Automatically initialize dealers
-            InitializeDealers();
-            MelonLogger.Msg(statusText.text);
-            LoadQuests();
+            base.OnCreated();
+            MelonLogger.Msg("[SilkRoadApp] OnCreated called");
         }
-
+        
         private void InitializeDealers()
         {
             try
@@ -90,7 +53,185 @@ namespace Silkroad
                 MelonLogger.Error($"Failed to initialize dealers: {ex}");
             }
         }
+        protected override void OnCreatedUI(GameObject container)
+        {
 
+            var bg = UIFactory.Panel("MainBG", container.transform, Color.black, fullAnchor: true);
+
+            // Top bar with refresh button
+            UIFactory.TopBar(name: "TopBar",
+                parent: bg.transform,
+                title: "Silk Road",
+                topbarSize: 0.82f,
+                paddingLeft: 75,
+                paddingRight: 75,
+                paddingTop: 0,
+                paddingBottom: 35);
+
+            // Status text below top bar
+            statusText = UIFactory.Text("Status", "", bg.transform, 14);
+            statusText.rectTransform.anchorMin = new Vector2(0.7f, 0.85f);
+            statusText.rectTransform.anchorMax = new Vector2(0.98f, 0.9f);
+            statusText.alignment = TextAnchor.MiddleRight;
+
+            var leftPanel = UIFactory.Panel("QuestListPanel", bg.transform, new Color(0.1f, 0.1f, 0.1f),
+                new Vector2(0.02f, 0.05f), new Vector2(0.49f, 0.82f));
+            questListContainer = UIFactory.ScrollableVerticalList("QuestListScroll", leftPanel.transform, out _);
+            UIFactory.FitContentHeight(questListContainer);
+
+            var rightPanel = UIFactory.Panel("DetailPanel", bg.transform, new Color(0.12f, 0.12f, 0.12f),
+                new Vector2(0.49f, 0f), new Vector2(0.98f, 0.82f));
+
+            // Use vertical layout with padding and spacing like Tax & Wash
+            UIFactory.VerticalLayoutOnGO(rightPanel, spacing: 14, padding: new RectOffset(24, 50, 15, 70));
+
+            // Header
+            //questTitle = UIFactory.Text("Title", "Select a quest", rightPanel.transform, 24, TextAnchor.MiddleLeft, FontStyle.Bold);
+
+            // Styled task/reward rows (Label + Value style)
+            //questTask = UIFactory.Text("Task", "Task: --", rightPanel.transform, 18, TextAnchor.MiddleLeft, FontStyle.Normal);
+            //questReward = UIFactory.Text("Reward", "Reward: --", rightPanel.transform, 18, TextAnchor.MiddleLeft, FontStyle.Normal);
+            //deliveryStatus = UIFactory.Text("Delivery", "", rightPanel.transform, 16);
+
+            questTitle = UIFactory.Text("Title", "", rightPanel.transform, 24, TextAnchor.MiddleLeft, FontStyle.Bold);
+            questTask = UIFactory.Text("Task", "", rightPanel.transform, 18, TextAnchor.MiddleLeft, FontStyle.Normal);
+            questReward = UIFactory.Text("Reward", "", rightPanel.transform, 18, TextAnchor.MiddleLeft, FontStyle.Normal);
+            deliveryStatus = UIFactory.Text("DeliveryStatus", "", rightPanel.transform, 16, TextAnchor.MiddleLeft, FontStyle.Italic);
+            deliveryStatus.color = new Color(0.7f, 0.9f, 0.7f);
+            // Create a horizontal container for Refresh and Cancel
+            var topButtonRow = UIFactory.Panel("TopButtonRow", rightPanel.transform, Color.clear);
+            UIFactory.HorizontalLayoutOnGO(topButtonRow, spacing: 12);
+            UIFactory.SetLayoutGroupPadding(topButtonRow.GetComponent<HorizontalLayoutGroup>(), 0, 0, 0, 0);
+
+            // Create horizontal row for top buttons
+            var buttonRow = UIFactory.ButtonRow("TopButtons", rightPanel.transform, spacing: 14);
+
+            // Refresh Button
+            var (refreshGO, refreshBtn, refreshLbl) = UIFactory.RoundedButtonWithLabel("RefreshBtn", "Refresh Order list", buttonRow.transform, new Color32(32, 0x82, 0xF6, 0xff), 300, 90, 18, Color.white);
+            refreshButton = refreshBtn;
+            refreshLabel = refreshLbl;
+
+            ButtonUtils.AddListener(refreshButton, () => RefreshButton());
+
+            // Cancel Button
+
+            var (cancelGO, cancelBtn, cancelLbl) = UIFactory.RoundedButtonWithLabel("CancelBtn", "Cancel current Delivery", buttonRow.transform, new Color32(0XEB, 0X35, 0X38, 0Xff), 300, 90f, 18, Color.black);
+            cancelButton = cancelBtn;
+            cancelLabel = cancelLbl;
+            if (!QuestDelivery.QuestActive)
+                ButtonUtils.Disable(cancelButton, cancelLabel, "No quest active");
+
+
+            // Accept Button (separate row)
+            var (acceptGO, acceptBtn, acceptLbl) = UIFactory.RoundedButtonWithLabel("AcceptBtn", "No quest selected", rightPanel.transform, new Color32(0x91, 0xFF, 0x8E, 0xff), 460f, 60f, 22, Color.black);
+
+
+            acceptButton = acceptBtn;
+            acceptLabel = acceptLbl;
+            ButtonUtils.Disable(acceptBtn, acceptLabel, "No quest selected");
+            MelonCoroutines.Start(WaitForBuyerAndInitialize());
+        }
+        private System.Collections.IEnumerator WaitForBuyerAndInitialize()
+        {
+            float timeout = 5f;
+            float waited = 0f;
+
+            MelonLogger.Msg("WaitForBuyerAndInitialize-Waiting for buyers to be initialized...");
+
+            // Wait until Contacts.Buyers is initialized and all buyers are marked as initialized, or until the timeout is reached
+            while ((Contacts.Buyers == null || Contacts.Buyers.Count == 0 || !Contacts.Buyers.Values.All(buyer => buyer.IsInitialized)) && waited < timeout)
+            {
+                waited += Time.deltaTime;
+                yield return null; // Wait for the next frame
+            }
+
+            // Check if the timeout was reached
+            if (Contacts.Buyers == null || Contacts.Buyers.Count == 0 || !Contacts.Buyers.Values.All(buyer => buyer.IsInitialized))
+            {
+                MelonLogger.Warning("⚠️ Timeout reached. Some buyers are still not initialized.");
+                
+                // Log uninitialized buyers
+                if (Contacts.Buyers != null)
+                {
+                    foreach (var buyer in Contacts.Buyers.Values.Where(b => !b.IsInitialized))
+                    {
+                        MelonLogger.Warning($"Buyer not initialized: {buyer.DealerName}");
+                    }
+                }
+                yield break; // Exit the coroutine
+            }
+
+            // Log the count of initialized buyers
+            MelonLogger.Msg($"✅ Buyer with save data initialized: {Contacts.Buyers.Count} buyers found.");
+            
+            // Call InitializeDealers after all buyers are initialized
+            InitializeDealers();
+            MelonLogger.Msg("Dealers initialized successfully.");
+
+            // Load quests after initialization
+            LoadQuests();
+        }
+
+        //Balance - TODO
+        private void RefreshButton()
+        {
+            if (Money.GetCashBalance() < 420)
+            {
+                deliveryStatus.text = "Not Enough Money";
+                return;
+            }
+            RefreshQuestList();
+            LoadQuests();
+            ConsoleHelper.RunCashCommand(-420);
+        }
+
+        public static void ClearChildren(Transform parent)
+        {
+            if (parent == null)
+            {
+                MelonLogger.Warning("[UIFactory] ClearChildren called with null parent.");
+                return;
+            }
+
+            try
+            {
+                int count = parent.childCount;
+                for (int i = count - 1; i >= 0; i--)
+                {
+                    var child = parent.GetChild(i);
+                    if (child != null)
+                        Object.Destroy(child.gameObject);
+                }
+
+                MelonLogger.Msg($"[UIFactory] Cleared {count} children from: {parent.name}");
+            }
+            catch (System.Exception e)
+            {
+                MelonLogger.Error($"[UIFactory] Exception during ClearChildren: {e.Message}");
+            }
+        }
+        //Clear Child given a parent transform and an index
+        public static void ClearChild(Transform parent, int index)
+        {
+            if (parent == null || index < 0 || index >= parent.childCount)
+            {
+                MelonLogger.Warning($"[UIFactory] ClearChild called with invalid parameters.{{index:{index}, childCount:{parent.childCount}}}");
+                return;
+            }
+
+            try
+            {
+                var child = parent.GetChild(index);
+                if (child != null)
+                    Object.Destroy(child.gameObject);
+
+                MelonLogger.Msg($"[UIFactory] Cleared child at index {index} from: {parent.name}");
+            }
+            catch (System.Exception e)
+            {
+                MelonLogger.Error($"[UIFactory] Exception during ClearChild: {e.Message}");
+            }
+        }
         private void LoadQuests()
         {
             quests = new List<QuestData>();
@@ -190,8 +331,8 @@ namespace Silkroad
             if (lastQuality != null)
             {
                 quality = lastQuality.Type;
-                aggregateDollarMultMin = (1 + lastQuality.DollarMult)*(1+dealTimesMult);
-                aggregateRepMultMin = (1 + lastQuality.RepMult)*(1+dealTimesMult);
+                aggregateDollarMultMin = (1 + lastQuality.DollarMult) * (1 + dealTimesMult);
+                aggregateRepMultMin = (1 + lastQuality.RepMult) * (1 + dealTimesMult);
                 aggregateDollarMultMax = aggregateDollarMultMin;
                 aggregateRepMultMax = aggregateRepMultMin;
 
@@ -238,20 +379,11 @@ namespace Silkroad
                 effectDesc += (effectDesc.Length > 0 ? "; " : "") + $"Optional: {string.Join(", ", optionalEffects)}";
 
             var TimeLimit = 3;
-            var TimeLimitMult=1f;
-            var Penalties=new List<int> { 0, 0 };
+            var TimeLimitMult = 1f;
+            var Penalties = new List<int> { 0, 0 };
             //Roll a random index for buyer.DealTimes
-            var dealStart="";
-            if (buyer.SendCustomMessage("DealStart", drugType, (int)amount, quality, necessaryEffects, optionalEffects, true) is string msg)
-                {
-                    
-                    MelonLogger.Msg($"✅ Deal started: {msg}");
-                    dealStart = msg;
-                }
-            else
-            {
-                MelonLogger.Error($"❌ Deal Msg for Dealer '{buyer.DealerName}' not found.");
-            }
+
+
 
             var quest = new QuestData
             {
@@ -272,8 +404,10 @@ namespace Silkroad
                 DealTime = dealTime,
                 DealTimeMult = dealTimesMult,
                 Penalties = buyer.Penalties,
-                Buyer = buyer,
-                DealStart = dealStart,
+                Quality = quality,
+                NecessaryEffects = necessaryEffects,
+                OptionalEffects = optionalEffects,
+                Index = Index++
             };
 
             quests.Add(quest);
@@ -285,11 +419,35 @@ namespace Silkroad
             //MelonLogger.Msg($"   Required Drug: {quest.RequiredDrug}");
         }
 
+        private void CancelCurrentQuest(QuestData quest)
+        {
+            var active = QuestDelivery.Active;
+            if (active == null)
+            {
+                MelonLogger.Warning("❌ No active QuestDelivery found to cancel.");
+                deliveryStatus.text = "❌ No active delivery to cancel.";
+                return;
+            }
 
+            MelonLogger.Msg($"Active quest : {active.Data.ProductID} ");
+         try
+            {
+                active.ForceCancel();
+                deliveryStatus.text = "🚫 Delivery canceled.";
+                ButtonUtils.Disable(cancelButton, cancelLabel, "Canceled");
+                ButtonUtils.Enable(acceptButton, acceptLabel, "Accept Delivery");
+                //RefreshQuestList();//No Free Refresh - TODO
+            }
+            catch (Exception ex)
+            {
+                MelonLogger.Error($"❌ CancelCurrentQuest() exception: {ex}");
+                deliveryStatus.text = "❌ Cancel failed.";
+            }
+        }
         private void RefreshQuestList()
         {
-            UIFactory.ClearChildren(questListContainer);
-
+            ClearChildren(questListContainer);
+            Index = 0;
             foreach (var quest in quests)
             {
                 if (quest == null) continue;
@@ -304,33 +462,58 @@ namespace Silkroad
                     QuestDelivery.CompletedQuestKeys?.Contains($"{quest.ProductID}_{quest.AmountRequired}") == true);
             }
         }
-
-
-
         private void OnSelectQuest(QuestData quest)
         {
-            
-            
-            
             questTitle.text = quest.Title;
             questTask.text = $"Task: {quest.Task}";
             questReward.text = $" Rewards: ${quest.BonusDollar} + Pricex({quest.DollarMultiplierMin} - {quest.DollarMultiplierMax})\n" +
                 $"Rep :{quest.BonusRep} + Pricex({quest.RepMultiplierMin} - {quest.RepMultiplierMax})\n\n" +
                 $"Deal Expiry: {quest.DealTime} Day(s)\n" +
-                $"Failure Penalties: ${quest.Penalties[0]} + {quest.Penalties[1]} Rep\n" ;
+                $"Failure Penalties: ${quest.Penalties[0]} + {quest.Penalties[1]} Rep\n";
             deliveryStatus.text = "";
-            ButtonUtils.Enable(acceptButton, acceptLabel, "Accept Delivery");
-            ButtonUtils.ClearListeners(acceptButton);
-            ButtonUtils.AddListener(acceptButton, () => AcceptQuest(quest));
+            if (!QuestDelivery.QuestActive)
+            {
+                ButtonUtils.Enable(acceptButton, acceptLabel, "Accept Delivery");
+                ButtonUtils.ClearListeners(acceptButton);
+                ButtonUtils.AddListener(acceptButton, () => AcceptQuest(quest));
+            }
+
+            if (QuestDelivery.QuestActive)
+            {
+                ButtonUtils.Enable(acceptButton, acceptLabel, "In Progress");
+                ButtonUtils.ClearListeners(acceptButton);
+                ButtonUtils.AddListener(acceptButton, () => AcceptQuest(quest));
+                ButtonUtils.Enable(cancelButton, cancelLabel, "Cancel Current Delivery");
+                ButtonUtils.ClearListeners(cancelButton);
+                ButtonUtils.AddListener(cancelButton, () => CancelCurrentQuest(quest));
+            }
+
+            //ButtonUtils.Disable(cancelButton, cancelLabel, "No quest active");
+            ButtonUtils.ClearListeners(cancelButton);
+            ButtonUtils.AddListener(cancelButton, () => CancelCurrentQuest(quest));
+            ButtonUtils.Enable(refreshButton, refreshLabel, "Refresh Order List");
+            ButtonUtils.ClearListeners(refreshButton);
+            ButtonUtils.AddListener(refreshButton, () => RefreshButton());
+
         }
+
 
         private void AcceptQuest(QuestData quest)
         {
             if (QuestDelivery.QuestActive)
             {
                 deliveryStatus.text = "⚠️ Finish your current job first!";
+                ButtonUtils.Disable(acceptButton, acceptLabel, "In Progress");
+                ButtonUtils.SetStyle(acceptButton, acceptLabel, "In Progress", new Color32(0x91, 0xFF, 0x8E, 0xff));
                 return;
             }
+            var Buyer = Contacts.GetBuyer(quest.DealerName);
+            Buyer.SendCustomMessage("DealStart", quest.ProductID, (int)quest.AmountRequired, quest.Quality, quest.NecessaryEffects, quest.OptionalEffects);
+            MelonLogger.Msg($"✅ Deal started: ");
+
+            deliveryStatus.text = "📦 Delivery started!";
+            ButtonUtils.Disable(acceptButton, acceptLabel, "In Progress");
+            Buyer = Contacts.GetBuyer(quest.DealerName);
             var q = S1API.Quests.QuestManager.CreateQuest<QuestDelivery>();
             if (q is QuestDelivery delivery)
             {
@@ -345,8 +528,12 @@ namespace Silkroad
                 delivery.Data.DealTime = quest.DealTime;
                 delivery.Data.DealTimeMult = quest.DealTimeMult;
                 delivery.Data.Penalties = quest.Penalties;
+                delivery.Data.Quality = quest.Quality;
+                delivery.Data.NecessaryEffects = quest.NecessaryEffects;
+                delivery.Data.OptionalEffects = quest.OptionalEffects;
+                QuestDelivery.Active = delivery; // ✅ FIX: set Active manually here
 
-                if (quest.Buyer is BlackmarketBuyer buyer)
+                if (Buyer is BlackmarketBuyer buyer)
                 {
                     buyer.SendCustomMessage("Accept", quest.ProductID, (int)quest.AmountRequired);
                 }
@@ -356,7 +543,11 @@ namespace Silkroad
                 MelonLogger.Error("❌ Failed to create QuestDelivery instance - Accept Quest.");
                 return;
             }
-            deliveryStatus.text = "📦 Delivery started!";
+            MelonLogger.Msg($"✅ Quest accepted: {quest.Title}");
+            ClearChild(questListContainer, quest.Index);
+            ButtonUtils.SetStyle(acceptButton, acceptLabel, "In Progress", new Color32(0x91, 0xFF, 0x8E, 0xff));
+            acceptButton.interactable = false;
+            ButtonUtils.Enable(cancelButton, cancelLabel, "Cancel Current Delivery");
         }
     }
 }

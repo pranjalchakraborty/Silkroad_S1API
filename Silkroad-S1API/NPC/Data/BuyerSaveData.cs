@@ -11,5 +11,7 @@ public class BuyerSaveData
     public Dictionary<string, DealerSaveData> Dealers;
     
     [JsonConstructor]
-    public BuyerSaveData() {}
+    public BuyerSaveData() {
+        Dealers = new Dictionary<string, DealerSaveData>();
+    }
 }

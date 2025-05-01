@@ -35,22 +35,37 @@ Tasks:
 Functions:
 \\change placeholder dummy product effects and quality with real effects from s1api once supported
 Implement rewards based on effects and quality 
-=deal time limits, incomplete, success - dialogues - code
-json - balancing and design, dialogues -reward,success,incomplete, dealStart
-=quest app dialogues - code 
-update for s1api - silkroad
-=move drug type to from unique types 
-=icon
-=ui changes
-create real NPCs
-make refresh cost 420 and refrer implementation
 re-visit TODO comments
-
-Tests:
-\\test - progression, rewards, save/load
 
 Design:
 NPCs,Dialogues,Balance
+json - balancing and design, dialogues -reward,success,incomplete, dealStart
+
+=deal time limits, incomplete, success - dialogues - code
+=quest app dialogues - code 
+=update for s1api - silkroad
+=move drug type to from unique types 
+=icon
+=ui changes
+=make refresh cost 420 and refrer implementation
+=quest expiry func sub/unsub
+=remove taken quest
+
+
+Optional:
+//make expiry penalty a percentage of the deal, or tiered by rep/rank etc.
+//free daily refresh and on load
+//onboard bicky robby
+//cartel npc - force quests
+//partial json fields - days of order, order cooldown, order from product manager discovered products/ favorited products, unlock at rank
+//create real NPCs
+//add NPC avatars
+
+
+Tests:
+test - progression, rewards, save/load
+
+
 
 UI Tracker:
 add ui panel to show relations, product, quality, shipping, effects unlocks with drop down selector for each npc
@@ -61,4 +76,6 @@ replace refresh with management button
 
 UI/Performance Improvements:
 //add button in app to check if NPC unlock criteria met/update - Initialize()/Update from JSON in delivery rewards to be replaced
+//better UI
+//Dealer Image on Quest/Journal/DeadDrop Icons
 

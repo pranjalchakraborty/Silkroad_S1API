@@ -4,9 +4,9 @@
       "name": "Combo 'Costco'",
       "image": "combo.png",
       "dealTimes": [
-        2,
-        3,
-        4
+        0,
+        1,
+        2
       ],
       "dealTimesMult": [
         1.5,
@@ -194,9 +194,9 @@
       "name": "Badger",
       "image": "badger.png",
       "dealTimes": [
-        2,
-        3,
-        4
+        0,
+        1,
+        2
       ],
       "dealTimesMult": [
         1.5,
@@ -329,9 +329,9 @@
       "name": "Skinny Pete",
       "image": "skinny_pete.png",
       "dealTimes": [
-        2,
-        3,
-        4
+        0,
+        1,
+        2
       ],
       "dealTimesMult": [
         1.5,
@@ -345,7 +345,7 @@
       "unlockRequirements": [
         {
           "name": "Combo 'Costco'",
-          "minRep": 0
+          "minRep": 10
         }
       ],
       "drugs": [
@@ -464,9 +464,9 @@
       "name": "Domingo 'Krazy-8' Molina",
       "image": "krazy8.png",
       "dealTimes": [
-        2,
-        3,
-        4
+        0,
+        1,
+        2
       ],
       "dealTimesMult": [
         1.5,
@@ -480,7 +480,7 @@
       "unlockRequirements": [
         {
           "name": "Jesse Pinkman",
-          "minRep": 0
+          "minRep": 10
         }
       ],
       "drugs": [
@@ -727,9 +727,9 @@
       "name": "Tuco Salamanca",
       "image": "tuco.png",
       "dealTimes": [
-        2,
-        3,
-        4
+        0,
+        1,
+        2
       ],
       "dealTimesMult": [
         1.5,
@@ -743,11 +743,11 @@
       "unlockRequirements": [
         {
           "name": "Domingo 'Krazy-8' Molina",
-          "minRep": 0
+          "minRep": 10
         },
         {
           "name": "Jesse Pinkman",
-          "minRep": 0
+          "minRep": 10
         }
       ],
       "drugs": [
@@ -922,9 +922,9 @@
       "name": "Jesse Pinkman",
       "image": "jesse.png",
       "dealTimes": [
-        2,
-        3,
-        4
+        0,
+        1,
+        2
       ],
       "dealTimesMult": [
         1.5,
@@ -938,15 +938,15 @@
       "unlockRequirements": [
         {
           "name": "Combo 'Costco'",
-          "minRep": 0
+          "minRep": 10
         },
         {
           "name": "Badger",
-          "minRep": 0
+          "minRep": 10
         },
         {
           "name": "Skinny Pete",
-          "minRep": 0
+          "minRep": 10
         }
       ],
       "drugs": [
@@ -1137,9 +1137,9 @@
       "name": "Gustavo Fring",
       "image": "gus.png",
       "dealTimes": [
-        2,
-        3,
-        4
+        0,
+        1,
+        2
       ],
       "dealTimesMult": [
         1.5,
@@ -1153,11 +1153,11 @@
       "unlockRequirements": [
         {
           "name": "Jesse Pinkman",
-          "minRep": 0
+          "minRep": 10
         },
         {
           "name": "Tuco Salamanca",
-          "minRep": 0
+          "minRep": 10
         }
       ],
       "drugs": [
@@ -1346,9 +1346,9 @@
       "name": "Lydia Rodarte-Quayle",
       "image": "lydia.png",
       "dealTimes": [
-        2,
-        3,
-        4
+        0,
+        1,
+        2
       ],
       "dealTimesMult": [
         1.5,
@@ -1362,11 +1362,11 @@
       "unlockRequirements": [
         {
           "name": "Gustavo Fring",
-          "minRep": 0
+          "minRep": 10
         },
         {
           "name": "Jesse Pinkman",
-          "minRep": 0
+          "minRep": 10
         }
       ],
       "drugs": [
@@ -1595,9 +1595,9 @@
       "name": "Don Eladio Vuente",
       "image": "don_eladio.png",
       "dealTimes": [
-        2,
-        3,
-        4
+        0,
+        1,
+        2
       ],
       "dealTimesMult": [
         1.5,
@@ -1611,11 +1611,11 @@
       "unlockRequirements": [
         {
           "name": "Gustavo Fring",
-          "minRep": 0
+          "minRep": 10
         },
         {
           "name": "Lydia Rodarte-Quayle",
-          "minRep": 0
+          "minRep": 10
         }
       ],
       "drugs": [
@@ -1737,9 +1737,9 @@
       "name": "Heisenberg",
       "image": "heisenberg.png",
       "dealTimes": [
-        2,
-        3,
-        4
+        0,
+        1,
+        2
       ],
       "dealTimesMult": [
         1.5,
@@ -1753,7 +1753,7 @@
       "unlockRequirements": [
         {
           "name": "Don Eladio Vuente",
-          "minRep": 0
+          "minRep": 10
         }
       ],
       "drugs": [

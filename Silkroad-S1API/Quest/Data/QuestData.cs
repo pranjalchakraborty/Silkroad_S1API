@@ -11,13 +11,14 @@ namespace Silkroad
         public uint AmountRequired;
         public string TargetObjectName;
         public string DealerName;
-
         public Drug RequiredDrug;
         public string? QuestImage;
         public int DealTime;
         public float DealTimeMult;
         public List<int> Penalties; // Money and Rep Penalties for failing Deal
-
+        public string Quality;
+        public List<string> NecessaryEffects;
+        public List<string> OptionalEffects;
         // No need to save. Only to show entries in PhoneApp
         public int BonusDollar;
         public float BonusRep;
@@ -25,7 +26,7 @@ namespace Silkroad
         public float RepMultiplierMin;
         public float DollarMultiplierMax;
         public float RepMultiplierMax;
-        public BlackmarketBuyer Buyer; 
-        public string DealStart;
+        public int Index;
+
     }
 }
