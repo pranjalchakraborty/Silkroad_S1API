@@ -27,8 +27,8 @@ namespace Silkroad
 
         private List<QuestData> quests;
         private RectTransform questListContainer;
-        private Text questTitle, questTask, questReward, deliveryStatus, acceptLabel, cancelLabel, refreshLabel;
-        private Button acceptButton, cancelButton, refreshButton;
+        private Text questTitle, questTask, questReward, deliveryStatus, acceptLabel, cancelLabel, refreshLabel, detailsLabel;
+        private Button acceptButton, cancelButton, refreshButton, detailsButton;
         private Text statusText;
         public static int Index;
 
@@ -115,22 +115,117 @@ namespace Silkroad
 
             // Cancel Button
 
-            var (cancelGO, cancelBtn, cancelLbl) = UIFactory.RoundedButtonWithLabel("CancelBtn", "Cancel current Delivery", buttonRow.transform, new Color32(0XEB, 0X35, 0X38, 0Xff), 300, 90f, 18, Color.black);
+            var (cancelGO, cancelBtn, cancelLbl) = UIFactory.RoundedButtonWithLabel("CancelBtn", "Cancel current Delivery", buttonRow.transform, new Color32(32, 0x82, 0xF6, 0xff), 300, 90f, 18, Color.black);
             cancelButton = cancelBtn;
             cancelLabel = cancelLbl;
             if (!QuestDelivery.QuestActive)
                 ButtonUtils.Disable(cancelButton, cancelLabel, "No quest active");
 
-
             // Accept Button (separate row)
-            var (acceptGO, acceptBtn, acceptLbl) = UIFactory.RoundedButtonWithLabel("AcceptBtn", "No quest selected", rightPanel.transform, new Color32(0x91, 0xFF, 0x8E, 0xff), 460f, 60f, 22, Color.black);
+            var (acceptGO, acceptBtn, acceptLbl) = UIFactory.RoundedButtonWithLabel("AcceptBtn", "No quest selected", rightPanel.transform, new Color32(32, 0x82, 0xF6, 0xff), 460f, 60f, 22, Color.black);
 
 
             acceptButton = acceptBtn;
             acceptLabel = acceptLbl;
             ButtonUtils.Disable(acceptBtn, acceptLabel, "No quest selected");
+
+            var (detailsUI, detailsBtn, detailsLbl) = UIFactory.RoundedButtonWithLabel("detailsBtn", "Details", rightPanel.transform, new Color32(32, 0x82, 0xF6, 0xff), 460f, 60f, 22, Color.black);
+
+            detailsButton = detailsBtn;
+            detailsLabel = detailsLbl;
+
+            ButtonUtils.AddListener(detailsButton, () => OpenDetailsUI(bg));
+
             MelonCoroutines.Start(WaitForBuyerAndInitialize());
         }
+
+        private void OpenDetailsUI(GameObject bg)
+        {
+            // Create a modal panel
+            var modalPanel = UIFactory.Panel("ModalPanel", bg.transform, new Color(200, 200, 200, 0.3f), fullAnchor: true);
+            modalPanel.gameObject.SetActive(true);
+
+            modalPanel.transform.SetAsLastSibling();
+
+            // Add a background to the modal content
+            var contentBackground = UIFactory.Panel("ContentBackground", modalPanel.transform, new Color(0.2f, 0.2f, 0.2f, 1f));
+            var contentRect = contentBackground.GetComponent<RectTransform>();
+            contentRect.anchorMin = new Vector2(0.0f, 0.0f);
+            contentRect.anchorMax = new Vector2(1f, 1f);
+            contentRect.offsetMin = Vector2.zero;
+            contentRect.offsetMax = Vector2.zero;
+
+            // Add a top bar to the modal
+            var topBar = UIFactory.Panel("TopBar", modalPanel.transform, new Color(0.1f, 0.1f, 0.1f, 1f));
+            var topBarRect = topBar.GetComponent<RectTransform>();
+            topBarRect.anchorMin = new Vector2(0f, 0.9f); // Top 10% of the modal
+            topBarRect.anchorMax = new Vector2(1f, 1f);   // Full width
+            topBarRect.offsetMin = Vector2.zero;
+            topBarRect.offsetMax = Vector2.zero;
+
+            // Add a "Relations" button to the top bar
+            var (relationsGO, relationsBtn, relationsLbl) = UIFactory.RoundedButtonWithLabel(
+                "RelationsButton",
+                "Relations",
+                topBar.transform,
+                new Color32(32, 130, 246, 255), // Button color
+                50, // Width
+                25, // Height
+                18, // Font size
+                Color.white // Text color
+            );
+
+            // Position the button in the top bar
+            var relationsRect = relationsGO.GetComponent<RectTransform>();
+            relationsRect.anchorMin = new Vector2(0.05f, 0.5f); // Slightly inset from the left
+            relationsRect.anchorMax = new Vector2(0.05f, 0.5f); // Centered vertically
+            relationsRect.pivot = new Vector2(0.5f, 0.5f);      // Center pivot
+            relationsRect.anchoredPosition = Vector2.zero;      // No additional offset
+
+            // Add a listener to the "Relations" button
+            ButtonUtils.AddListener(relationsBtn, () => MelonLogger.Msg("Relations button clicked!"));
+
+            // Add a close button (red "X") to the top-right corner
+            var (closeGO, closeBtn, closeLbl) = UIFactory.RoundedButtonWithLabel(
+                "CloseButton",
+                "X",
+                modalPanel.transform,
+                new Color32(235, 53, 56, 255), // Red color
+                50, // Width
+                25, // Height
+                18, // Font size
+                Color.white // Text color
+            );
+
+            // Position the close button in the top-right corner
+            var closeRect = closeGO.GetComponent<RectTransform>();
+            closeRect.anchorMin = new Vector2(0.98f, 0.98f);
+            closeRect.anchorMax = new Vector2(1f, 1f);
+            closeRect.pivot = new Vector2(1f, 1f);
+            closeRect.anchoredPosition = new Vector2(-10f, -10f);
+            closeRect.sizeDelta = new Vector2(50, 50);
+
+            // Add a listener to the close button to destroy the modal panel
+            ButtonUtils.AddListener(closeBtn, () => Object.Destroy(modalPanel.gameObject));
+
+            // Add content to the modal
+            var description = UIFactory.Text(
+                "ModalDescription",
+                "This is a detailed description of the selected quest or feature.",
+                modalPanel.transform,
+                18,
+                TextAnchor.UpperLeft,
+                FontStyle.Normal
+            );
+
+            // Position the description
+            var descriptionRect = description.rectTransform;
+            descriptionRect.anchorMin = new Vector2(0.1f, 0.1f);
+            descriptionRect.anchorMax = new Vector2(0.9f, 0.7f);
+            descriptionRect.offsetMin = Vector2.zero;
+            descriptionRect.offsetMax = Vector2.zero;
+        }
+
         private System.Collections.IEnumerator WaitForBuyerAndInitialize()
         {
             float timeout = 5f;
