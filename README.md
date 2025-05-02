@@ -55,6 +55,7 @@ Design:
 NPCs Balance, Gamification - json
 
 
+
 Optional/Ideas/Feedback:
 // make expiry penalty a percentage of the deal, or tiered by rep/rank etc.
 // free daily refresh
@@ -81,3 +82,7 @@ also, its saying cancel current delivery after ive completed the delivery and af
 
 
 
+JSON splitter, save/load, combiner, editor workflow Choices:
+1. Split JSON then edit in web link = Possible
+2. Compile Git repo and splitter = Unknown 
+3. Create own splitter and editor = Done

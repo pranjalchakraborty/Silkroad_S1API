@@ -515,6 +515,7 @@ namespace Silkroad
             ButtonUtils.Disable(acceptButton, acceptLabel, "In Progress");
             Buyer = Contacts.GetBuyer(quest.DealerName);
             var q = S1API.Quests.QuestManager.CreateQuest<QuestDelivery>();
+            MelonLogger.Msg($"✅ Test 213: ");
             if (q is QuestDelivery delivery)
             {
                 delivery.Data.ProductID = quest.ProductID;

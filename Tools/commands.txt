@@ -1,0 +1,2 @@
+pyinstaller --name DealerEditor --onefile --windowed dealer_editor.py
+pyinstaller --name DealerSplitter --onefile --windowed dealer_splitter.py

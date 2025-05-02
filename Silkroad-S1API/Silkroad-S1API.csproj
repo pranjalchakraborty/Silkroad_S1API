@@ -103,9 +103,9 @@
        <Reference Include="UnityEngine.InputModule">
          <HintPath>..\..\Assemblies\Il2Cpp\UnityEngine.InputModule.dll</HintPath>
        </Reference>
-       <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
        <PackageReference Include="LavaGang.MelonLoader" Version="0.7.0" />
-       <PackageReference Include="S1API" Version="1.5.0" />
+       <PackageReference Include="S1API" Version="1.6.2" />
 
 
     </ItemGroup>
