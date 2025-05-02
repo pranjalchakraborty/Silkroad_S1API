@@ -76,7 +76,6 @@ namespace Silkroad
 
             var bg = UIFactory.Panel("MainBG", container.transform, Color.black, fullAnchor: true);
 
-            // Top bar with refresh button
             UIFactory.TopBar(name: "TopBar",
                 parent: bg.transform,
                 title: "Silk Road",
@@ -115,45 +114,77 @@ namespace Silkroad
             questTask = UIFactory.Text("Task", "", rightPanel.transform, 18, TextAnchor.MiddleLeft, FontStyle.Normal);
             questReward = UIFactory.Text("Reward", "", rightPanel.transform, 18, TextAnchor.MiddleLeft, FontStyle.Normal);
             deliveryStatus = UIFactory.Text("DeliveryStatus", "", rightPanel.transform, 16, TextAnchor.MiddleLeft, FontStyle.Italic);
-            deliveryStatus.color = new Color(0.7f, 0.9f, 0.7f);
+            deliveryStatus.color = new Color(32, 0x82, 0xF6, 0xff);
             // Create a horizontal container for Refresh and Cancel
             var topButtonRow = UIFactory.Panel("TopButtonRow", rightPanel.transform, Color.clear);
             UIFactory.HorizontalLayoutOnGO(topButtonRow, spacing: 12);
             UIFactory.SetLayoutGroupPadding(topButtonRow.GetComponent<HorizontalLayoutGroup>(), 0, 0, 0, 0);
 
-            // Create horizontal row for top buttons
-            var buttonRow = UIFactory.ButtonRow("TopButtons", rightPanel.transform, spacing: 14);
-
-            //Manage button
-            var (manageGO, manageBtn, ManageLbl) = UIFactory.RoundedButtonWithLabel("ManageBtn", "Manage", rightPanel.transform, new Color32(32, 0x82, 0xF6, 0xff), 460f, 60f, 22, Color.black);
-
-            manageButton = manageBtn;
-            manageLabel = ManageLbl;
-
-            ButtonUtils.AddListener(manageButton, () => OpenManageUI(bg));
-
-            // Cancel Button
-
-            var (cancelGO, cancelBtn, cancelLbl) = UIFactory.RoundedButtonWithLabel("CancelBtn", "Cancel current Delivery", buttonRow.transform, new Color32(32, 0x82, 0xF6, 0xff), 300, 90f, 18, Color.black);
-            cancelButton = cancelBtn;
-            cancelLabel = cancelLbl;
-            if (!QuestDelivery.QuestActive)
-                ButtonUtils.Disable(cancelButton, cancelLabel, "No quest active");
-
             // Accept Button (separate row)
             var (acceptGO, acceptBtn, acceptLbl) = UIFactory.RoundedButtonWithLabel("AcceptBtn", "No quest selected", rightPanel.transform, new Color32(32, 0x82, 0xF6, 0xff), 460f, 60f, 22, Color.black);
-
 
             acceptButton = acceptBtn;
             acceptLabel = acceptLbl;
             ButtonUtils.Disable(acceptBtn, acceptLabel, "No quest selected");
 
+            // Cancel Button
+            var (cancelGO, cancelBtn, cancelLbl) = UIFactory.RoundedButtonWithLabel("CancelBtn", "Cancel current delivery", rightPanel.transform, new Color32(32, 0x82, 0xF6, 0xff), 460f, 60f, 22, Color.black);
+            cancelButton = cancelBtn;
+            cancelLabel = cancelLbl;
+            if (!QuestDelivery.QuestActive)
+                ButtonUtils.Disable(cancelButton, cancelLabel, "No quest active");
+
+            //Manage button
+            var (manageGO, manageBtn, ManageLbl) =
+                UIFactory.RoundedButtonWithLabel
+                (
+                    "ManageBtn",
+                    "Manage",
+                    bg.transform,
+                    new Color(0.2f, 0.2f, 0.2f, 1f),
+                    20,
+                    20,
+                    22,
+                    Color.white
+                );
+
+            manageButton = manageBtn;
+            manageLabel = ManageLbl;
+
+            ButtonUtils.AddListener(manageBtn, () => OpenManageUI(bg));
+
+            // Set the position and size of the manage button
+            var manageRect = manageGO.GetComponent<RectTransform>();
+            manageRect.anchorMin = new Vector2(0.75f, 0.96f);
+            manageRect.anchorMax = new Vector2(0.85f, 1f);
+            manageRect.pivot = new Vector2(1f, 1f);
+            manageRect.anchoredPosition = new Vector2(-10f, -10f);
+            manageRect.sizeDelta = new Vector2(50, 25);
+
             // Refresh Button
-            var (refreshGO, refreshBtn, refreshLbl) = UIFactory.RoundedButtonWithLabel("RefreshBtn", "Refresh Order list", buttonRow.transform, new Color32(32, 0x82, 0xF6, 0xff), 300, 90, 18, Color.black);
+            var (refreshGO, refreshBtn, refreshLbl) = 
+                UIFactory.RoundedButtonWithLabel(
+                    "RefreshBtn", 
+                    "Refresh orders", 
+                    bg.transform,
+                    new Color(0.2f, 0.2f, 0.2f, 1f), 
+                    300, 
+                    90, 
+                    22, 
+                    Color.white
+                );
             refreshButton = refreshBtn;
             refreshLabel = refreshLbl;
 
             ButtonUtils.AddListener(refreshButton, () => RefreshButton());
+
+            // Set the position and size of the refresh button
+            var refreshRect = refreshGO.GetComponent<RectTransform>();
+            refreshRect.anchorMin = new Vector2(0.9f, 0.96f);
+            refreshRect.anchorMax = new Vector2(1f, 1f);
+            refreshRect.pivot = new Vector2(1f, 1f);
+            refreshRect.anchoredPosition = new Vector2(-10f, -10f);
+            refreshRect.sizeDelta = new Vector2(50, 25);
 
             MelonCoroutines.Start(WaitForBuyerAndInitialize());
         }
@@ -165,6 +196,25 @@ namespace Silkroad
 
             managementPanel.transform.SetAsLastSibling();
 
+            var (contentBackground, topBar, buttonRow) = SetupInitialPanel(managementPanel);
+
+            var detailsPanel = UIFactory.Panel("DetailsPanel", managementPanel.transform, new Color(0.1f, 0.1f, 0.1f),
+                new Vector2(0, 0), new Vector2(1, 0.82f));
+
+            var leftPanel = UIFactory.Panel("QuestListPanel", detailsPanel.transform, new Color(0.1f, 0.1f, 0.1f),
+                new Vector2(0.02f, 0.05f), new Vector2(0.49f, 0.82f));
+            questListContainer = UIFactory.ScrollableVerticalList("QuestListScroll", leftPanel.transform, out _);
+            UIFactory.FitContentHeight(questListContainer);
+
+            var rightPanel = UIFactory.Panel("DetailPanel", detailsPanel.transform, new Color(0.12f, 0.12f, 0.12f),
+                new Vector2(0.49f, 0f), new Vector2(0.98f, 0.82f));
+
+            // Use vertical layout with padding and spacing like Tax & Wash
+            UIFactory.VerticalLayoutOnGO(rightPanel, spacing: 14, padding: new RectOffset(24, 50, 15, 70));
+        }
+
+        private (GameObject contentBackground, GameObject topBar, GameObject buttonRow) SetupInitialPanel(GameObject managementPanel)
+        {
             var contentBackground = UIFactory.Panel("ContentBackground", managementPanel.transform, new Color(0.2f, 0.2f, 0.2f, 1f));
             var contentRect = contentBackground.GetComponent<RectTransform>();
             contentRect.anchorMin = new Vector2(0.0f, 0.0f);
@@ -187,6 +237,39 @@ namespace Silkroad
             buttonRowRect.anchoredPosition = new Vector2(2, -33);
             buttonRowRect.sizeDelta = new Vector2(0, 60);
 
+            AddButtonsToRow(buttonRow);
+
+            var (closeGO, closeBtn, closeLbl) = UIFactory.RoundedButtonWithLabel(
+                "CloseButton",
+                "X",
+                managementPanel.transform,
+                new Color32(235, 53, 56, 255),
+                50,
+                20,
+                12,
+                Color.white
+            );
+
+            var closeRect = closeGO.GetComponent<RectTransform>();
+            closeRect.anchorMin = new Vector2(0.98f, 0.98f);
+            closeRect.anchorMax = new Vector2(1f, 1f);
+            closeRect.pivot = new Vector2(1f, 1f);
+            closeRect.anchoredPosition = new Vector2(-10f, -10f);
+            closeRect.sizeDelta = new Vector2(25, 25);
+
+            ButtonUtils.AddListener(closeBtn, () => Object.Destroy(managementPanel.gameObject));
+
+            if (contentBackground == null || topBar == null || buttonRow == null)
+            {
+                MelonLogger.Error("Failed to create management panel components.");
+                return (null, null, null);
+            }
+
+            return (contentBackground, topBar, buttonRow);
+        }
+
+        private void AddButtonsToRow(GameObject buttonRow)
+        {
             var (relationsGO, relationsBtn, relationsLbl) = UIFactory.RoundedButtonWithLabel(
                 "RelationsButton",
                 "Relations",
@@ -234,45 +317,6 @@ namespace Silkroad
             shippingLabel = shippingLbl;
 
             RectTransformNavButton(shippingGO.GetComponent<RectTransform>());
-
-            var (closeGO, closeBtn, closeLbl) = UIFactory.RoundedButtonWithLabel(
-                "CloseButton",
-                "X",
-                managementPanel.transform,
-                new Color32(235, 53, 56, 255),
-                50,
-                20,
-                12,
-                Color.white
-            );
-
-            var closeRect = closeGO.GetComponent<RectTransform>();
-            closeRect.anchorMin = new Vector2(0.98f, 0.98f);
-            closeRect.anchorMax = new Vector2(1f, 1f);
-            closeRect.pivot = new Vector2(1f, 1f);
-            closeRect.anchoredPosition = new Vector2(-10f, -10f);
-            closeRect.sizeDelta = new Vector2(25, 25);
-
-            ButtonUtils.AddListener(closeBtn, () => Object.Destroy(managementPanel.gameObject));
-
-            // Temporary description text, will be replaced with a panel
-            var description = UIFactory.Text(
-                "ModalDescription",
-                "This description text will be replaced with a panel full of detailed information, default relations.",
-                managementPanel.transform,
-                18,
-                TextAnchor.UpperLeft,
-                FontStyle.Normal
-            );
-
-            var descriptionRect = description.rectTransform;
-            descriptionRect.anchorMin = new Vector2(0.1f, 0.1f);
-            descriptionRect.anchorMax = new Vector2(0.9f, 0.7f);
-
-            // Set listeners on navigation buttons to show descriptions
-            ButtonUtils.AddListener(relationsButton, () => SetDetailsContent(description, "Relations"));
-            ButtonUtils.AddListener(productButton, () => SetDetailsContent(description, "Product"));
-            ButtonUtils.AddListener(shippingButton, () => SetDetailsContent(description, "Shipping"));
         }
 
         private void RectTransformNavButton(RectTransform rect)
@@ -558,7 +602,7 @@ namespace Silkroad
 
             var quest = new QuestData
             {
-                Title = $"{buyer.DealerName} - {drugType} Delivery",
+                Title = $"{buyer.DealerName} wants {drugType} delivered.",
                 Task = $"Deliver {amount}x {quality} {drugType}" + (effectDesc.Length > 0 ? $" with [{effectDesc}]" : ""),
                 ProductID = drugType,
                 AmountRequired = (uint)amount,
@@ -651,10 +695,10 @@ namespace Silkroad
 
             if (QuestDelivery.QuestActive)
             {
-                ButtonUtils.Enable(acceptButton, acceptLabel, "In Progress");
+                ButtonUtils.Enable(acceptButton, acceptLabel, "In progress");
                 ButtonUtils.ClearListeners(acceptButton);
                 ButtonUtils.AddListener(acceptButton, () => AcceptQuest(quest));
-                ButtonUtils.Enable(cancelButton, cancelLabel, "Cancel Current Delivery");
+                ButtonUtils.Enable(cancelButton, cancelLabel, "Cancel current delivery");
                 ButtonUtils.ClearListeners(cancelButton);
                 ButtonUtils.AddListener(cancelButton, () => CancelCurrentQuest(quest));
             }
@@ -662,7 +706,7 @@ namespace Silkroad
             //ButtonUtils.Disable(cancelButton, cancelLabel, "No quest active");
             ButtonUtils.ClearListeners(cancelButton);
             ButtonUtils.AddListener(cancelButton, () => CancelCurrentQuest(quest));
-            ButtonUtils.Enable(refreshButton, refreshLabel, "Refresh Order List");
+            ButtonUtils.Enable(refreshButton, refreshLabel, "Refresh orders");
             ButtonUtils.ClearListeners(refreshButton);
             ButtonUtils.AddListener(refreshButton, () => RefreshButton());
 
@@ -675,7 +719,7 @@ namespace Silkroad
             {
                 deliveryStatus.text = "⚠️ Finish your current job first!";
                 ButtonUtils.Disable(acceptButton, acceptLabel, "In Progress");
-                ButtonUtils.SetStyle(acceptButton, acceptLabel, "In Progress", new Color32(0x91, 0xFF, 0x8E, 0xff));
+                ButtonUtils.SetStyle(acceptButton, acceptLabel, "In Progress", new Color32(32, 0x82, 0xF6, 0xff));
                 return;
             }
             var Buyer = Contacts.GetBuyer(quest.DealerName);
@@ -685,7 +729,7 @@ namespace Silkroad
             deliveryStatus.text = "📦 Delivery started!";
             ButtonUtils.Disable(acceptButton, acceptLabel, "In Progress");
             Buyer = Contacts.GetBuyer(quest.DealerName);
-            var q = S1API.Quests.QuestManager.CreateQuest<QuestDelivery>();
+            var q = S1API.Quests.QuestManager.CreateQuest<QuestDelivery>(); new Color32(32, 0x82, 0xF6, 0xff);
             if (q is QuestDelivery delivery)
             {
                 delivery.Data.ProductID = quest.ProductID;
@@ -716,7 +760,7 @@ namespace Silkroad
             }
             MelonLogger.Msg($"✅ Quest accepted: {quest.Title}");
             ClearChild(questListContainer, quest.Index);
-            ButtonUtils.SetStyle(acceptButton, acceptLabel, "In Progress", new Color32(0x91, 0xFF, 0x8E, 0xff));
+            ButtonUtils.SetStyle(acceptButton, acceptLabel, "In Progress", new Color32(32, 0x82, 0xF6, 0xff));
             acceptButton.interactable = false;
             ButtonUtils.Enable(cancelButton, cancelLabel, "Cancel Current Delivery");
         }
