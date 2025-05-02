@@ -1,0 +1,174 @@
+{
+    "name": "The Cousins",
+    "image": "cousins.png",
+    "dealTimes": [
+        1,
+        2
+    ],
+    "dealTimesMult": [
+        1.8,
+        1.4
+    ],
+    "penalties": [
+        10000,
+        30
+    ],
+    "unlockRequirements": [
+        {
+            "name": "Hector Salamanca",
+            "minRep": 15
+        },
+        {
+            "name": "Tuco Salamanca",
+            "minRep": 40
+        }
+    ],
+    "drugs": [
+        {
+            "type": "cocaine",
+            "bonus_dollar": 1000,
+            "bonus_rep": 35,
+            "base_dollar_mult": 2.2,
+            "base_rep_mult": 2.2,
+            "unlockRep": 0,
+            "qualities": [
+                {
+                    "type": "premium",
+                    "dollar_mult": 0.55,
+                    "rep_mult": 0.55,
+                    "unlockRep": 0
+                },
+                {
+                    "type": "heavenly",
+                    "dollar_mult": 0.75,
+                    "rep_mult": 0.75,
+                    "unlockRep": 20
+                }
+            ],
+            "effects": [
+                {
+                    "type": "Lethal",
+                    "unlockRep": 0,
+                    "probability": 1,
+                    "dollar_mult": 0.9,
+                    "rep_mult": 0.3
+                },
+                {
+                    "type": "Energizing",
+                    "unlockRep": 5,
+                    "probability": 1,
+                    "dollar_mult": 0.4,
+                    "rep_mult": 0.12
+                },
+                {
+                    "type": "Explosive",
+                    "unlockRep": 15,
+                    "probability": 0.5,
+                    "dollar_mult": 0.82,
+                    "rep_mult": 0.26
+                }
+            ]
+        },
+        {
+            "type": "meth",
+            "bonus_dollar": 900,
+            "bonus_rep": 30,
+            "base_dollar_mult": 2.0,
+            "base_rep_mult": 2.0,
+            "unlockRep": 10,
+            "qualities": [
+                {
+                    "type": "premium",
+                    "dollar_mult": 0.5,
+                    "rep_mult": 0.5,
+                    "unlockRep": 10
+                },
+                {
+                    "type": "heavenly",
+                    "dollar_mult": 0.7,
+                    "rep_mult": 0.7,
+                    "unlockRep": 30
+                }
+            ],
+            "effects": [
+                {
+                    "type": "Lethal",
+                    "unlockRep": 10,
+                    "probability": 1,
+                    "dollar_mult": 0.88,
+                    "rep_mult": 0.29
+                },
+                {
+                    "type": "Paranoia",
+                    "unlockRep": 18,
+                    "probability": 1,
+                    "dollar_mult": 0.75,
+                    "rep_mult": 0.24
+                },
+                {
+                    "type": "Seizure-Inducing",
+                    "unlockRep": 25,
+                    "probability": 0.5,
+                    "dollar_mult": 0.82,
+                    "rep_mult": 0.27
+                }
+            ]
+        }
+    ],
+    "shipping": [
+        {
+            "name": "Silver Axe Transport",
+            "cost": 30000,
+            "unlockRep": 0,
+            "minAmount": 40,
+            "stepAmount": 20,
+            "maxAmount": 160
+        },
+        {
+            "name": "Cross-Border Cattle Truck",
+            "cost": 70000,
+            "unlockRep": 25,
+            "minAmount": 100,
+            "stepAmount": 20,
+            "maxAmount": 300
+        }
+    ],
+    "dialogue": {
+        "intro": [
+            "..."
+        ],
+        "dealStart": [
+            "... {amount} ... {quality} ... {product} ... {effects} ... {optionalEffects} ...",
+            "{amount} ... {product} ... {effects} ... {optionalEffects} ... Now.",
+            "La familia needs ... {amount} ... {quality} ... {product} ... {effects} ... {optionalEffects} ..."
+        ],
+        "accept": [
+            "*Nod*",
+            "..."
+        ],
+        "incomplete": [
+            "*Stare intensifies* ... {amount} ...",
+            "*Glares* ... More ... {amount} ...",
+            "*Tilts head* ... {amount} ..."
+        ],
+        "expire": [
+            "*Turns and walks away*",
+            "..."
+        ],
+        "fail": [
+            "*Draws weapon*",
+            "*Cracks knuckles*",
+            "..."
+        ],
+        "success": [
+            "*Takes package, nods*",
+            "...",
+            "Bueno."
+        ],
+        "reward": [
+            "*Slides money forward*",
+            "*Points to money*",
+            "..."
+        ]
+    }
+}

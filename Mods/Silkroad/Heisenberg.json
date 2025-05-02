@@ -1,0 +1,152 @@
+{
+    "name": "Heisenberg",
+    "image": "heisenberg.png",
+    "dealTimes": [
+        4,
+        6,
+        8
+    ],
+    "dealTimesMult": [
+        1.8,
+        1.4,
+        1.0
+    ],
+    "penalties": [
+        20000,
+        50
+    ],
+    "unlockRequirements": [
+        "{'name': 'Gustavo Fring'",
+        "'minRep': 40}",
+        "{'name': 'Lydia Rodarte-Quayle'",
+        "'minRep': 30}",
+        "{'name': 'Jack Welker'",
+        "'minRep': 15}",
+        "{'name': 'Jesse Pinkman'",
+        "'minRep': 50}"
+    ],
+    "drugs": [
+        {
+            "type": "meth",
+            "bonus_dollar": 2000,
+            "bonus_rep": 50,
+            "base_dollar_mult": 3,
+            "base_rep_mult": 3,
+            "unlockRep": 0,
+            "qualities": [
+                {
+                    "type": "premium",
+                    "dollar_mult": 0.65,
+                    "rep_mult": 0.65,
+                    "unlockRep": 0
+                },
+                {
+                    "type": "heavenly",
+                    "dollar_mult": 0.9,
+                    "rep_mult": 0.9,
+                    "unlockRep": 99999
+                }
+            ],
+            "effects": [
+                {
+                    "type": "Focused",
+                    "unlockRep": 0,
+                    "probability": 1,
+                    "dollar_mult": 0.55,
+                    "rep_mult": 0.2
+                },
+                {
+                    "type": "Euphoric",
+                    "unlockRep": 5,
+                    "probability": 1,
+                    "dollar_mult": 0.5,
+                    "rep_mult": 0.18
+                },
+                {
+                    "type": "Thought-Provoking",
+                    "unlockRep": 10,
+                    "probability": 0.5,
+                    "dollar_mult": 0.22,
+                    "rep_mult": 0.09
+                },
+                {
+                    "type": "Paranoia",
+                    "unlockRep": 20,
+                    "probability": 0.5,
+                    "dollar_mult": 0.8,
+                    "rep_mult": 0.28
+                },
+                {
+                    "type": "Lethal",
+                    "unlockRep": 40,
+                    "probability": 0.5,
+                    "dollar_mult": 0.95,
+                    "rep_mult": 0.35
+                }
+            ]
+        }
+    ],
+    "shipping": [
+        {
+            "name": "Aztek Shipping Solutions",
+            "cost": 80000,
+            "unlockRep": 0,
+            "minAmount": 100,
+            "stepAmount": 20,
+            "maxAmount": 300
+        },
+        {
+            "name": "Gray Matter Logistics",
+            "cost": 200000,
+            "unlockRep": 25,
+            "minAmount": 200,
+            "stepAmount": 20,
+            "maxAmount": 400
+        },
+        {
+            "name": "Empire Business International",
+            "cost": 400000,
+            "unlockRep": 50,
+            "minAmount": 300,
+            "stepAmount": 20,
+            "maxAmount": 500
+        }
+    ],
+    "dialogue": {
+        "intro": [
+            "I am the one who knocks."
+        ],
+        "dealStart": [
+            "I require {amount} of my {quality} {product}. Purity is {effects}. Precision is {optionalEffects}. Do not disappoint me.",
+            "The empire demands {amount} {quality} {product}. It must exhibit {effects} and potentially {optionalEffects}. Deliver.",
+            "Prepare {amount} {quality} {product}. The formula requires {effects}. {optionalEffects} may be beneficial. Execute flawlessly."
+        ],
+        "accept": [
+            "Let\u2019s proceed.",
+            "We have a deal. Excellent."
+        ],
+        "incomplete": [
+            "This is not the full quantity. {amount} was the order. You are testing my patience.",
+            "Incomplete. My calculations were precise. You are short {amount}. Correct this.",
+            "Fulfill the entire order - {amount}. Now."
+        ],
+        "expire": [
+            "Time's up. You've failed to meet the schedule. This partnership is dissolved.",
+            "You've lost your window. Inefficiency is a liability I won't tolerate."
+        ],
+        "fail": [
+            "This product is compromised. Substandard. You are incompetent.",
+            "This is unacceptable. You have failed. Stay out of my territory."
+        ],
+        "success": [
+            "Exactly as specified. Excellent.",
+            "The quality is satisfactory. Proceed with distribution.",
+            "Correct. Your execution is adequate."
+        ],
+        "reward": [
+            "Payment rendered. Maintain this standard.",
+            "The funds are transferred. Discretion is expected.",
+            "Your compensation. Remember who is in charge."
+        ]
+    }
+}

@@ -1,0 +1,176 @@
+{
+    "name": "Hector Salamanca",
+    "image": "hector.png",
+    "dealTimes": [
+        2,
+        4,
+        6
+    ],
+    "dealTimesMult": [
+        1.2,
+        1.0,
+        0.8
+    ],
+    "penalties": [
+        5000,
+        18
+    ],
+    "unlockRequirements": [
+        {
+            "name": "Tuco Salamanca",
+            "minRep": 30
+        },
+        {
+            "name": "Domingo 'Krazy-8' Molina",
+            "minRep": 20
+        }
+    ],
+    "drugs": [
+        {
+            "type": "cocaine",
+            "bonus_dollar": 500,
+            "bonus_rep": 20,
+            "base_dollar_mult": 1.6,
+            "base_rep_mult": 1.6,
+            "unlockRep": 0,
+            "qualities": [
+                {
+                    "type": "standard",
+                    "dollar_mult": 0.3,
+                    "rep_mult": 0.3,
+                    "unlockRep": 0
+                },
+                {
+                    "type": "premium",
+                    "dollar_mult": 0.5,
+                    "rep_mult": 0.5,
+                    "unlockRep": 20
+                }
+            ],
+            "effects": [
+                {
+                    "type": "Energizing",
+                    "unlockRep": 0,
+                    "probability": 1,
+                    "dollar_mult": 0.35,
+                    "rep_mult": 0.09
+                },
+                {
+                    "type": "Explosive",
+                    "unlockRep": 10,
+                    "probability": 1,
+                    "dollar_mult": 0.75,
+                    "rep_mult": 0.22
+                },
+                {
+                    "type": "Lethal",
+                    "unlockRep": 15,
+                    "probability": 0.5,
+                    "dollar_mult": 0.85,
+                    "rep_mult": 0.28
+                }
+            ]
+        },
+        {
+            "type": "meth",
+            "bonus_dollar": 450,
+            "bonus_rep": 18,
+            "base_dollar_mult": 1.5,
+            "base_rep_mult": 1.5,
+            "unlockRep": 8,
+            "qualities": [
+                {
+                    "type": "standard",
+                    "dollar_mult": 0.28,
+                    "rep_mult": 0.28,
+                    "unlockRep": 8
+                },
+                {
+                    "type": "premium",
+                    "dollar_mult": 0.45,
+                    "rep_mult": 0.45,
+                    "unlockRep": 25
+                }
+            ],
+            "effects": [
+                {
+                    "type": "Euphoric",
+                    "unlockRep": 8,
+                    "probability": 1,
+                    "dollar_mult": 0.4,
+                    "rep_mult": 0.11
+                },
+                {
+                    "type": "Paranoia",
+                    "unlockRep": 15,
+                    "probability": 1,
+                    "dollar_mult": 0.72,
+                    "rep_mult": 0.21
+                },
+                {
+                    "type": "Seizure-Inducing",
+                    "unlockRep": 20,
+                    "probability": 0.5,
+                    "dollar_mult": 0.8,
+                    "rep_mult": 0.25
+                }
+            ]
+        }
+    ],
+    "shipping": [
+        {
+            "name": "El Paso Trucking Co.",
+            "cost": 8000,
+            "unlockRep": 0,
+            "minAmount": 20,
+            "stepAmount": 5,
+            "maxAmount": 60
+        },
+        {
+            "name": "Casa Tranquila Deliveries",
+            "cost": 20000,
+            "unlockRep": 20,
+            "minAmount": 40,
+            "stepAmount": 20,
+            "maxAmount": 100
+        }
+    ],
+    "dialogue": {
+        "intro": [
+            "*Ding ding ding*"
+        ],
+        "dealStart": [
+            "*Ding* ({amount}) *Ding* ({quality}) *Ding* ({product}) *Ding* ({effects}) {optionalEffects}?",
+            "*Ding ding* ({amount}) *Ding* ({quality}) *Ding* ({product}). *Ding ding ding* ({effects}) {optionalEffects}!",
+            "*Ding* ({amount}) *Ding* ({product})... *Ding ding* ({effects}) {optionalEffects}!"
+        ],
+        "accept": [
+            "*Ding*",
+            "*Ding ding*"
+        ],
+        "incomplete": [
+            "*Ding ding ding ding ding*! ({amount}!)",
+            "*Angry dinging* ({amount}!)",
+            "*Frantic dinging*"
+        ],
+        "expire": [
+            "*Slow, deliberate ding...*",
+            "*Silence... then one sharp DING*"
+        ],
+        "fail": [
+            "*Violent, repeated dinging*",
+            "DA BOSS CAN SOCK ME!",
+            "*Spits* *Ding ding ding*"
+        ],
+        "success": [
+            "*Nods slowly* *Ding*",
+            "*Satisfied ding*",
+            "*One calm ding*"
+        ],
+        "reward": [
+            "*Points with bell* *Ding*",
+            "*Bell tap towards money*",
+            "*Ding* (Take it)"
+        ]
+    }
+}

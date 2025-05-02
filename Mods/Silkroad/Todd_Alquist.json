@@ -1,0 +1,143 @@
+{
+    "name": "Todd Alquist",
+    "image": "todd.png",
+    "dealTimes": [
+        2,
+        3,
+        4
+    ],
+    "dealTimesMult": [
+        1.4,
+        1.1,
+        0.9
+    ],
+    "penalties": [
+        5500,
+        18
+    ],
+    "unlockRequirements": [
+        {
+            "name": "Jesse Pinkman",
+            "minRep": 30
+        },
+        {
+            "name": "Lydia Rodarte-Quayle",
+            "minRep": 10
+        }
+    ],
+    "drugs": [
+        {
+            "type": "meth",
+            "bonus_dollar": 550,
+            "bonus_rep": 22,
+            "base_dollar_mult": 1.9,
+            "base_rep_mult": 1.9,
+            "unlockRep": 0,
+            "qualities": [
+                {
+                    "type": "standard",
+                    "dollar_mult": 0.3,
+                    "rep_mult": 0.3,
+                    "unlockRep": 0
+                },
+                {
+                    "type": "premium",
+                    "dollar_mult": 0.5,
+                    "rep_mult": 0.5,
+                    "unlockRep": 15
+                },
+                {
+                    "type": "heavenly",
+                    "dollar_mult": 0.7,
+                    "rep_mult": 0.7,
+                    "unlockRep": 35
+                }
+            ],
+            "effects": [
+                {
+                    "type": "Focused",
+                    "unlockRep": 0,
+                    "probability": 1,
+                    "dollar_mult": 0.46,
+                    "rep_mult": 0.16
+                },
+                {
+                    "type": "Euphoric",
+                    "unlockRep": 10,
+                    "probability": 0.5,
+                    "dollar_mult": 0.4,
+                    "rep_mult": 0.13
+                },
+                {
+                    "type": "Sedating",
+                    "unlockRep": 20,
+                    "probability": 0.5,
+                    "dollar_mult": 0.32,
+                    "rep_mult": 0.09
+                },
+                {
+                    "type": "Lethal",
+                    "unlockRep": 30,
+                    "probability": 0.5,
+                    "dollar_mult": 0.85,
+                    "rep_mult": 0.28
+                }
+            ]
+        }
+    ],
+    "shipping": [
+        {
+            "name": "Vamonos Pest Control Trucks",
+            "cost": 15000,
+            "unlockRep": 0,
+            "minAmount": 20,
+            "stepAmount": 5,
+            "maxAmount": 100
+        },
+        {
+            "name": "El Camino Express",
+            "cost": 40000,
+            "unlockRep": 25,
+            "minAmount": 40,
+            "stepAmount": 20,
+            "maxAmount": 200
+        }
+    ],
+    "dialogue": {
+        "intro": [
+            "Hey... Mr. White? Or, uh, you're the supplier? Okay. Right on."
+        ],
+        "dealStart": [
+            "So, uh, Uncle Jack needs {amount} of the {quality} {product}. He said make sure it's got the {effects} thing {optionalEffects}. Okay?",
+            "Right, the cook needs {amount} {quality} {product}. Needs to be {effects} {optionalEffects}. Just follow the instructions, should be simple.",
+            "Okay, so, {amount} {quality} {product}. Needs the {effects} effect {optionalEffects}. No big deal, right?"
+        ],
+        "accept": [
+            "Okay. Cool.",
+            "Right on. Let's do it."
+        ],
+        "incomplete": [
+            "Uh... this isn't {amount}. Did something happen?",
+            "Hey, uh, we need {amount} total. This is... less.",
+            "Just need the other {amount}. No worries."
+        ],
+        "expire": [
+            "Shoot. Took too long. Uncle Jack's not gonna like that.",
+            "Ah, man. Missed the pickup. Sorry."
+        ],
+        "fail": [
+            "Uh oh. This isn't right. That's... that's not good.",
+            "This isn't the blue stuff. Or... whatever it's supposed to be. Gotta fix this."
+        ],
+        "success": [
+            "Okay. Looks good.",
+            "Nice. Thanks.",
+            "Alright. Appreciate it."
+        ],
+        "reward": [
+            "Here you go. Payment.",
+            "Okay, money's here.",
+            "This is yours. Right on."
+        ]
+    }
+}

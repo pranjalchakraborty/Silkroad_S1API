@@ -1,0 +1,224 @@
+{
+    "name": "Jesse Pinkman",
+    "image": "jesse.png",
+    "dealTimes": [
+        2,
+        3,
+        4
+    ],
+    "dealTimesMult": [
+        1.2,
+        1.0,
+        0.8
+    ],
+    "penalties": [
+        800,
+        5
+    ],
+    "unlockRequirements": [
+        "{'name': 'Badger'",
+        "'minRep': 8}",
+        "{'name': 'Skinny Pete'",
+        "'minRep': 8}"
+    ],
+    "drugs": [
+        {
+            "type": "meth",
+            "bonus_dollar": 100,
+            "bonus_rep": 8,
+            "base_dollar_mult": 0,
+            "base_rep_mult": 0,
+            "unlockRep": 0,
+            "qualities": [
+                {
+                    "type": "standard",
+                    "dollar_mult": 0.18,
+                    "rep_mult": 0.18,
+                    "unlockRep": 0
+                },
+                {
+                    "type": "premium",
+                    "dollar_mult": 0.3,
+                    "rep_mult": 0.3,
+                    "unlockRep": 20
+                }
+            ],
+            "effects": [
+                {
+                    "type": "Euphoric",
+                    "unlockRep": 0,
+                    "probability": 1,
+                    "dollar_mult": 0.35,
+                    "rep_mult": 0.1
+                },
+                {
+                    "type": "Focused",
+                    "unlockRep": 8,
+                    "probability": 0.5,
+                    "dollar_mult": 0.4,
+                    "rep_mult": 0.12
+                },
+                {
+                    "type": "Paranoia",
+                    "unlockRep": 15,
+                    "probability": 0.5,
+                    "dollar_mult": 0.65,
+                    "rep_mult": 0.18
+                }
+            ]
+        },
+        {
+            "type": "meth",
+            "bonus_dollar": 80,
+            "bonus_rep": 3,
+            "base_dollar_mult": 0,
+            "base_rep_mult": 0,
+            "unlockRep": 5,
+            "qualities": [
+                {
+                    "type": "poor",
+                    "dollar_mult": 0.05,
+                    "rep_mult": -0.1,
+                    "unlockRep": 5
+                },
+                {
+                    "type": "standard",
+                    "dollar_mult": 0.12,
+                    "rep_mult": 0.0,
+                    "unlockRep": 12
+                }
+            ],
+            "effects": [
+                {
+                    "type": "Spicy",
+                    "unlockRep": 5,
+                    "probability": 1,
+                    "dollar_mult": 0.18,
+                    "rep_mult": 0.04
+                },
+                {
+                    "type": "Euphoric",
+                    "unlockRep": 8,
+                    "probability": 0.5,
+                    "dollar_mult": 0.3,
+                    "rep_mult": 0.06
+                },
+                {
+                    "type": "Smelly",
+                    "unlockRep": 12,
+                    "probability": 0.5,
+                    "dollar_mult": 0.55,
+                    "rep_mult": -0.08
+                }
+            ]
+        },
+        {
+            "type": "weed",
+            "bonus_dollar": 60,
+            "bonus_rep": 5,
+            "base_dollar_mult": 0,
+            "base_rep_mult": 0,
+            "unlockRep": 10,
+            "qualities": [
+                {
+                    "type": "standard",
+                    "dollar_mult": 0.15,
+                    "rep_mult": 0.15,
+                    "unlockRep": 10
+                },
+                {
+                    "type": "premium",
+                    "dollar_mult": 0.25,
+                    "rep_mult": 0.25,
+                    "unlockRep": 25
+                }
+            ],
+            "effects": [
+                {
+                    "type": "Calming",
+                    "unlockRep": 10,
+                    "probability": 1,
+                    "dollar_mult": 0.5,
+                    "rep_mult": 0.15
+                },
+                {
+                    "type": "Munchies",
+                    "unlockRep": 18,
+                    "probability": 0.5,
+                    "dollar_mult": 0.45,
+                    "rep_mult": 0.12
+                },
+                {
+                    "type": "Refreshing",
+                    "unlockRep": 22,
+                    "probability": 0.5,
+                    "dollar_mult": 0.4,
+                    "rep_mult": 0.1
+                }
+            ]
+        }
+    ],
+    "shipping": [
+        {
+            "name": "The Crystal Ship",
+            "cost": 2000,
+            "unlockRep": 0,
+            "minAmount": 5,
+            "stepAmount": 1,
+            "maxAmount": 20
+        },
+        {
+            "name": "Homie Hydraulics Crew",
+            "cost": 5000,
+            "unlockRep": 15,
+            "minAmount": 10,
+            "stepAmount": 5,
+            "maxAmount": 40
+        },
+        {
+            "name": "NA Meeting 'Delivery' Van",
+            "cost": 10000,
+            "unlockRep": 30,
+            "minAmount": 20,
+            "stepAmount": 5,
+            "maxAmount": 60
+        }
+    ],
+    "dialogue": {
+        "intro": [
+            "Yo! Mr. White sent you? Or... wait, who are you? You got the blue?"
+        ],
+        "dealStart": [
+            "Alright yo, listen up! I need like, {amount} of that bitchin' {quality} {product}. Gotta be {effects}, you know? Science! {optionalEffects}!",
+            "Check it, my peeps need {amount} of the {quality} {product}. Needs that signature {effects} vibe {optionalEffects}. Make it happen, bitch!",
+            "Yo! Need {amount} {quality} {product}. That primo stuff. They want that {effects} feel {optionalEffects}. Don't screw this up, alright?"
+        ],
+        "accept": [
+            "Yeah, science, bitch!",
+            "Let\u2019s do this, yo!"
+        ],
+        "incomplete": [
+            "Yo, what the hell? This ain't {amount}! Bring the rest, man!",
+            "Seriously? Where's the other {amount}? Don't be a d-bag!",
+            "Dude! {amount} total! You shorting me? Not cool, bitch!"
+        ],
+        "expire": [
+            "Yo, time's up! Where you been? Deal's dead, man.",
+            "Way too slow, bitch! Lost the window. I'm out."
+        ],
+        "fail": [
+            "What is this crap?! You trying to pull a fast one? Get lost!",
+            "This is messed up, yo! Total garbage! You're fired!"
+        ],
+        "success": [
+            "Yeah! That's the stuff! Science, bitch!",
+            "Alright! Lookin' good, yo.",
+            "Hell yeah. This'll fly."
+        ],
+        "reward": [
+            "Here's the skrilla, yo. Keep it real.",
+            "Boom! Payment, bitch!",
+            "Money's wired. Yeah, magnets!"
+        ]
+    }
+}

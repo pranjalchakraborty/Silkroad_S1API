@@ -1,0 +1,188 @@
+{
+    "name": "Tuco Salamanca",
+    "image": "tuco.png",
+    "dealTimes": [
+        1,
+        2
+    ],
+    "dealTimesMult": [
+        1.5,
+        1.2
+    ],
+    "penalties": [
+        3000,
+        12
+    ],
+    "unlockRequirements": [
+        {
+            "name": "Domingo 'Krazy-8' Molina",
+            "minRep": 10
+        },
+        {
+            "name": "Jesse Pinkman",
+            "minRep": 18
+        }
+    ],
+    "drugs": [
+        {
+            "type": "meth",
+            "bonus_dollar": 300,
+            "bonus_rep": 15,
+            "base_dollar_mult": 1.2,
+            "base_rep_mult": 1.2,
+            "unlockRep": 0,
+            "qualities": [
+                {
+                    "type": "standard",
+                    "dollar_mult": 0.22,
+                    "rep_mult": 0.22,
+                    "unlockRep": 0
+                },
+                {
+                    "type": "premium",
+                    "dollar_mult": 0.35,
+                    "rep_mult": 0.35,
+                    "unlockRep": 15
+                }
+            ],
+            "effects": [
+                {
+                    "type": "Euphoric",
+                    "unlockRep": 0,
+                    "probability": 1,
+                    "dollar_mult": 0.35,
+                    "rep_mult": 0.1
+                },
+                {
+                    "type": "Explosive",
+                    "unlockRep": 5,
+                    "probability": 1,
+                    "dollar_mult": 0.8,
+                    "rep_mult": 0.25
+                },
+                {
+                    "type": "Paranoia",
+                    "unlockRep": 10,
+                    "probability": 0.5,
+                    "dollar_mult": 0.7,
+                    "rep_mult": 0.2
+                },
+                {
+                    "type": "Disorienting",
+                    "unlockRep": 20,
+                    "probability": 0.5,
+                    "dollar_mult": 0.75,
+                    "rep_mult": 0.22
+                }
+            ]
+        },
+        {
+            "type": "cocaine",
+            "bonus_dollar": 400,
+            "bonus_rep": 18,
+            "base_dollar_mult": 1.3,
+            "base_rep_mult": 1.3,
+            "unlockRep": 10,
+            "qualities": [
+                {
+                    "type": "standard",
+                    "dollar_mult": 0.25,
+                    "rep_mult": 0.25,
+                    "unlockRep": 10
+                },
+                {
+                    "type": "premium",
+                    "dollar_mult": 0.4,
+                    "rep_mult": 0.4,
+                    "unlockRep": 25
+                }
+            ],
+            "effects": [
+                {
+                    "type": "Energizing",
+                    "unlockRep": 10,
+                    "probability": 1,
+                    "dollar_mult": 0.35,
+                    "rep_mult": 0.08
+                },
+                {
+                    "type": "Euphoric",
+                    "unlockRep": 18,
+                    "probability": 0.5,
+                    "dollar_mult": 0.4,
+                    "rep_mult": 0.1
+                },
+                {
+                    "type": "Explosive",
+                    "unlockRep": 22,
+                    "probability": 0.5,
+                    "dollar_mult": 0.78,
+                    "rep_mult": 0.24
+                }
+            ]
+        }
+    ],
+    "shipping": [
+        {
+            "name": "Salamanca Muscle Convoy",
+            "cost": 6000,
+            "unlockRep": 0,
+            "minAmount": 10,
+            "stepAmount": 5,
+            "maxAmount": 40
+        },
+        {
+            "name": "Abuela's Secret Tunnel",
+            "cost": 18000,
+            "unlockRep": 20,
+            "minAmount": 20,
+            "stepAmount": 5,
+            "maxAmount": 80
+        },
+        {
+            "name": "Salamanca Private Charter",
+            "cost": 50000,
+            "unlockRep": 40,
+            "minAmount": 40,
+            "stepAmount": 20,
+            "maxAmount": 100
+        }
+    ],
+    "dialogue": {
+        "intro": [
+            "WHO ARE YOU?! You got the stuff or you wasting my time?! Talk!"
+        ],
+        "dealStart": [
+            "BLUE! YELLOW! PINK! Whatever man, just bring me {amount} of that {quality} {product}! Make it tight, tight, tight! Needs that {effects} kick {optionalEffects}! YOU UNDERSTAND?!",
+            "LISTEN TO ME! {amount}! {quality} {product}! Gotta be {effects} {optionalEffects}! NO CHILI P! You bring me garbage, I'll KILL YOU!",
+            "HEY! ASSHOLE! I need {amount} {quality} {product}! Make sure it's got that {effects} punch {optionalEffects}! Don't make me ask twice!"
+        ],
+        "accept": [
+            "You\u2019re in, for now.",
+            "Deal\u2019s on, don\u2019t screw it up!"
+        ],
+        "incomplete": [
+            "WHAT IS THIS?! HALF?! ARE YOU STUPID?! BRING ME THE REST! {amount} MORE! NOW!",
+            "YOU THINK THIS IS A GAME?! {amount} TOTAL! WHERE IS IT?!",
+            "SHORT?! YOU THINK YOU CAN SHORT ME?! YOU CRAZY?! GET THE OTHER {amount}!"
+        ],
+        "expire": [
+            "TOO SLOW! YOU THINK I GOT ALL DAY?! GET OUT! YOU'RE DONE!",
+            "WHAT ARE YOU, A TURTLE?! DEALS OFF! GO! NOW!"
+        ],
+        "fail": [
+            "THIS IS SHIT! YOU TRYING TO POISON ME?! *snorts* YOU'RE DEAD!",
+            "YOU FUCKED UP! YOU FUCKED UP! NOBODY FUCKS ME OVER!"
+        ],
+        "success": [
+            "Alright! Finally! Looks tight!",
+            "*Snorts* YEAH! THAT'S THE STUFF!",
+            "Heh heh. Good. REAL GOOD."
+        ],
+        "reward": [
+            "Here's your money! Now GET OUT!",
+            "Take it! Don't look at me!",
+            "Yeah, yeah, payment. Scram!"
+        ]
+    }
+}

@@ -1,0 +1,183 @@
+{
+    "name": "Domingo 'Krazy-8' Molina",
+    "image": "krazy8.png",
+    "dealTimes": [
+        2,
+        3,
+        4
+    ],
+    "dealTimesMult": [
+        1.3,
+        1.1,
+        0.9
+    ],
+    "penalties": [
+        1500,
+        8
+    ],
+    "unlockRequirements": [
+        {
+            "name": "Jesse Pinkman",
+            "minRep": 15
+        },
+        {
+            "name": "Saul Goodman",
+            "minRep": 5
+        }
+    ],
+    "drugs": [
+        {
+            "type": "meth",
+            "bonus_dollar": 180,
+            "bonus_rep": 10,
+            "base_dollar_mult": 1.0,
+            "base_rep_mult": 1.0,
+            "unlockRep": 0,
+            "qualities": [
+                {
+                    "type": "standard",
+                    "dollar_mult": 0.2,
+                    "rep_mult": 0.2,
+                    "unlockRep": 0
+                },
+                {
+                    "type": "premium",
+                    "dollar_mult": 0.32,
+                    "rep_mult": 0.32,
+                    "unlockRep": 18
+                }
+            ],
+            "effects": [
+                {
+                    "type": "Euphoric",
+                    "unlockRep": 0,
+                    "probability": 1,
+                    "dollar_mult": 0.38,
+                    "rep_mult": 0.1
+                },
+                {
+                    "type": "Paranoia",
+                    "unlockRep": 8,
+                    "probability": 1,
+                    "dollar_mult": 0.7,
+                    "rep_mult": 0.2
+                },
+                {
+                    "type": "Disorienting",
+                    "unlockRep": 15,
+                    "probability": 0.5,
+                    "dollar_mult": 0.75,
+                    "rep_mult": 0.22
+                }
+            ]
+        },
+        {
+            "type": "cocaine",
+            "bonus_dollar": 280,
+            "bonus_rep": 12,
+            "base_dollar_mult": 1.1,
+            "base_rep_mult": 1.1,
+            "unlockRep": 12,
+            "qualities": [
+                {
+                    "type": "standard",
+                    "dollar_mult": 0.22,
+                    "rep_mult": 0.22,
+                    "unlockRep": 12
+                },
+                {
+                    "type": "premium",
+                    "dollar_mult": 0.35,
+                    "rep_mult": 0.35,
+                    "unlockRep": 28
+                }
+            ],
+            "effects": [
+                {
+                    "type": "Energizing",
+                    "unlockRep": 12,
+                    "probability": 1,
+                    "dollar_mult": 0.32,
+                    "rep_mult": 0.07
+                },
+                {
+                    "type": "Focused",
+                    "unlockRep": 20,
+                    "probability": 0.5,
+                    "dollar_mult": 0.4,
+                    "rep_mult": 0.11
+                },
+                {
+                    "type": "Paranoia",
+                    "unlockRep": 25,
+                    "probability": 0.5,
+                    "dollar_mult": 0.68,
+                    "rep_mult": 0.19
+                }
+            ]
+        }
+    ],
+    "shipping": [
+        {
+            "name": "Molina Furniture Delivery",
+            "cost": 3000,
+            "unlockRep": 0,
+            "minAmount": 5,
+            "stepAmount": 1,
+            "maxAmount": 25
+        },
+        {
+            "name": "Repo Yard Runners",
+            "cost": 8000,
+            "unlockRep": 15,
+            "minAmount": 10,
+            "stepAmount": 5,
+            "maxAmount": 50
+        },
+        {
+            "name": "Discrete Armored Transport",
+            "cost": 15000,
+            "unlockRep": 30,
+            "minAmount": 20,
+            "stepAmount": 5,
+            "maxAmount": 80
+        }
+    ],
+    "dialogue": {
+        "intro": [
+            "So... you're the new supplier everyone's whispering about. Let's see if you live up to the hype."
+        ],
+        "dealStart": [
+            "Alright, business. I require {amount} of {quality} {product}. My clients expect a certain... potency. {effects}, understand? {optionalEffects}.",
+            "Let's cut the chatter. Need {amount} {quality} {product}. The market demands {effects} {optionalEffects}. Deliver exactly that.",
+            "The arrangement is for {amount} {quality} {product}. It must have the specified {effects} characteristics {optionalEffects}. No substitutions, no excuses."
+        ],
+        "accept": [
+            "Good, let\u2019s proceed.",
+            "Deal\u2019s set, move it."
+        ],
+        "incomplete": [
+            "This isn't the full amount. You think I don't notice? I need {amount} total. Now.",
+            "Where is the remainder? My patience wears thin. Bring the other {amount}.",
+            "Don't play games. The deal was for {amount}. You're short."
+        ],
+        "expire": [
+            "You wasted valuable time. The opportunity is gone. Find someone else to disappoint.",
+            "My schedule is precise. Your delay is unacceptable. Consider this arrangement terminated."
+        ],
+        "fail": [
+            "Did you think I wouldn't find out? This is an insult. You're finished in this town.",
+            "You are either incompetent or treacherous. Either way, you are no longer useful."
+        ],
+        "success": [
+            "Acceptable. It appears as described.",
+            "This meets the requirements. Barely.",
+            "Hmph. Adequate."
+        ],
+        "reward": [
+            "Payment as agreed. Don't expect gratitude.",
+            "The funds have been transferred. Ensure future deliveries are punctual.",
+            "Here is your compensation. Remember who you work for."
+        ]
+    }
+}

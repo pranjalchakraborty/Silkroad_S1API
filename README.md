@@ -39,8 +39,6 @@ bonus_dollar and bonus_rep are actually the base rewards for any deal irrespecti
 while the mult fields are corresponding reward increases.
 probability=1 in effects means those are necessary effects in the product to be accepted. optional means you may give them to get the added rewards as expressed in mult field.
 
-Tools:
-JSON editor/manipulator, splitter based on dealer and combiner into empire.json
 
 Tasks:
 
@@ -54,7 +52,22 @@ MVP Functions:
 Design:
 NPCs Balance, Gamification - json
 
+Tools:
+JSON editor/manipulator, splitter based on dealer and combiner into empire.json
 
+Tests:
+test - progression, rewards, effects/quality, save/load, put non items in drop
+
+UI Tracker:
+add ui panel to show relations, product, quality, shipping, effects unlocks with drop down selector for each npc
+add shipping unlock costs - now unavailable - on button press deduct corresponding fee and call shipping upgrade function
+also, its saying cancel current delivery after ive completed the delivery and after refreshing the orders
+// better UI
+
+JSON splitter, save/load, combiner, editor workflow Choices:
+1. Split JSON then edit in web link = Possible
+2. Compile Git repo and splitter into one exe = Unknown 
+3. Create own splitter and editor = Done
 
 Optional/Ideas/Feedback:
 // make expiry penalty a percentage of the deal, or tiered by rep/rank etc.
@@ -68,21 +81,7 @@ Optional/Ideas/Feedback:
 // generate quest per variable day - days of order
 
 
-Tests:
-test - progression, rewards, effects/quality, save/load, put non items in drop
-
-
-
-UI Tracker:
-add ui panel to show relations, product, quality, shipping, effects unlocks with drop down selector for each npc
-add shipping unlock costs - now unavailable - on button press deduct corresponding fee and call shipping upgrade function
-also, its saying cancel current delivery after ive completed the delivery and after refreshing the orders
-// better UI
 
 
 
 
-JSON splitter, save/load, combiner, editor workflow Choices:
-1. Split JSON then edit in web link = Possible
-2. Compile Git repo and splitter = Unknown 
-3. Create own splitter and editor = Done
