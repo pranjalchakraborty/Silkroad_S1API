@@ -729,7 +729,7 @@ namespace Silkroad
             deliveryStatus.text = "📦 Delivery started!";
             ButtonUtils.Disable(acceptButton, acceptLabel, "In Progress");
             Buyer = Contacts.GetBuyer(quest.DealerName);
-            var q = S1API.Quests.QuestManager.CreateQuest<QuestDelivery>(); new Color32(32, 0x82, 0xF6, 0xff);
+            var q = S1API.Quests.QuestManager.CreateQuest<QuestDelivery>();
             if (q is QuestDelivery delivery)
             {
                 delivery.Data.ProductID = quest.ProductID;
