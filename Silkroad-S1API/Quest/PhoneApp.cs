@@ -27,26 +27,8 @@ namespace Silkroad
 
         private List<QuestData> quests;
         private RectTransform questListContainer;
-        private Text 
-            questTitle, 
-            questTask, 
-            questReward, 
-            deliveryStatus, 
-            acceptLabel, 
-            cancelLabel, 
-            refreshLabel, 
-            manageLabel, 
-            relationsLabel,
-            productLabel,
-            shippingLabel;
-        private Button 
-            acceptButton, 
-            cancelButton, 
-            refreshButton, 
-            manageButton, 
-            relationsButton,
-            productButton,
-            shippingButton;
+        private Text questTitle, questTask, questReward, deliveryStatus, acceptLabel, cancelLabel, refreshLabel;
+        private Button acceptButton, cancelButton, refreshButton;
         private Text statusText;
         public static int Index;
 
@@ -76,6 +58,7 @@ namespace Silkroad
 
             var bg = UIFactory.Panel("MainBG", container.transform, Color.black, fullAnchor: true);
 
+            // Top bar with refresh button
             UIFactory.TopBar(name: "TopBar",
                 parent: bg.transform,
                 title: "Silk Road",
@@ -114,238 +97,40 @@ namespace Silkroad
             questTask = UIFactory.Text("Task", "", rightPanel.transform, 18, TextAnchor.MiddleLeft, FontStyle.Normal);
             questReward = UIFactory.Text("Reward", "", rightPanel.transform, 18, TextAnchor.MiddleLeft, FontStyle.Normal);
             deliveryStatus = UIFactory.Text("DeliveryStatus", "", rightPanel.transform, 16, TextAnchor.MiddleLeft, FontStyle.Italic);
-            deliveryStatus.color = new Color(32, 0x82, 0xF6, 0xff);
+            deliveryStatus.color = new Color(0.7f, 0.9f, 0.7f);
             // Create a horizontal container for Refresh and Cancel
             var topButtonRow = UIFactory.Panel("TopButtonRow", rightPanel.transform, Color.clear);
             UIFactory.HorizontalLayoutOnGO(topButtonRow, spacing: 12);
             UIFactory.SetLayoutGroupPadding(topButtonRow.GetComponent<HorizontalLayoutGroup>(), 0, 0, 0, 0);
 
-            // Accept Button (separate row)
-            var (acceptGO, acceptBtn, acceptLbl) = UIFactory.RoundedButtonWithLabel("AcceptBtn", "No quest selected", rightPanel.transform, new Color32(32, 0x82, 0xF6, 0xff), 460f, 60f, 22, Color.black);
-
-            acceptButton = acceptBtn;
-            acceptLabel = acceptLbl;
-            ButtonUtils.Disable(acceptBtn, acceptLabel, "No quest selected");
-
-            // Cancel Button
-            var (cancelGO, cancelBtn, cancelLbl) = UIFactory.RoundedButtonWithLabel("CancelBtn", "Cancel current delivery", rightPanel.transform, new Color32(32, 0x82, 0xF6, 0xff), 460f, 60f, 22, Color.black);
-            cancelButton = cancelBtn;
-            cancelLabel = cancelLbl;
-            if (!QuestDelivery.QuestActive)
-                ButtonUtils.Disable(cancelButton, cancelLabel, "No quest active");
-
-            //Manage button
-            var (manageGO, manageBtn, ManageLbl) =
-                UIFactory.RoundedButtonWithLabel
-                (
-                    "ManageBtn",
-                    "Manage",
-                    bg.transform,
-                    new Color(0.2f, 0.2f, 0.2f, 1f),
-                    20,
-                    20,
-                    22,
-                    Color.white
-                );
-
-            manageButton = manageBtn;
-            manageLabel = ManageLbl;
-
-            ButtonUtils.AddListener(manageBtn, () => OpenManageUI(bg));
-
-            // Set the position and size of the manage button
-            var manageRect = manageGO.GetComponent<RectTransform>();
-            manageRect.anchorMin = new Vector2(0.75f, 0.96f);
-            manageRect.anchorMax = new Vector2(0.85f, 1f);
-            manageRect.pivot = new Vector2(1f, 1f);
-            manageRect.anchoredPosition = new Vector2(-10f, -10f);
-            manageRect.sizeDelta = new Vector2(50, 25);
+            // Create horizontal row for top buttons
+            var buttonRow = UIFactory.ButtonRow("TopButtons", rightPanel.transform, spacing: 14);
 
             // Refresh Button
-            var (refreshGO, refreshBtn, refreshLbl) = 
-                UIFactory.RoundedButtonWithLabel(
-                    "RefreshBtn", 
-                    "Refresh orders", 
-                    bg.transform,
-                    new Color(0.2f, 0.2f, 0.2f, 1f), 
-                    300, 
-                    90, 
-                    22, 
-                    Color.white
-                );
+            var (refreshGO, refreshBtn, refreshLbl) = UIFactory.RoundedButtonWithLabel("RefreshBtn", "Refresh Order list", buttonRow.transform, new Color32(32, 0x82, 0xF6, 0xff), 300, 90, 18, Color.white);
             refreshButton = refreshBtn;
             refreshLabel = refreshLbl;
 
             ButtonUtils.AddListener(refreshButton, () => RefreshButton());
 
-            // Set the position and size of the refresh button
-            var refreshRect = refreshGO.GetComponent<RectTransform>();
-            refreshRect.anchorMin = new Vector2(0.9f, 0.96f);
-            refreshRect.anchorMax = new Vector2(1f, 1f);
-            refreshRect.pivot = new Vector2(1f, 1f);
-            refreshRect.anchoredPosition = new Vector2(-10f, -10f);
-            refreshRect.sizeDelta = new Vector2(50, 25);
+            // Cancel Button
 
+            var (cancelGO, cancelBtn, cancelLbl) = UIFactory.RoundedButtonWithLabel("CancelBtn", "Cancel current Delivery", buttonRow.transform, new Color32(0XEB, 0X35, 0X38, 0Xff), 300, 90f, 18, Color.black);
+            cancelButton = cancelBtn;
+            cancelLabel = cancelLbl;
+            if (!QuestDelivery.QuestActive)
+                ButtonUtils.Disable(cancelButton, cancelLabel, "No quest active");
+
+
+            // Accept Button (separate row)
+            var (acceptGO, acceptBtn, acceptLbl) = UIFactory.RoundedButtonWithLabel("AcceptBtn", "No quest selected", rightPanel.transform, new Color32(0x91, 0xFF, 0x8E, 0xff), 460f, 60f, 22, Color.black);
+
+
+            acceptButton = acceptBtn;
+            acceptLabel = acceptLbl;
+            ButtonUtils.Disable(acceptBtn, acceptLabel, "No quest selected");
             MelonCoroutines.Start(WaitForBuyerAndInitialize());
         }
-
-        private void OpenManageUI(GameObject bg)
-        {
-            var managementPanel = UIFactory.Panel("ManagementPanel", bg.transform, new Color(200, 200, 200, 0.3f), fullAnchor: true);
-            managementPanel.gameObject.SetActive(true);
-
-            managementPanel.transform.SetAsLastSibling();
-
-            var (contentBackground, topBar, buttonRow) = SetupInitialPanel(managementPanel);
-
-            var detailsPanel = UIFactory.Panel("DetailsPanel", managementPanel.transform, new Color(0.1f, 0.1f, 0.1f),
-                new Vector2(0, 0), new Vector2(1, 0.82f));
-
-            var leftPanel = UIFactory.Panel("QuestListPanel", detailsPanel.transform, new Color(0.1f, 0.1f, 0.1f),
-                new Vector2(0.02f, 0.05f), new Vector2(0.49f, 0.82f));
-            questListContainer = UIFactory.ScrollableVerticalList("QuestListScroll", leftPanel.transform, out _);
-            UIFactory.FitContentHeight(questListContainer);
-
-            var rightPanel = UIFactory.Panel("DetailPanel", detailsPanel.transform, new Color(0.12f, 0.12f, 0.12f),
-                new Vector2(0.49f, 0f), new Vector2(0.98f, 0.82f));
-
-            // Use vertical layout with padding and spacing like Tax & Wash
-            UIFactory.VerticalLayoutOnGO(rightPanel, spacing: 14, padding: new RectOffset(24, 50, 15, 70));
-        }
-
-        private (GameObject contentBackground, GameObject topBar, GameObject buttonRow) SetupInitialPanel(GameObject managementPanel)
-        {
-            var contentBackground = UIFactory.Panel("ContentBackground", managementPanel.transform, new Color(0.2f, 0.2f, 0.2f, 1f));
-            var contentRect = contentBackground.GetComponent<RectTransform>();
-            contentRect.anchorMin = new Vector2(0.0f, 0.0f);
-            contentRect.anchorMax = new Vector2(1f, 1f);
-            contentRect.offsetMin = Vector2.zero;
-            contentRect.offsetMax = Vector2.zero;
-
-            var topBar = UIFactory.Panel("TopBar", managementPanel.transform, new Color(0.1f, 0.1f, 0.1f, 1f));
-            var topBarRect = topBar.GetComponent<RectTransform>();
-            topBarRect.anchorMin = new Vector2(0f, 0.9f);
-            topBarRect.anchorMax = new Vector2(1f, 1f);
-            topBarRect.offsetMin = Vector2.zero;
-            topBarRect.offsetMax = Vector2.zero;
-
-            var buttonRow = UIFactory.ButtonRow("TopButtons", topBar.transform, spacing: 2);
-
-            var buttonRowRect = buttonRow.GetComponent<RectTransform>();
-            buttonRowRect.anchorMin = new Vector2(0, 1);
-            buttonRowRect.anchorMax = new Vector2(0, 1);
-            buttonRowRect.anchoredPosition = new Vector2(2, -33);
-            buttonRowRect.sizeDelta = new Vector2(0, 60);
-
-            AddButtonsToRow(buttonRow);
-
-            var (closeGO, closeBtn, closeLbl) = UIFactory.RoundedButtonWithLabel(
-                "CloseButton",
-                "X",
-                managementPanel.transform,
-                new Color32(235, 53, 56, 255),
-                50,
-                20,
-                12,
-                Color.white
-            );
-
-            var closeRect = closeGO.GetComponent<RectTransform>();
-            closeRect.anchorMin = new Vector2(0.98f, 0.98f);
-            closeRect.anchorMax = new Vector2(1f, 1f);
-            closeRect.pivot = new Vector2(1f, 1f);
-            closeRect.anchoredPosition = new Vector2(-10f, -10f);
-            closeRect.sizeDelta = new Vector2(25, 25);
-
-            ButtonUtils.AddListener(closeBtn, () => Object.Destroy(managementPanel.gameObject));
-
-            if (contentBackground == null || topBar == null || buttonRow == null)
-            {
-                MelonLogger.Error("Failed to create management panel components.");
-                return (null, null, null);
-            }
-
-            return (contentBackground, topBar, buttonRow);
-        }
-
-        private void AddButtonsToRow(GameObject buttonRow)
-        {
-            var (relationsGO, relationsBtn, relationsLbl) = UIFactory.RoundedButtonWithLabel(
-                "RelationsButton",
-                "Relations",
-                buttonRow.transform,
-                new Color(0.2f, 0.2f, 0.2f, 1f),
-                100,
-                100,
-                18,
-                Color.white
-            );
-
-            RectTransformNavButton(relationsGO.GetComponent<RectTransform>());
-
-            relationsButton = relationsBtn;
-            relationsLabel = relationsLbl;
-
-            var (productGO, productBtn, productLbl) = UIFactory.RoundedButtonWithLabel(
-                "ProductButton",
-                "Product",
-                buttonRow.transform,
-                new Color(0.2f, 0.2f, 0.2f, 1f),
-                100,
-                100,
-                18,
-                Color.white
-            );
-
-            productButton = productBtn;
-            productLabel = productLbl;
-
-            RectTransformNavButton(productGO.GetComponent<RectTransform>());
-
-            var (shippingGO, shippingBtn, shippingLbl) = UIFactory.RoundedButtonWithLabel(
-                "ShippingButton",
-                "Shipping",
-                buttonRow.transform,
-                new Color(0.2f, 0.2f, 0.2f, 1f),
-                100,
-                100,
-                18,
-                Color.white
-            );
-
-            shippingButton = shippingBtn;
-            shippingLabel = shippingLbl;
-
-            RectTransformNavButton(shippingGO.GetComponent<RectTransform>());
-        }
-
-        private void RectTransformNavButton(RectTransform rect)
-        {
-            rect.anchorMin = new Vector2(0.05f, 0.5f);
-            rect.anchorMax = new Vector2(0.05f, 0.5f);
-            rect.anchoredPosition = new Vector2(10f, 10f);
-            rect.sizeDelta = new Vector2(100, 60);
-        }
-
-        private void SetDetailsContent(Text description, string tab)
-        {
-            switch (tab)
-            {
-                case "Relations":
-                    description.text = "Relations content goes here.";
-                    break;
-                case "Product":
-                    description.text = "Product content goes here.";
-                    break;
-                case "Shipping":
-                    description.text = "Shipping content goes here.";
-                    break;
-                default:
-                    description.text = "No content available.";
-                    break;
-            }
-        }
-
         private System.Collections.IEnumerator WaitForBuyerAndInitialize()
         {
             float timeout = 5f;
@@ -392,7 +177,7 @@ namespace Silkroad
         {
             if (Money.GetCashBalance() < 420)
             {
-                deliveryStatus.text = "You need 420 cash to refresh the list.";
+                deliveryStatus.text = "Not Enough Money";
                 return;
             }
             RefreshQuestList();
@@ -602,7 +387,7 @@ namespace Silkroad
 
             var quest = new QuestData
             {
-                Title = $"{buyer.DealerName} wants {drugType} delivered.",
+                Title = $"{buyer.DealerName} - {drugType} Delivery",
                 Task = $"Deliver {amount}x {quality} {drugType}" + (effectDesc.Length > 0 ? $" with [{effectDesc}]" : ""),
                 ProductID = drugType,
                 AmountRequired = (uint)amount,
@@ -695,10 +480,10 @@ namespace Silkroad
 
             if (QuestDelivery.QuestActive)
             {
-                ButtonUtils.Enable(acceptButton, acceptLabel, "In progress");
+                ButtonUtils.Enable(acceptButton, acceptLabel, "In Progress");
                 ButtonUtils.ClearListeners(acceptButton);
                 ButtonUtils.AddListener(acceptButton, () => AcceptQuest(quest));
-                ButtonUtils.Enable(cancelButton, cancelLabel, "Cancel current delivery");
+                ButtonUtils.Enable(cancelButton, cancelLabel, "Cancel Current Delivery");
                 ButtonUtils.ClearListeners(cancelButton);
                 ButtonUtils.AddListener(cancelButton, () => CancelCurrentQuest(quest));
             }
@@ -706,7 +491,7 @@ namespace Silkroad
             //ButtonUtils.Disable(cancelButton, cancelLabel, "No quest active");
             ButtonUtils.ClearListeners(cancelButton);
             ButtonUtils.AddListener(cancelButton, () => CancelCurrentQuest(quest));
-            ButtonUtils.Enable(refreshButton, refreshLabel, "Refresh orders");
+            ButtonUtils.Enable(refreshButton, refreshLabel, "Refresh Order List");
             ButtonUtils.ClearListeners(refreshButton);
             ButtonUtils.AddListener(refreshButton, () => RefreshButton());
 
@@ -719,7 +504,7 @@ namespace Silkroad
             {
                 deliveryStatus.text = "⚠️ Finish your current job first!";
                 ButtonUtils.Disable(acceptButton, acceptLabel, "In Progress");
-                ButtonUtils.SetStyle(acceptButton, acceptLabel, "In Progress", new Color32(32, 0x82, 0xF6, 0xff));
+                ButtonUtils.SetStyle(acceptButton, acceptLabel, "In Progress", new Color32(0x91, 0xFF, 0x8E, 0xff));
                 return;
             }
             var Buyer = Contacts.GetBuyer(quest.DealerName);
@@ -761,7 +546,7 @@ namespace Silkroad
             }
             MelonLogger.Msg($"✅ Quest accepted: {quest.Title}");
             ClearChild(questListContainer, quest.Index);
-            ButtonUtils.SetStyle(acceptButton, acceptLabel, "In Progress", new Color32(32, 0x82, 0xF6, 0xff));
+            ButtonUtils.SetStyle(acceptButton, acceptLabel, "In Progress", new Color32(0x91, 0xFF, 0x8E, 0xff));
             acceptButton.interactable = false;
             ButtonUtils.Enable(cancelButton, cancelLabel, "Cancel Current Delivery");
         }

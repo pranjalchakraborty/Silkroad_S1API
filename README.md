@@ -74,11 +74,12 @@ Optional/Ideas/Feedback:
 // free daily refresh
 // onboard bicky robby
 // cartel npc - force quests
-// partial json fields - order cooldown, order from product manager discovered products/ favorited products, unlock at rank
+// partial json fields - order cooldown, order from product manager discovered products/ favorited products, unlock at rank/wealth, random necessary/optional effects on top
 // create real NPCs - restructure to derived of base npc if s1api onloaded works for each  - add NPC avatars
 // Dealer Image on Quest/Journal/DeadDrop Icons - do we  want it?
 // generate quests not always - at least 1 per npc - but change to max 1 per product from always 1
 // generate quest per variable day - days of order
+// blackmarket buyer as static npc with discovered products
 
 
 
