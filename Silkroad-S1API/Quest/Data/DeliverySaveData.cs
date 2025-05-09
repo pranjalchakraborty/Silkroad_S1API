@@ -3,7 +3,6 @@ using System;
 using Silkroad;
 using System.Collections.Generic;
 
-[Serializable]
 public class DeliverySaveData
 {
     public string ProductID;
@@ -13,10 +12,16 @@ public class DeliverySaveData
     public bool Initialized;
     public string DealerName;
     public string? QuestImage;
+    public string Task;
     public Drug RequiredDrug;
     public int Reward;
-    public float RepReward;
-    public string Task;
+    public int RepReward;
+    public int XpReward;
+
+
+    // For calculating rewards
+    public float RepMult;
+    public float XpMult;
     public int DealTime;
     public float DealTimeMult;
     public List<int> Penalties; // Money and Rep Penalties for failing Deal
@@ -24,8 +29,6 @@ public class DeliverySaveData
     public List<string> NecessaryEffects;
     public string Quality;
 
-
-    [JsonConstructor]
     public DeliverySaveData()
     {
         Penalties = new List<int>(); // Initialize the list to avoid null reference

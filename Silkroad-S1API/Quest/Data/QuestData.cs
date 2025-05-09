@@ -19,13 +19,13 @@ namespace Silkroad
         public string Quality;
         public List<string> NecessaryEffects;
         public List<string> OptionalEffects;
-        // No need to save. Only to show entries in PhoneApp
-        public int BonusDollar;
-        public float BonusRep;
+        public int BaseDollar;
+        public int BaseRep;
+        public int BaseXp;
+        public float RepMult;
+        public float XpMult;
         public float DollarMultiplierMin;
-        public float RepMultiplierMin;
         public float DollarMultiplierMax;
-        public float RepMultiplierMax;
         public int Index;
 
     }

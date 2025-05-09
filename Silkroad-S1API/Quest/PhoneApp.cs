@@ -27,37 +27,37 @@ namespace Silkroad
 
         private List<QuestData> quests;
         private RectTransform questListContainer;
-        private Text 
-            questTitle, 
-            questTask, 
-            questReward, 
-            deliveryStatus, 
-            acceptLabel, 
-            cancelLabel, 
-            refreshLabel, 
-            manageLabel, 
+        private Text
+            questTitle,
+            questTask,
+            questReward,
+            deliveryStatus,
+            acceptLabel,
+            cancelLabel,
+            refreshLabel,
+            manageLabel,
             relationsLabel,
             productLabel,
             shippingLabel;
-        private Button 
-            acceptButton, 
-            cancelButton, 
-            refreshButton, 
-            manageButton, 
+        private Button
+            acceptButton,
+            cancelButton,
+            refreshButton,
+            manageButton,
             relationsButton,
             productButton,
             shippingButton;
         private Text statusText;
         public static int Index;
 
-        //Bypass method to set quest image dynamically from dealer icon - not used - TODO
+        //Bypass method to set quest image dynamically from dealer icon - not used - maybe TODO maybe NOT
         public static string QuestImage;
         protected override void OnCreated()
         {
             base.OnCreated();
             MelonLogger.Msg("[SilkRoadApp] OnCreated called");
         }
-        
+
         private void InitializeDealers()
         {
             try
@@ -162,15 +162,15 @@ namespace Silkroad
             manageRect.sizeDelta = new Vector2(50, 25);
 
             // Refresh Button
-            var (refreshGO, refreshBtn, refreshLbl) = 
+            var (refreshGO, refreshBtn, refreshLbl) =
                 UIFactory.RoundedButtonWithLabel(
-                    "RefreshBtn", 
-                    "Refresh orders", 
+                    "RefreshBtn",
+                    "Refresh orders",
                     bg.transform,
-                    new Color(0.2f, 0.2f, 0.2f, 1f), 
-                    300, 
-                    90, 
-                    22, 
+                    new Color(0.2f, 0.2f, 0.2f, 1f),
+                    300,
+                    90,
+                    22,
                     Color.white
                 );
             refreshButton = refreshBtn;
@@ -351,38 +351,33 @@ namespace Silkroad
             float timeout = 5f;
             float waited = 0f;
 
-            MelonLogger.Msg("WaitForBuyerAndInitialize-Waiting for buyers to be initialized...");
+            MelonLogger.Msg("PhoneApp-WaitForBuyerAndInitialize-Waiting for save buyer to be initialized...");
+            var savebuyer = Contacts.GetBuyer(BlackmarketBuyer.SavedNPCName);
+//Melonlogger - number of elements in contacts.Buyers
+            //MelonLogger.Msg($"1Contacts.Buyers Count: {Contacts.Buyers.Count}");
 
             // Wait until Contacts.Buyers is initialized and all buyers are marked as initialized, or until the timeout is reached
-            while ((Contacts.Buyers == null || Contacts.Buyers.Count == 0 || !Contacts.Buyers.Values.All(buyer => buyer.IsInitialized)) && waited < timeout)
+            while ((savebuyer == null || !savebuyer.IsInitialized) && waited < timeout)
             {
+                savebuyer = Contacts.GetBuyer(BlackmarketBuyer.SavedNPCName);
                 waited += Time.deltaTime;
                 yield return null; // Wait for the next frame
             }
 
             // Check if the timeout was reached
-            if (Contacts.Buyers == null || Contacts.Buyers.Count == 0 || !Contacts.Buyers.Values.All(buyer => buyer.IsInitialized))
+            if (savebuyer == null || !savebuyer.IsInitialized)
             {
-                MelonLogger.Warning("⚠️ Timeout reached. Some buyers are still not initialized.");
-                
-                // Log uninitialized buyers
-                if (Contacts.Buyers != null)
-                {
-                    foreach (var buyer in Contacts.Buyers.Values.Where(b => !b.IsInitialized))
-                    {
-                        MelonLogger.Warning($"Buyer not initialized: {buyer.DealerName}");
-                    }
-                }
+                MelonLogger.Warning("⚠️ PhoneApp-Timeout reached. Save buyer is still not initialized.");
                 yield break; // Exit the coroutine
             }
+//Melonlogger - number of elements in contacts.Buyers
+            //MelonLogger.Msg($"4Contacts.Buyers Count: {Contacts.Buyers.Count}");
+            // Log that the default buyer is initialized
+            MelonLogger.Msg($"✅ Default Buyer with save data initialized: {Contacts.Buyers.Count} buyers found.");
 
-            // Log the count of initialized buyers
-            MelonLogger.Msg($"✅ Buyer with save data initialized: {Contacts.Buyers.Count} buyers found.");
-            
-            // Call InitializeDealers after all save data buyers are initialized
+            // Call InitializeDealers after save data buyers is initialized
             InitializeDealers();
             MelonLogger.Msg("Dealers initialized successfully.");
-
             // Load quests after initialization
             LoadQuests();
         }
@@ -395,7 +390,8 @@ namespace Silkroad
                 deliveryStatus.text = "You need 420 cash to refresh the list.";
                 return;
             }
-            RefreshQuestList();
+            //Not needed as LoadQuests() already clears the list AFTER loading the quests
+            //RefreshQuestList();
             LoadQuests();
             ConsoleHelper.RunCashCommand(-420);
         }
@@ -552,40 +548,40 @@ namespace Silkroad
                 aggregateRepMultMax = aggregateRepMultMin;
 
             }
-            var tempMult11 = randomDrug.BaseDollarMult;//min
-            var tempMult12 = randomDrug.BaseRepMult;//min
-            var tempMult21 = randomDrug.BaseDollarMult;//max
-            var tempMult22 = randomDrug.BaseRepMult;//max
-            //Iterate through randomDrug.Effects and check if the effect is necessary or optional. Also multiply aggregate dollar and rep multipliers with base dollar+sum of effects dollar mult. Same for rep.
+            var tempMult11 = 1f;//min
+            
+            var tempMult21 = 1f;//max
+            
+                                                    //Iterate through randomDrug.Effects and check if the effect is necessary or optional. Also multiply aggregate dollar and rep multipliers with base dollar+sum of effects dollar mult. Same for rep.
+
             foreach (var effect in randomDrug.Effects)
             {
-                if (effect.Probability == 1)
+                //If the effect is necessary, add it to the necessaryEffects list and multiply the aggregate dollar and rep multipliers with the effect's dollar and rep multipliers
+                //If the effect is optional, add it to the optionalEffects list and multiply the aggregate dollar and rep multipliers with the effect's dollar and rep multipliers
+                //If the effect is not necessary or optional, skip it
+                if (effect.Probability > 1f && effect.Probability <= 2f && UnityEngine.Random.Range(0f, 1f) < effect.Probability - 1f)
                 {
                     necessaryEffects.Add(effect.Name);
                     tempMult11 += effect.DollarMult;
-                    tempMult12 += effect.RepMult;
+                    
                     tempMult21 += effect.DollarMult;
-                    tempMult22 += effect.RepMult;
+                    
                 }
-                else
+                else if (effect.Probability > 0f && effect.Probability <= 1f && UnityEngine.Random.Range(0f, 1f) < effect.Probability)
                 {
-                    //Roll Optional Effects by their probability to see if they are removed from randomDrug
-                    if (UnityEngine.Random.Range(0f, 1f) < effect.Probability)
-                    {
-                        optionalEffects.Add(effect.Name);
-                        tempMult21 += effect.DollarMult;
-                        tempMult22 += effect.RepMult;
-
-                    }
-
+                    optionalEffects.Add(effect.Name);
+                    tempMult21 += effect.DollarMult;
+                    
                 }
             }
+
+
             aggregateDollarMultMin *= tempMult11;
-            aggregateRepMultMin *= tempMult12;
+           
             aggregateDollarMultMax *= tempMult21;
-            aggregateRepMultMax *= tempMult22;
+            
             //remove from randomDrug.Effects the optional effects that are not in the list of optional effects and have a probability < 1f
-            randomDrug.Effects.RemoveAll(effect => !optionalEffects.Contains(effect.Name) && effect.Probability < 1f);
+            //randomDrug.Effects.RemoveAll(effect => !optionalEffects.Contains(effect.Name) && effect.Probability < 1f);
 
             string effectDesc = "";
             if (necessaryEffects.Count > 0)
@@ -609,13 +605,15 @@ namespace Silkroad
                 TargetObjectName = buyer.DealerName,
                 DealerName = buyer.DealerName,
                 RequiredDrug = randomDrug,
-                QuestImage = Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", buyer.DealerImage ?? "SilkRoadIcon_quest.png"),
-                BonusDollar = randomDrug.BonusDollar,
-                BonusRep = randomDrug.BonusRep,
-                DollarMultiplierMin = aggregateDollarMultMin,
-                RepMultiplierMin = aggregateRepMultMin,
-                DollarMultiplierMax = aggregateDollarMultMax,
-                RepMultiplierMax = aggregateRepMultMax,
+                QuestImage = Path.Combine(MelonEnvironment.ModsDirectory, "Silkroad", buyer.DealerImage ?? "SilkRoadIcon_quest.png"), 
+                BaseDollar = randomDrug.BaseDollar,
+                BaseRep = randomDrug.BaseRep,
+                BaseXp = randomDrug.BaseXp,
+                RepMult = randomDrug.RepMult,
+                XpMult = randomDrug.XpMult,
+                DollarMultiplierMin = (float)Math.Round(aggregateDollarMultMin, 2),
+                DollarMultiplierMax = (float)Math.Round(aggregateDollarMultMax, 2),
+                
                 DealTime = dealTime,
                 DealTimeMult = dealTimesMult,
                 Penalties = buyer.Penalties,
@@ -645,13 +643,12 @@ namespace Silkroad
             }
 
             MelonLogger.Msg($"Active quest : {active.Data.ProductID} ");
-         try
+            try
             {
                 active.ForceCancel();
                 deliveryStatus.text = "🚫 Delivery canceled.";
                 ButtonUtils.Disable(cancelButton, cancelLabel, "Canceled");
                 ButtonUtils.Enable(acceptButton, acceptLabel, "Accept Delivery");
-                //RefreshQuestList();//No Free Refresh - TODO
             }
             catch (Exception ex)
             {
@@ -681,8 +678,9 @@ namespace Silkroad
         {
             questTitle.text = quest.Title;
             questTask.text = $"Task: {quest.Task}";
-            questReward.text = $" Rewards: ${quest.BonusDollar} + Pricex({quest.DollarMultiplierMin} - {quest.DollarMultiplierMax})\n" +
-                $"Rep :{quest.BonusRep} + Pricex({quest.RepMultiplierMin} - {quest.RepMultiplierMax})\n\n" +
+            questReward.text = $" Rewards: ${quest.BaseDollar} + Pricex({quest.DollarMultiplierMin} - {quest.DollarMultiplierMax})\n" +
+                $"Rep :{quest.BaseRep} + Dollarx{quest.RepMult}\n\n" +
+                $"XP :{quest.BaseXp} + Dollarx{quest.XpMult}\n\n" +
                 $"Deal Expiry: {quest.DealTime} Day(s)\n" +
                 $"Failure Penalties: ${quest.Penalties[0]} + {quest.Penalties[1]} Rep\n";
             deliveryStatus.text = "";
@@ -730,7 +728,7 @@ namespace Silkroad
             ButtonUtils.Disable(acceptButton, acceptLabel, "In Progress");
             Buyer = Contacts.GetBuyer(quest.DealerName);
             var q = S1API.Quests.QuestManager.CreateQuest<QuestDelivery>();
-            MelonLogger.Msg($"✅ Test 213: ");
+            //MelonLogger.Msg($"✅ Test 213: ");
             if (q is QuestDelivery delivery)
             {
                 delivery.Data.ProductID = quest.ProductID;
@@ -738,8 +736,11 @@ namespace Silkroad
                 delivery.Data.DealerName = quest.DealerName;
                 delivery.Data.QuestImage = quest.QuestImage;
                 delivery.Data.RequiredDrug = quest.RequiredDrug;
-                delivery.Data.Reward = quest.BonusDollar;
-                delivery.Data.RepReward = quest.BonusRep;
+                delivery.Data.Reward = quest.BaseDollar;
+                delivery.Data.RepReward = quest.BaseRep;
+                delivery.Data.XpReward = quest.BaseXp;
+                delivery.Data.RepMult = quest.RepMult;
+                delivery.Data.XpMult = quest.XpMult;
                 delivery.Data.Task = quest.Task;
                 delivery.Data.DealTime = quest.DealTime;
                 delivery.Data.DealTimeMult = quest.DealTimeMult;

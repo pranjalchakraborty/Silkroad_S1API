@@ -7,11 +7,10 @@ namespace Silkroad
     {
         public string Name { get; set; }
         public string? Image { get; set; }
-
-        public List<int> DealTimes { get; set; } // List of Deal Times
-        public List<float> DealTimesMult { get; set; } // List of Reward Multiplier for each Deal Time
-        public List<int> Penalties { get; set; } // Money and Rep Penalties for failing Deal
-        public List<UnlockRequirement> UnlockRequirements { get; set; } // Updated to match JSON structure
+        public List<int> DealTimes { get; set; }
+        public List<float> DealTimesMult { get; set; }
+        public List<int> Penalties { get; set; }
+        public List<UnlockRequirement> UnlockRequirements { get; set; }
         public List<Drug> Drugs { get; set; }
 
         [JsonProperty("shipping")]
@@ -21,33 +20,44 @@ namespace Silkroad
 
     public class UnlockRequirement
     {
-        public string Name { get; set; } // Name of the dealer required to unlock
-        public int MinRep { get; set; } // Minimum reputation required
+        public string Name { get; set; }
+        public int MinRep { get; set; }
     }
 
     public class Drug
     {
+        [JsonProperty("type")]
         public string Type { get; set; }
+        [JsonProperty("unlockRep")]
         public int UnlockRep { get; set; }
+        [JsonProperty("base_dollar")]
+        public int BaseDollar { get; set; } // Changed from BonusDollar: now reflects JSON "base_dollar"
+        [JsonProperty("base_rep")]
+        public int BaseRep { get; set; } // Changed from BonusRep
+        [JsonProperty("base_xp")]
+        public int BaseXp { get; set; }
+        [JsonProperty("rep_mult")]
+        public float RepMult { get; set; } // Changed to use JSON "rep_mult"
+        [JsonProperty("xp_mult")]
+        public float XpMult { get; set; } // Changed to use JSON "xp_mult"
+        [JsonProperty("qualities")]
         public List<Quality> Qualities { get; set; }
+        [JsonProperty("effects")]
         public List<Effect> Effects { get; set; }
-        public int BonusDollar { get; set; } // Base dollar value
-        public int BonusRep { get; set; } // Base reputation value
-        public float BaseDollarMult { get; set; } // Base dollar multiplier
-        public float BaseRepMult { get; set; } // Base reputation multiplier
     }
 
     public class Quality
     {
+        [JsonProperty("type")]
         public string Type { get; set; }
         public int UnlockRep { get; set; }
-        public float DollarMult { get; set; } // Dollar multiplier for the quality
-        public float RepMult { get; set; } // Reputation multiplier for the quality
+        public float DollarMult { get; set; }
+        public float RepMult { get; set; }
     }
 
     public class Effect
     {
-        [JsonProperty("type")]
+        [JsonProperty("name")]
         public string Name { get; set; }
         [JsonProperty("unlockRep")]
         public int UnlockRep { get; set; }
@@ -55,8 +65,6 @@ namespace Silkroad
         public float Probability { get; set; }
         [JsonProperty("dollar_mult")]
         public float DollarMult { get; set; }
-        [JsonProperty("rep_mult")]
-        public float RepMult { get; set; }
     }
 
     public class Shipping
@@ -67,8 +75,6 @@ namespace Silkroad
         public int Cost { get; set; }
         [JsonProperty("unlockRep")]
         public int UnlockRep { get; set; }
-        
-
         [JsonProperty("minAmount")]
         public int MinAmount { get; set; }
         [JsonProperty("stepAmount")]
@@ -77,18 +83,17 @@ namespace Silkroad
         public int MaxAmount { get; set; }
     }
 
-public class Dialogue
-{
-    public List<string> Intro { get; set; }
-    public List<string> DealStart { get; set; }
-    public List<string> Accept { get; set; }
-    public List<string> Incomplete { get; set; }
-    public List<string> Expire { get; set; }
-    public List<string> Fail { get; set; }
-    public List<string> Success { get; set; }
-     public List<string> Reward { get; set; }
-}
-
+    public class Dialogue
+    {
+        public List<string> Intro { get; set; }
+        public List<string> DealStart { get; set; }
+        public List<string> Accept { get; set; }
+        public List<string> Incomplete { get; set; }
+        public List<string> Expire { get; set; }
+        public List<string> Fail { get; set; }
+        public List<string> Success { get; set; }
+        public List<string> Reward { get; set; }
+    }
 
     public class DealerData
     {

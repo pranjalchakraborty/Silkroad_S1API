@@ -1,8 +1,18 @@
 {
+    "version": {
+        "s1api": "1.5.0",
+        "empire": "0.1"
+    },
     "dealers": [
         {
             "name": "Badger",
             "image": "badger.png",
+            "unlockRequirements": [
+                {
+                    "name": "Combo 'Costco'",
+                    "minRep": 5
+                }
+            ],
             "dealTimes": [
                 1,
                 2
@@ -15,91 +25,80 @@
                 250,
                 3
             ],
-            "unlockRequirements": [
-                "{'name': \"Combo 'Costco'\"",
-                "'minRep': 5}"
-            ],
             "drugs": [
                 {
                     "type": "meth",
-                    "bonus_dollar": 40,
-                    "bonus_rep": 3,
-                    "base_dollar_mult": 0,
-                    "base_rep_mult": 0,
                     "unlockRep": 0,
+                    "base_dollar": 40,
+                    "base_rep": 3,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "poor",
                             "dollar_mult": 0.07,
-                            "rep_mult": 0.07,
                             "unlockRep": 0
                         },
                         {
                             "type": "standard",
                             "dollar_mult": 0.14,
-                            "rep_mult": 0.14,
                             "unlockRep": 12
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Euphoric",
+                            "name": "Euphoric",
                             "unlockRep": 0,
                             "probability": 1,
-                            "dollar_mult": 0.38,
-                            "rep_mult": 0.09
+                            "dollar_mult": 0.38
                         },
                         {
-                            "type": "Foggy",
+                            "name": "Foggy",
                             "unlockRep": 5,
                             "probability": 0.5,
-                            "dollar_mult": 0.22,
-                            "rep_mult": 0.06
+                            "dollar_mult": 0.22
                         },
                         {
-                            "type": "Paranoia",
+                            "name": "Paranoia",
                             "unlockRep": 10,
                             "probability": 0.5,
-                            "dollar_mult": 0.65,
-                            "rep_mult": 0.18
+                            "dollar_mult": 0.65
                         }
                     ]
                 },
                 {
                     "type": "weed",
-                    "bonus_dollar": 30,
-                    "bonus_rep": 2,
-                    "base_dollar_mult": 0,
-                    "base_rep_mult": 0,
                     "unlockRep": 8,
+                    "base_dollar": 30,
+                    "base_rep": 2,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "poor",
                             "dollar_mult": 0.06,
-                            "rep_mult": 0.06,
                             "unlockRep": 8
                         },
                         {
                             "type": "standard",
                             "dollar_mult": 0.13,
-                            "rep_mult": 0.13,
                             "unlockRep": 15
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Munchies",
+                            "name": "Munchies",
                             "unlockRep": 8,
                             "probability": 1,
-                            "dollar_mult": 0.48,
-                            "rep_mult": 0.14
+                            "dollar_mult": 0.48
                         },
                         {
-                            "type": "Calming",
+                            "name": "Calming",
                             "unlockRep": 12,
                             "probability": 0.5,
-                            "dollar_mult": 0.52,
-                            "rep_mult": 0.16
+                            "dollar_mult": 0.52
                         }
                     ]
                 }
@@ -163,6 +162,7 @@
         {
             "name": "Combo 'Costco'",
             "image": "combo.png",
+            "unlockRequirements": [],
             "dealTimes": [
                 1,
                 2
@@ -175,88 +175,80 @@
                 200,
                 2
             ],
-            "unlockRequirements": [],
             "drugs": [
                 {
                     "type": "weed",
-                    "bonus_dollar": 20,
-                    "bonus_rep": 2,
-                    "base_dollar_mult": 0,
-                    "base_rep_mult": 0,
                     "unlockRep": 0,
+                    "base_dollar": 20,
+                    "base_rep": 2,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "poor",
                             "dollar_mult": 0.05,
-                            "rep_mult": 0.05,
                             "unlockRep": 0
                         },
                         {
                             "type": "standard",
                             "dollar_mult": 0.12,
-                            "rep_mult": 0.12,
                             "unlockRep": 8
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Munchies",
+                            "name": "Munchies",
                             "unlockRep": 0,
                             "probability": 1,
-                            "dollar_mult": 0.45,
-                            "rep_mult": 0.12
+                            "dollar_mult": 0.45
                         },
                         {
-                            "type": "Calming",
+                            "name": "Calming",
                             "unlockRep": 3,
                             "probability": 0.5,
-                            "dollar_mult": 0.5,
-                            "rep_mult": 0.15
+                            "dollar_mult": 0.5
                         },
                         {
-                            "type": "Refreshing",
+                            "name": "Refreshing",
                             "unlockRep": 6,
                             "probability": 0.5,
-                            "dollar_mult": 0.4,
-                            "rep_mult": 0.1
+                            "dollar_mult": 0.4
                         }
                     ]
                 },
                 {
                     "type": "meth",
-                    "bonus_dollar": 50,
-                    "bonus_rep": 4,
-                    "base_dollar_mult": 0,
-                    "base_rep_mult": 0,
                     "unlockRep": 10,
+                    "base_dollar": 50,
+                    "base_rep": 4,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "poor",
                             "dollar_mult": 0.08,
-                            "rep_mult": 0.08,
                             "unlockRep": 10
                         },
                         {
                             "type": "standard",
                             "dollar_mult": 0.15,
-                            "rep_mult": 0.15,
                             "unlockRep": 18
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Euphoric",
+                            "name": "Euphoric",
                             "unlockRep": 10,
                             "probability": 1,
-                            "dollar_mult": 0.35,
-                            "rep_mult": 0.08
+                            "dollar_mult": 0.35
                         },
                         {
-                            "type": "Paranoia",
+                            "name": "Paranoia",
                             "unlockRep": 15,
                             "probability": 0.5,
-                            "dollar_mult": 0.6,
-                            "rep_mult": 0.15
+                            "dollar_mult": 0.6
                         }
                     ]
                 }
@@ -320,6 +312,16 @@
         {
             "name": "Domingo 'Krazy-8' Molina",
             "image": "krazy8.png",
+            "unlockRequirements": [
+                {
+                    "name": "Jesse Pinkman",
+                    "minRep": 15
+                },
+                {
+                    "name": "Saul Goodman",
+                    "minRep": 5
+                }
+            ],
             "dealTimes": [
                 2,
                 3,
@@ -334,100 +336,86 @@
                 1500,
                 8
             ],
-            "unlockRequirements": [
-                "{'name': 'Jesse Pinkman'",
-                "'minRep': 15}",
-                "{'name': 'Saul Goodman'",
-                "'minRep': 5}"
-            ],
             "drugs": [
                 {
                     "type": "meth",
-                    "bonus_dollar": 180,
-                    "bonus_rep": 10,
-                    "base_dollar_mult": 1,
-                    "base_rep_mult": 1,
                     "unlockRep": 0,
+                    "base_dollar": 180,
+                    "base_rep": 10,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "standard",
                             "dollar_mult": 0.2,
-                            "rep_mult": 0.2,
                             "unlockRep": 0
                         },
                         {
                             "type": "premium",
                             "dollar_mult": 0.32,
-                            "rep_mult": 0.32,
                             "unlockRep": 18
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Euphoric",
+                            "name": "Euphoric",
                             "unlockRep": 0,
                             "probability": 1,
-                            "dollar_mult": 0.38,
-                            "rep_mult": 0.1
+                            "dollar_mult": 0.38
                         },
                         {
-                            "type": "Paranoia",
+                            "name": "Paranoia",
                             "unlockRep": 8,
                             "probability": 1,
-                            "dollar_mult": 0.7,
-                            "rep_mult": 0.2
+                            "dollar_mult": 0.7
                         },
                         {
-                            "type": "Disorienting",
+                            "name": "Disorienting",
                             "unlockRep": 15,
                             "probability": 0.5,
-                            "dollar_mult": 0.75,
-                            "rep_mult": 0.22
+                            "dollar_mult": 0.75
                         }
                     ]
                 },
                 {
                     "type": "cocaine",
-                    "bonus_dollar": 280,
-                    "bonus_rep": 12,
-                    "base_dollar_mult": 1,
-                    "base_rep_mult": 1,
                     "unlockRep": 12,
+                    "base_dollar": 280,
+                    "base_rep": 12,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "standard",
                             "dollar_mult": 0.22,
-                            "rep_mult": 0.22,
                             "unlockRep": 12
                         },
                         {
                             "type": "premium",
                             "dollar_mult": 0.35,
-                            "rep_mult": 0.35,
                             "unlockRep": 28
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Energizing",
+                            "name": "Energizing",
                             "unlockRep": 12,
                             "probability": 1,
-                            "dollar_mult": 0.32,
-                            "rep_mult": 0.07
+                            "dollar_mult": 0.32
                         },
                         {
-                            "type": "Focused",
+                            "name": "Focused",
                             "unlockRep": 20,
                             "probability": 0.5,
-                            "dollar_mult": 0.4,
-                            "rep_mult": 0.11
+                            "dollar_mult": 0.4
                         },
                         {
-                            "type": "Paranoia",
+                            "name": "Paranoia",
                             "unlockRep": 25,
                             "probability": 0.5,
-                            "dollar_mult": 0.68,
-                            "rep_mult": 0.19
+                            "dollar_mult": 0.68
                         }
                     ]
                 }
@@ -499,6 +487,20 @@
         {
             "name": "Don Eladio Vuente",
             "image": "don_eladio.png",
+            "unlockRequirements": [
+                {
+                    "name": "Gustavo Fring",
+                    "minRep": 30
+                },
+                {
+                    "name": "Hector Salamanca",
+                    "minRep": 25
+                },
+                {
+                    "name": "The Cousins",
+                    "minRep": 5
+                }
+            ],
             "dealTimes": [
                 3,
                 5,
@@ -513,103 +515,87 @@
                 15000,
                 40
             ],
-            "unlockRequirements": [
-                "{'name': 'Gustavo Fring'",
-                "'minRep': 30}",
-                "{'name': 'Hector Salamanca'",
-                "'minRep': 25}",
-                "{'name': 'The Cousins'",
-                "'minRep': 5}"
-            ],
             "drugs": [
                 {
                     "type": "cocaine",
-                    "bonus_dollar": 1500,
-                    "bonus_rep": 45,
-                    "base_dollar_mult": 2,
-                    "base_rep_mult": 2,
                     "unlockRep": 0,
+                    "base_dollar": 1500,
+                    "base_rep": 45,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "premium",
                             "dollar_mult": 0.6,
-                            "rep_mult": 0.6,
                             "unlockRep": 0
                         },
                         {
                             "type": "heavenly",
                             "dollar_mult": 0.85,
-                            "rep_mult": 0.85,
                             "unlockRep": 20
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Euphoric",
+                            "name": "Euphoric",
                             "unlockRep": 0,
                             "probability": 1,
-                            "dollar_mult": 0.45,
-                            "rep_mult": 0.16
+                            "dollar_mult": 0.45
                         },
                         {
-                            "type": "Energizing",
+                            "name": "Energizing",
                             "unlockRep": 5,
                             "probability": 1,
-                            "dollar_mult": 0.42,
-                            "rep_mult": 0.14
+                            "dollar_mult": 0.42
                         },
                         {
-                            "type": "Glowing",
+                            "name": "Glowing",
                             "unlockRep": 15,
                             "probability": 0.5,
-                            "dollar_mult": 0.18,
-                            "rep_mult": 0.07
+                            "dollar_mult": 0.18
                         },
                         {
-                            "type": "Lethal",
+                            "name": "Lethal",
                             "unlockRep": 25,
                             "probability": 0.5,
-                            "dollar_mult": 0.9,
-                            "rep_mult": 0.32
+                            "dollar_mult": 0.9
                         }
                     ]
                 },
                 {
                     "type": "meth",
-                    "bonus_dollar": 400,
-                    "bonus_rep": 8,
-                    "base_dollar_mult": 1,
-                    "base_rep_mult": 0,
                     "unlockRep": 10,
+                    "base_dollar": 400,
+                    "base_rep": 8,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "premium",
                             "dollar_mult": 0.35,
-                            "rep_mult": 0.08,
                             "unlockRep": 10
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Euphoric",
+                            "name": "Euphoric",
                             "unlockRep": 10,
                             "probability": 1,
-                            "dollar_mult": 0.35,
-                            "rep_mult": 0.08
+                            "dollar_mult": 0.35
                         },
                         {
-                            "type": "Toxic",
+                            "name": "Toxic",
                             "unlockRep": 20,
                             "probability": 0.5,
-                            "dollar_mult": 0.92,
-                            "rep_mult": 0.35
+                            "dollar_mult": 0.92
                         },
                         {
-                            "type": "Refreshing",
+                            "name": "Refreshing",
                             "unlockRep": 25,
                             "probability": 0.5,
-                            "dollar_mult": 0.5,
-                            "rep_mult": 0.12
+                            "dollar_mult": 0.5
                         }
                     ]
                 }
@@ -681,6 +667,16 @@
         {
             "name": "Gustavo Fring",
             "image": "gus.png",
+            "unlockRequirements": [
+                {
+                    "name": "Mike Ehrmantraut",
+                    "minRep": 10
+                },
+                {
+                    "name": "Tuco Salamanca",
+                    "minRep": 25
+                }
+            ],
             "dealTimes": [
                 4,
                 5,
@@ -695,107 +691,92 @@
                 6000,
                 20
             ],
-            "unlockRequirements": [
-                "{'name': 'Mike Ehrmantraut'",
-                "'minRep': 10}",
-                "{'name': 'Tuco Salamanca'",
-                "'minRep': 25}"
-            ],
             "drugs": [
                 {
                     "type": "meth",
-                    "bonus_dollar": 600,
-                    "bonus_rep": 25,
-                    "base_dollar_mult": 2,
-                    "base_rep_mult": 2,
                     "unlockRep": 0,
+                    "base_dollar": 600,
+                    "base_rep": 25,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "premium",
                             "dollar_mult": 0.45,
-                            "rep_mult": 0.45,
                             "unlockRep": 0
                         },
                         {
                             "type": "heavenly",
                             "dollar_mult": 0.65,
-                            "rep_mult": 0.65,
                             "unlockRep": 9999
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Focused",
+                            "name": "Focused",
                             "unlockRep": 0,
                             "probability": 1,
-                            "dollar_mult": 0.48,
-                            "rep_mult": 0.16
+                            "dollar_mult": 0.48
                         },
                         {
-                            "type": "Calming",
+                            "name": "Calming",
                             "unlockRep": 10,
                             "probability": 1,
-                            "dollar_mult": 0.6,
-                            "rep_mult": 0.2
+                            "dollar_mult": 0.6
                         },
                         {
-                            "type": "Thought-Provoking",
+                            "name": "Thought-Provoking",
                             "unlockRep": 18,
                             "probability": 0.5,
-                            "dollar_mult": 0.18,
-                            "rep_mult": 0.07
+                            "dollar_mult": 0.18
                         },
                         {
-                            "type": "Euphoric",
+                            "name": "Euphoric",
                             "unlockRep": 30,
                             "probability": 0.5,
-                            "dollar_mult": 0.4,
-                            "rep_mult": 0.12
+                            "dollar_mult": 0.4
                         }
                     ]
                 },
                 {
                     "type": "cocaine",
-                    "bonus_dollar": 750,
-                    "bonus_rep": 22,
-                    "base_dollar_mult": 1.8,
-                    "base_rep_mult": 1.8,
                     "unlockRep": 15,
+                    "base_dollar": 750,
+                    "base_rep": 22,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "premium",
                             "dollar_mult": 0.42,
-                            "rep_mult": 0.42,
                             "unlockRep": 15
                         },
                         {
                             "type": "heavenly",
                             "dollar_mult": 0.6,
-                            "rep_mult": 0.6,
                             "unlockRep": 35
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Energizing",
+                            "name": "Energizing",
                             "unlockRep": 15,
                             "probability": 1,
-                            "dollar_mult": 0.4,
-                            "rep_mult": 0.1
+                            "dollar_mult": 0.4
                         },
                         {
-                            "type": "Focused",
+                            "name": "Focused",
                             "unlockRep": 25,
                             "probability": 1,
-                            "dollar_mult": 0.48,
-                            "rep_mult": 0.15
+                            "dollar_mult": 0.48
                         },
                         {
-                            "type": "Glowing",
+                            "name": "Glowing",
                             "unlockRep": 30,
                             "probability": 0.5,
-                            "dollar_mult": 0.12,
-                            "rep_mult": 0.05
+                            "dollar_mult": 0.12
                         }
                     ]
                 }
@@ -867,6 +848,16 @@
         {
             "name": "Hector Salamanca",
             "image": "hector.png",
+            "unlockRequirements": [
+                {
+                    "name": "Tuco Salamanca",
+                    "minRep": 30
+                },
+                {
+                    "name": "Domingo 'Krazy-8' Molina",
+                    "minRep": 20
+                }
+            ],
             "dealTimes": [
                 2,
                 4,
@@ -881,100 +872,86 @@
                 5000,
                 18
             ],
-            "unlockRequirements": [
-                "{'name': 'Tuco Salamanca'",
-                "'minRep': 30}",
-                "{'name': \"Domingo 'Krazy-8' Molina\"",
-                "'minRep': 20}"
-            ],
             "drugs": [
                 {
                     "type": "cocaine",
-                    "bonus_dollar": 500,
-                    "bonus_rep": 20,
-                    "base_dollar_mult": 1,
-                    "base_rep_mult": 1,
                     "unlockRep": 0,
+                    "base_dollar": 500,
+                    "base_rep": 20,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "standard",
                             "dollar_mult": 0.3,
-                            "rep_mult": 0.3,
                             "unlockRep": 0
                         },
                         {
                             "type": "premium",
                             "dollar_mult": 0.5,
-                            "rep_mult": 0.5,
                             "unlockRep": 20
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Energizing",
+                            "name": "Energizing",
                             "unlockRep": 0,
                             "probability": 1,
-                            "dollar_mult": 0.35,
-                            "rep_mult": 0.09
+                            "dollar_mult": 0.35
                         },
                         {
-                            "type": "Explosive",
+                            "name": "Explosive",
                             "unlockRep": 10,
                             "probability": 1,
-                            "dollar_mult": 0.75,
-                            "rep_mult": 0.22
+                            "dollar_mult": 0.75
                         },
                         {
-                            "type": "Lethal",
+                            "name": "Lethal",
                             "unlockRep": 15,
                             "probability": 0.5,
-                            "dollar_mult": 0.85,
-                            "rep_mult": 0.28
+                            "dollar_mult": 0.85
                         }
                     ]
                 },
                 {
                     "type": "meth",
-                    "bonus_dollar": 450,
-                    "bonus_rep": 18,
-                    "base_dollar_mult": 1,
-                    "base_rep_mult": 1,
                     "unlockRep": 8,
+                    "base_dollar": 450,
+                    "base_rep": 18,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "standard",
                             "dollar_mult": 0.28,
-                            "rep_mult": 0.28,
                             "unlockRep": 8
                         },
                         {
                             "type": "premium",
                             "dollar_mult": 0.45,
-                            "rep_mult": 0.45,
                             "unlockRep": 25
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Euphoric",
+                            "name": "Euphoric",
                             "unlockRep": 8,
                             "probability": 1,
-                            "dollar_mult": 0.4,
-                            "rep_mult": 0.11
+                            "dollar_mult": 0.4
                         },
                         {
-                            "type": "Paranoia",
+                            "name": "Paranoia",
                             "unlockRep": 15,
                             "probability": 1,
-                            "dollar_mult": 0.72,
-                            "rep_mult": 0.21
+                            "dollar_mult": 0.72
                         },
                         {
-                            "type": "Seizure-Inducing",
+                            "name": "Seizure-Inducing",
                             "unlockRep": 20,
                             "probability": 0.5,
-                            "dollar_mult": 0.8,
-                            "rep_mult": 0.25
+                            "dollar_mult": 0.8
                         }
                     ]
                 }
@@ -1039,6 +1016,24 @@
         {
             "name": "Heisenberg",
             "image": "heisenberg.png",
+            "unlockRequirements": [
+                {
+                    "name": "Gustavo Fring",
+                    "minRep": 40
+                },
+                {
+                    "name": "Lydia Rodarte-Quayle",
+                    "minRep": 30
+                },
+                {
+                    "name": "Jack Welker",
+                    "minRep": 15
+                },
+                {
+                    "name": "Jesse Pinkman",
+                    "minRep": 50
+                }
+            ],
             "dealTimes": [
                 4,
                 6,
@@ -1053,73 +1048,57 @@
                 20000,
                 50
             ],
-            "unlockRequirements": [
-                "{'name': 'Gustavo Fring'",
-                "'minRep': 40}",
-                "{'name': 'Lydia Rodarte-Quayle'",
-                "'minRep': 30}",
-                "{'name': 'Jack Welker'",
-                "'minRep': 15}",
-                "{'name': 'Jesse Pinkman'",
-                "'minRep': 50}"
-            ],
             "drugs": [
                 {
                     "type": "meth",
-                    "bonus_dollar": 2000,
-                    "bonus_rep": 50,
-                    "base_dollar_mult": 3,
-                    "base_rep_mult": 3,
                     "unlockRep": 0,
+                    "base_dollar": 2000,
+                    "base_rep": 50,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "premium",
                             "dollar_mult": 0.65,
-                            "rep_mult": 0.65,
                             "unlockRep": 0
                         },
                         {
                             "type": "heavenly",
                             "dollar_mult": 0.9,
-                            "rep_mult": 0.9,
                             "unlockRep": 9999
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Focused",
+                            "name": "Focused",
                             "unlockRep": 0,
                             "probability": 1,
-                            "dollar_mult": 0.55,
-                            "rep_mult": 0.2
+                            "dollar_mult": 0.55
                         },
                         {
-                            "type": "Euphoric",
+                            "name": "Euphoric",
                             "unlockRep": 5,
                             "probability": 1,
-                            "dollar_mult": 0.5,
-                            "rep_mult": 0.18
+                            "dollar_mult": 0.5
                         },
                         {
-                            "type": "Thought-Provoking",
+                            "name": "Thought-Provoking",
                             "unlockRep": 10,
                             "probability": 0.5,
-                            "dollar_mult": 0.22,
-                            "rep_mult": 0.09
+                            "dollar_mult": 0.22
                         },
                         {
-                            "type": "Paranoia",
+                            "name": "Paranoia",
                             "unlockRep": 20,
                             "probability": 0.5,
-                            "dollar_mult": 0.8,
-                            "rep_mult": 0.28
+                            "dollar_mult": 0.8
                         },
                         {
-                            "type": "Lethal",
+                            "name": "Lethal",
                             "unlockRep": 40,
                             "probability": 0.5,
-                            "dollar_mult": 0.95,
-                            "rep_mult": 0.35
+                            "dollar_mult": 0.95
                         }
                     ]
                 }
@@ -1191,6 +1170,16 @@
         {
             "name": "Jack Welker",
             "image": "jack.png",
+            "unlockRequirements": [
+                {
+                    "name": "Todd Alquist",
+                    "minRep": 20
+                },
+                {
+                    "name": "Lydia Rodarte-Quayle",
+                    "minRep": 20
+                }
+            ],
             "dealTimes": [
                 3,
                 4,
@@ -1205,62 +1194,51 @@
                 12000,
                 35
             ],
-            "unlockRequirements": [
-                "{'name': 'Todd Alquist'",
-                "'minRep': 20}",
-                "{'name': 'Lydia Rodarte-Quayle'",
-                "'minRep': 20}"
-            ],
             "drugs": [
                 {
                     "type": "meth",
-                    "bonus_dollar": 1200,
-                    "bonus_rep": 40,
-                    "base_dollar_mult": 2,
-                    "base_rep_mult": 2,
                     "unlockRep": 0,
+                    "base_dollar": 1200,
+                    "base_rep": 40,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "premium",
                             "dollar_mult": 0.55,
-                            "rep_mult": 0.55,
                             "unlockRep": 0
                         },
                         {
                             "type": "heavenly",
                             "dollar_mult": 0.8,
-                            "rep_mult": 0.8,
                             "unlockRep": 9999
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Lethal",
+                            "name": "Lethal",
                             "unlockRep": 0,
                             "probability": 1,
-                            "dollar_mult": 0.9,
-                            "rep_mult": 0.3
+                            "dollar_mult": 0.9
                         },
                         {
-                            "type": "Focused",
+                            "name": "Focused",
                             "unlockRep": 5,
                             "probability": 1,
-                            "dollar_mult": 0.5,
-                            "rep_mult": 0.18
+                            "dollar_mult": 0.5
                         },
                         {
-                            "type": "Paranoia",
+                            "name": "Paranoia",
                             "unlockRep": 15,
                             "probability": 0.5,
-                            "dollar_mult": 0.78,
-                            "rep_mult": 0.25
+                            "dollar_mult": 0.78
                         },
                         {
-                            "type": "Explosive",
+                            "name": "Explosive",
                             "unlockRep": 25,
                             "probability": 0.5,
-                            "dollar_mult": 0.85,
-                            "rep_mult": 0.29
+                            "dollar_mult": 0.85
                         }
                     ]
                 }
@@ -1324,6 +1302,16 @@
         {
             "name": "Jesse Pinkman",
             "image": "jesse.png",
+            "unlockRequirements": [
+                {
+                    "name": "Badger",
+                    "minRep": 8
+                },
+                {
+                    "name": "Skinny Pete",
+                    "minRep": 8
+                }
+            ],
             "dealTimes": [
                 2,
                 3,
@@ -1338,145 +1326,127 @@
                 800,
                 5
             ],
-            "unlockRequirements": [
-                "{'name': 'Badger'",
-                "'minRep': 8}",
-                "{'name': 'Skinny Pete'",
-                "'minRep': 8}"
-            ],
             "drugs": [
                 {
                     "type": "meth",
-                    "bonus_dollar": 100,
-                    "bonus_rep": 8,
-                    "base_dollar_mult": 0,
-                    "base_rep_mult": 0,
                     "unlockRep": 0,
+                    "base_dollar": 100,
+                    "base_rep": 8,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "standard",
                             "dollar_mult": 0.18,
-                            "rep_mult": 0.18,
                             "unlockRep": 0
                         },
                         {
                             "type": "premium",
                             "dollar_mult": 0.3,
-                            "rep_mult": 0.3,
                             "unlockRep": 20
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Euphoric",
+                            "name": "Euphoric",
                             "unlockRep": 0,
                             "probability": 1,
-                            "dollar_mult": 0.35,
-                            "rep_mult": 0.1
+                            "dollar_mult": 0.35
                         },
                         {
-                            "type": "Focused",
+                            "name": "Focused",
                             "unlockRep": 8,
                             "probability": 0.5,
-                            "dollar_mult": 0.4,
-                            "rep_mult": 0.12
+                            "dollar_mult": 0.4
                         },
                         {
-                            "type": "Paranoia",
+                            "name": "Paranoia",
                             "unlockRep": 15,
                             "probability": 0.5,
-                            "dollar_mult": 0.65,
-                            "rep_mult": 0.18
+                            "dollar_mult": 0.65
                         }
                     ]
                 },
                 {
                     "type": "meth",
-                    "bonus_dollar": 80,
-                    "bonus_rep": 3,
-                    "base_dollar_mult": 0,
-                    "base_rep_mult": 0,
                     "unlockRep": 5,
+                    "base_dollar": 80,
+                    "base_rep": 3,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "poor",
                             "dollar_mult": 0.05,
-                            "rep_mult": -0.1,
                             "unlockRep": 5
                         },
                         {
                             "type": "standard",
                             "dollar_mult": 0.12,
-                            "rep_mult": 0.0,
                             "unlockRep": 12
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Spicy",
+                            "name": "Spicy",
                             "unlockRep": 5,
                             "probability": 1,
-                            "dollar_mult": 0.18,
-                            "rep_mult": 0.04
+                            "dollar_mult": 0.18
                         },
                         {
-                            "type": "Euphoric",
+                            "name": "Euphoric",
                             "unlockRep": 8,
                             "probability": 0.5,
-                            "dollar_mult": 0.3,
-                            "rep_mult": 0.06
+                            "dollar_mult": 0.3
                         },
                         {
-                            "type": "Smelly",
+                            "name": "Smelly",
                             "unlockRep": 12,
                             "probability": 0.5,
-                            "dollar_mult": 0.55,
-                            "rep_mult": -0.08
+                            "dollar_mult": 0.55
                         }
                     ]
                 },
                 {
                     "type": "weed",
-                    "bonus_dollar": 60,
-                    "bonus_rep": 5,
-                    "base_dollar_mult": 0,
-                    "base_rep_mult": 0,
                     "unlockRep": 10,
+                    "base_dollar": 60,
+                    "base_rep": 5,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "standard",
                             "dollar_mult": 0.15,
-                            "rep_mult": 0.15,
                             "unlockRep": 10
                         },
                         {
                             "type": "premium",
                             "dollar_mult": 0.25,
-                            "rep_mult": 0.25,
                             "unlockRep": 25
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Calming",
+                            "name": "Calming",
                             "unlockRep": 10,
                             "probability": 1,
-                            "dollar_mult": 0.5,
-                            "rep_mult": 0.15
+                            "dollar_mult": 0.5
                         },
                         {
-                            "type": "Munchies",
+                            "name": "Munchies",
                             "unlockRep": 18,
                             "probability": 0.5,
-                            "dollar_mult": 0.45,
-                            "rep_mult": 0.12
+                            "dollar_mult": 0.45
                         },
                         {
-                            "type": "Refreshing",
+                            "name": "Refreshing",
                             "unlockRep": 22,
                             "probability": 0.5,
-                            "dollar_mult": 0.4,
-                            "rep_mult": 0.1
+                            "dollar_mult": 0.4
                         }
                     ]
                 }
@@ -1548,6 +1518,16 @@
         {
             "name": "Lydia Rodarte-Quayle",
             "image": "lydia.png",
+            "unlockRequirements": [
+                {
+                    "name": "Gustavo Fring",
+                    "minRep": 20
+                },
+                {
+                    "name": "Mike Ehrmantraut",
+                    "minRep": 15
+                }
+            ],
             "dealTimes": [
                 5,
                 6,
@@ -1562,107 +1542,92 @@
                 8000,
                 25
             ],
-            "unlockRequirements": [
-                "{'name': 'Gustavo Fring'",
-                "'minRep': 20}",
-                "{'name': 'Mike Ehrmantraut'",
-                "'minRep': 15}"
-            ],
             "drugs": [
                 {
                     "type": "meth",
-                    "bonus_dollar": 700,
-                    "bonus_rep": 30,
-                    "base_dollar_mult": 2.2,
-                    "base_rep_mult": 2.2,
                     "unlockRep": 0,
+                    "base_dollar": 700,
+                    "base_rep": 30,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "premium",
                             "dollar_mult": 0.48,
-                            "rep_mult": 0.48,
                             "unlockRep": 0
                         },
                         {
                             "type": "heavenly",
                             "dollar_mult": 0.7,
-                            "rep_mult": 0.7,
                             "unlockRep": 20
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Focused",
+                            "name": "Focused",
                             "unlockRep": 0,
                             "probability": 1,
-                            "dollar_mult": 0.45,
-                            "rep_mult": 0.15
+                            "dollar_mult": 0.45
                         },
                         {
-                            "type": "Thought-Provoking",
+                            "name": "Thought-Provoking",
                             "unlockRep": 8,
                             "probability": 1,
-                            "dollar_mult": 0.2,
-                            "rep_mult": 0.08
+                            "dollar_mult": 0.2
                         },
                         {
-                            "type": "Paranoia",
+                            "name": "Paranoia",
                             "unlockRep": 15,
                             "probability": 0.5,
-                            "dollar_mult": 0.75,
-                            "rep_mult": 0.24
+                            "dollar_mult": 0.75
                         },
                         {
-                            "type": "Jennerising",
+                            "name": "Jennerising",
                             "unlockRep": 25,
                             "probability": 0.5,
-                            "dollar_mult": 0.18,
-                            "rep_mult": 0.06
+                            "dollar_mult": 0.18
                         }
                     ]
                 },
                 {
                     "type": "cocaine",
-                    "bonus_dollar": 850,
-                    "bonus_rep": 28,
-                    "base_dollar_mult": 2.0,
-                    "base_rep_mult": 2.0,
                     "unlockRep": 10,
+                    "base_dollar": 850,
+                    "base_rep": 28,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "premium",
                             "dollar_mult": 0.45,
-                            "rep_mult": 0.45,
                             "unlockRep": 10
                         },
                         {
                             "type": "heavenly",
                             "dollar_mult": 0.65,
-                            "rep_mult": 0.65,
                             "unlockRep": 30
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Energizing",
+                            "name": "Energizing",
                             "unlockRep": 10,
                             "probability": 1,
-                            "dollar_mult": 0.4,
-                            "rep_mult": 0.11
+                            "dollar_mult": 0.4
                         },
                         {
-                            "type": "Glowing",
+                            "name": "Glowing",
                             "unlockRep": 18,
                             "probability": 1,
-                            "dollar_mult": 0.15,
-                            "rep_mult": 0.06
+                            "dollar_mult": 0.15
                         },
                         {
-                            "type": "Jennerising",
+                            "name": "Jennerising",
                             "unlockRep": 25,
                             "probability": 0.5,
-                            "dollar_mult": 0.19,
-                            "rep_mult": 0.07
+                            "dollar_mult": 0.19
                         }
                     ]
                 }
@@ -1734,6 +1699,16 @@
         {
             "name": "Mike Ehrmantraut",
             "image": "mike.png",
+            "unlockRequirements": [
+                {
+                    "name": "Saul Goodman",
+                    "minRep": 15
+                },
+                {
+                    "name": "Jesse Pinkman",
+                    "minRep": 25
+                }
+            ],
             "dealTimes": [
                 3,
                 4,
@@ -1748,100 +1723,86 @@
                 2000,
                 10
             ],
-            "unlockRequirements": [
-                "{'name': 'Saul Goodman'",
-                "'minRep': 15}",
-                "{'name': 'Jesse Pinkman'",
-                "'minRep': 25}"
-            ],
             "drugs": [
                 {
                     "type": "meth",
-                    "bonus_dollar": 250,
-                    "bonus_rep": 18,
-                    "base_dollar_mult": 1.4,
-                    "base_rep_mult": 1.4,
                     "unlockRep": 0,
+                    "base_dollar": 250,
+                    "base_rep": 18,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "standard",
                             "dollar_mult": 0.28,
-                            "rep_mult": 0.28,
                             "unlockRep": 0
                         },
                         {
                             "type": "premium",
                             "dollar_mult": 0.42,
-                            "rep_mult": 0.42,
                             "unlockRep": 20
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Focused",
+                            "name": "Focused",
                             "unlockRep": 0,
                             "probability": 1,
-                            "dollar_mult": 0.45,
-                            "rep_mult": 0.14
+                            "dollar_mult": 0.45
                         },
                         {
-                            "type": "Calming",
+                            "name": "Calming",
                             "unlockRep": 10,
                             "probability": 0.5,
-                            "dollar_mult": 0.55,
-                            "rep_mult": 0.18
+                            "dollar_mult": 0.55
                         },
                         {
-                            "type": "Sneaky",
+                            "name": "Sneaky",
                             "unlockRep": 15,
                             "probability": 0.5,
-                            "dollar_mult": 0.38,
-                            "rep_mult": 0.11
+                            "dollar_mult": 0.38
                         }
                     ]
                 },
                 {
                     "type": "cocaine",
-                    "bonus_dollar": 350,
-                    "bonus_rep": 20,
-                    "base_dollar_mult": 1.5,
-                    "base_rep_mult": 1.5,
                     "unlockRep": 8,
+                    "base_dollar": 350,
+                    "base_rep": 20,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "standard",
                             "dollar_mult": 0.3,
-                            "rep_mult": 0.3,
                             "unlockRep": 8
                         },
                         {
                             "type": "premium",
                             "dollar_mult": 0.45,
-                            "rep_mult": 0.45,
                             "unlockRep": 25
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Energizing",
+                            "name": "Energizing",
                             "unlockRep": 8,
                             "probability": 1,
-                            "dollar_mult": 0.38,
-                            "rep_mult": 0.09
+                            "dollar_mult": 0.38
                         },
                         {
-                            "type": "Focused",
+                            "name": "Focused",
                             "unlockRep": 15,
                             "probability": 0.5,
-                            "dollar_mult": 0.45,
-                            "rep_mult": 0.13
+                            "dollar_mult": 0.45
                         },
                         {
-                            "type": "Sedating",
+                            "name": "Sedating",
                             "unlockRep": 22,
                             "probability": 0.5,
-                            "dollar_mult": 0.3,
-                            "rep_mult": 0.07
+                            "dollar_mult": 0.3
                         }
                     ]
                 }
@@ -1905,6 +1866,16 @@
         {
             "name": "Saul Goodman",
             "image": "saul.png",
+            "unlockRequirements": [
+                {
+                    "name": "Jesse Pinkman",
+                    "minRep": 10
+                },
+                {
+                    "name": "Skinny Pete",
+                    "minRep": 12
+                }
+            ],
             "dealTimes": [
                 1,
                 2,
@@ -1919,93 +1890,80 @@
                 500,
                 -10
             ],
-            "unlockRequirements": [
-                "{'name': 'Jesse Pinkman'",
-                "'minRep': 10}",
-                "{'name': 'Skinny Pete'",
-                "'minRep': 12}"
-            ],
             "drugs": [
                 {
                     "type": "weed",
-                    "bonus_dollar": 120,
-                    "bonus_rep": -1,
-                    "base_dollar_mult": 0.9,
-                    "base_rep_mult": 0.3,
                     "unlockRep": 0,
+                    "base_dollar": 120,
+                    "base_rep": -1,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "standard",
                             "dollar_mult": 0.16,
-                            "rep_mult": 0.08,
                             "unlockRep": 0
                         },
                         {
                             "type": "premium",
                             "dollar_mult": 0.28,
-                            "rep_mult": 0.15,
                             "unlockRep": 15
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Calming",
+                            "name": "Calming",
                             "unlockRep": 0,
                             "probability": 1,
-                            "dollar_mult": 0.55,
-                            "rep_mult": 0.04
+                            "dollar_mult": 0.55
                         },
                         {
-                            "type": "Sneaky",
+                            "name": "Sneaky",
                             "unlockRep": 5,
                             "probability": 0.5,
-                            "dollar_mult": 0.35,
-                            "rep_mult": 0.01
+                            "dollar_mult": 0.35
                         },
                         {
-                            "type": "Refreshing",
+                            "name": "Refreshing",
                             "unlockRep": 10,
                             "probability": 0.5,
-                            "dollar_mult": 0.45,
-                            "rep_mult": 0.02
+                            "dollar_mult": 0.45
                         }
                     ]
                 },
                 {
                     "type": "cocaine",
-                    "bonus_dollar": 250,
-                    "bonus_rep": -3,
-                    "base_dollar_mult": 1.0,
-                    "base_rep_mult": 0.2,
                     "unlockRep": 10,
+                    "base_dollar": 250,
+                    "base_rep": -3,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "standard",
                             "dollar_mult": 0.2,
-                            "rep_mult": 0.1,
                             "unlockRep": 10
                         },
                         {
                             "type": "premium",
                             "dollar_mult": 0.35,
-                            "rep_mult": 0.2,
                             "unlockRep": 25
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Energizing",
+                            "name": "Energizing",
                             "unlockRep": 10,
                             "probability": 1,
-                            "dollar_mult": 0.3,
-                            "rep_mult": 0.03
+                            "dollar_mult": 0.3
                         },
                         {
-                            "type": "Focused",
+                            "name": "Focused",
                             "unlockRep": 20,
                             "probability": 0.5,
-                            "dollar_mult": 0.42,
-                            "rep_mult": 0.05
+                            "dollar_mult": 0.42
                         }
                     ]
                 }
@@ -2069,6 +2027,12 @@
         {
             "name": "Skinny Pete",
             "image": "skinny_pete.png",
+            "unlockRequirements": [
+                {
+                    "name": "Combo 'Costco'",
+                    "minRep": 5
+                }
+            ],
             "dealTimes": [
                 1,
                 2
@@ -2081,91 +2045,80 @@
                 300,
                 3
             ],
-            "unlockRequirements": [
-                "{'name': \"Combo 'Costco'\"",
-                "'minRep': 5}"
-            ],
             "drugs": [
                 {
                     "type": "weed",
-                    "bonus_dollar": 35,
-                    "bonus_rep": 3,
-                    "base_dollar_mult": 0,
-                    "base_rep_mult": 0,
                     "unlockRep": 0,
+                    "base_dollar": 35,
+                    "base_rep": 3,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "poor",
                             "dollar_mult": 0.06,
-                            "rep_mult": 0.06,
                             "unlockRep": 0
                         },
                         {
                             "type": "standard",
                             "dollar_mult": 0.13,
-                            "rep_mult": 0.13,
                             "unlockRep": 10
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Calming",
+                            "name": "Calming",
                             "unlockRep": 0,
                             "probability": 1,
-                            "dollar_mult": 0.51,
-                            "rep_mult": 0.16
+                            "dollar_mult": 0.51
                         },
                         {
-                            "type": "Munchies",
+                            "name": "Munchies",
                             "unlockRep": 4,
                             "probability": 0.5,
-                            "dollar_mult": 0.46,
-                            "rep_mult": 0.13
+                            "dollar_mult": 0.46
                         },
                         {
-                            "type": "Sneaky",
+                            "name": "Sneaky",
                             "unlockRep": 8,
                             "probability": 0.5,
-                            "dollar_mult": 0.3,
-                            "rep_mult": 0.08
+                            "dollar_mult": 0.3
                         }
                     ]
                 },
                 {
                     "type": "meth",
-                    "bonus_dollar": 45,
-                    "bonus_rep": 4,
-                    "base_dollar_mult": 0,
-                    "base_rep_mult": 0,
                     "unlockRep": 6,
+                    "base_dollar": 45,
+                    "base_rep": 4,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "poor",
                             "dollar_mult": 0.08,
-                            "rep_mult": 0.08,
                             "unlockRep": 6
                         },
                         {
                             "type": "standard",
                             "dollar_mult": 0.16,
-                            "rep_mult": 0.16,
                             "unlockRep": 14
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Euphoric",
+                            "name": "Euphoric",
                             "unlockRep": 6,
                             "probability": 1,
-                            "dollar_mult": 0.36,
-                            "rep_mult": 0.09
+                            "dollar_mult": 0.36
                         },
                         {
-                            "type": "Focused",
+                            "name": "Focused",
                             "unlockRep": 12,
                             "probability": 0.5,
-                            "dollar_mult": 0.38,
-                            "rep_mult": 0.1
+                            "dollar_mult": 0.38
                         }
                     ]
                 }
@@ -2229,6 +2182,16 @@
         {
             "name": "The Cousins",
             "image": "cousins.png",
+            "unlockRequirements": [
+                {
+                    "name": "Hector Salamanca",
+                    "minRep": 15
+                },
+                {
+                    "name": "Tuco Salamanca",
+                    "minRep": 40
+                }
+            ],
             "dealTimes": [
                 1,
                 2
@@ -2241,100 +2204,86 @@
                 10000,
                 30
             ],
-            "unlockRequirements": [
-                "{'name': 'Hector Salamanca'",
-                "'minRep': 15}",
-                "{'name': 'Tuco Salamanca'",
-                "'minRep': 40}"
-            ],
             "drugs": [
                 {
                     "type": "cocaine",
-                    "bonus_dollar": 1000,
-                    "bonus_rep": 35,
-                    "base_dollar_mult": 2,
-                    "base_rep_mult": 2,
                     "unlockRep": 0,
+                    "base_dollar": 1000,
+                    "base_rep": 35,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "premium",
                             "dollar_mult": 0.55,
-                            "rep_mult": 0.55,
                             "unlockRep": 0
                         },
                         {
                             "type": "heavenly",
                             "dollar_mult": 0.75,
-                            "rep_mult": 0.75,
                             "unlockRep": 20
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Lethal",
+                            "name": "Lethal",
                             "unlockRep": 0,
                             "probability": 1,
-                            "dollar_mult": 0.9,
-                            "rep_mult": 0.3
+                            "dollar_mult": 0.9
                         },
                         {
-                            "type": "Energizing",
+                            "name": "Energizing",
                             "unlockRep": 5,
                             "probability": 1,
-                            "dollar_mult": 0.4,
-                            "rep_mult": 0.12
+                            "dollar_mult": 0.4
                         },
                         {
-                            "type": "Explosive",
+                            "name": "Explosive",
                             "unlockRep": 15,
                             "probability": 0.5,
-                            "dollar_mult": 0.82,
-                            "rep_mult": 0.26
+                            "dollar_mult": 0.82
                         }
                     ]
                 },
                 {
                     "type": "meth",
-                    "bonus_dollar": 900,
-                    "bonus_rep": 30,
-                    "base_dollar_mult": 2,
-                    "base_rep_mult": 2,
                     "unlockRep": 10,
+                    "base_dollar": 900,
+                    "base_rep": 30,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "premium",
                             "dollar_mult": 0.5,
-                            "rep_mult": 0.5,
                             "unlockRep": 10
                         },
                         {
                             "type": "heavenly",
                             "dollar_mult": 0.7,
-                            "rep_mult": 0.7,
                             "unlockRep": 9999
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Lethal",
+                            "name": "Lethal",
                             "unlockRep": 10,
                             "probability": 1,
-                            "dollar_mult": 0.88,
-                            "rep_mult": 0.29
+                            "dollar_mult": 0.88
                         },
                         {
-                            "type": "Paranoia",
+                            "name": "Paranoia",
                             "unlockRep": 18,
                             "probability": 1,
-                            "dollar_mult": 0.75,
-                            "rep_mult": 0.24
+                            "dollar_mult": 0.75
                         },
                         {
-                            "type": "Seizure-Inducing",
+                            "name": "Seizure-Inducing",
                             "unlockRep": 25,
                             "probability": 0.5,
-                            "dollar_mult": 0.82,
-                            "rep_mult": 0.27
+                            "dollar_mult": 0.82
                         }
                     ]
                 }
@@ -2399,6 +2348,16 @@
         {
             "name": "Todd Alquist",
             "image": "todd.png",
+            "unlockRequirements": [
+                {
+                    "name": "Jesse Pinkman",
+                    "minRep": 30
+                },
+                {
+                    "name": "Lydia Rodarte-Quayle",
+                    "minRep": 10
+                }
+            ],
             "dealTimes": [
                 2,
                 3,
@@ -2413,68 +2372,56 @@
                 5500,
                 18
             ],
-            "unlockRequirements": [
-                "{'name': 'Jesse Pinkman'",
-                "'minRep': 30}",
-                "{'name': 'Lydia Rodarte-Quayle'",
-                "'minRep': 10}"
-            ],
             "drugs": [
                 {
                     "type": "meth",
-                    "bonus_dollar": 550,
-                    "bonus_rep": 22,
-                    "base_dollar_mult": 1,
-                    "base_rep_mult": 1,
                     "unlockRep": 0,
+                    "base_dollar": 550,
+                    "base_rep": 22,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "standard",
                             "dollar_mult": 0.3,
-                            "rep_mult": 0.3,
                             "unlockRep": 0
                         },
                         {
                             "type": "premium",
                             "dollar_mult": 0.5,
-                            "rep_mult": 0.5,
                             "unlockRep": 15
                         },
                         {
                             "type": "heavenly",
                             "dollar_mult": 0.7,
-                            "rep_mult": 0.7,
                             "unlockRep": 9999
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Focused",
+                            "name": "Focused",
                             "unlockRep": 0,
                             "probability": 1,
-                            "dollar_mult": 0.46,
-                            "rep_mult": 0.16
+                            "dollar_mult": 0.46
                         },
                         {
-                            "type": "Euphoric",
+                            "name": "Euphoric",
                             "unlockRep": 10,
                             "probability": 0.5,
-                            "dollar_mult": 0.4,
-                            "rep_mult": 0.13
+                            "dollar_mult": 0.4
                         },
                         {
-                            "type": "Sedating",
+                            "name": "Sedating",
                             "unlockRep": 20,
                             "probability": 0.5,
-                            "dollar_mult": 0.32,
-                            "rep_mult": 0.09
+                            "dollar_mult": 0.32
                         },
                         {
-                            "type": "Lethal",
+                            "name": "Lethal",
                             "unlockRep": 30,
                             "probability": 0.5,
-                            "dollar_mult": 0.85,
-                            "rep_mult": 0.28
+                            "dollar_mult": 0.85
                         }
                     ]
                 }
@@ -2538,6 +2485,16 @@
         {
             "name": "Tuco Salamanca",
             "image": "tuco.png",
+            "unlockRequirements": [
+                {
+                    "name": "Domingo 'Krazy-8' Molina",
+                    "minRep": 10
+                },
+                {
+                    "name": "Jesse Pinkman",
+                    "minRep": 18
+                }
+            ],
             "dealTimes": [
                 1,
                 2
@@ -2550,107 +2507,92 @@
                 3000,
                 12
             ],
-            "unlockRequirements": [
-                "{'name': \"Domingo 'Krazy-8' Molina\"",
-                "'minRep': 10}",
-                "{'name': 'Jesse Pinkman'",
-                "'minRep': 18}"
-            ],
             "drugs": [
                 {
                     "type": "meth",
-                    "bonus_dollar": 300,
-                    "bonus_rep": 15,
-                    "base_dollar_mult": 1,
-                    "base_rep_mult": 1,
                     "unlockRep": 0,
+                    "base_dollar": 300,
+                    "base_rep": 15,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "standard",
                             "dollar_mult": 0.22,
-                            "rep_mult": 0.22,
                             "unlockRep": 0
                         },
                         {
                             "type": "premium",
                             "dollar_mult": 0.35,
-                            "rep_mult": 0.35,
                             "unlockRep": 15
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Euphoric",
+                            "name": "Euphoric",
                             "unlockRep": 0,
                             "probability": 1,
-                            "dollar_mult": 0.35,
-                            "rep_mult": 0.1
+                            "dollar_mult": 0.35
                         },
                         {
-                            "type": "Explosive",
+                            "name": "Explosive",
                             "unlockRep": 5,
                             "probability": 1,
-                            "dollar_mult": 0.8,
-                            "rep_mult": 0.25
+                            "dollar_mult": 0.8
                         },
                         {
-                            "type": "Paranoia",
+                            "name": "Paranoia",
                             "unlockRep": 10,
                             "probability": 0.5,
-                            "dollar_mult": 0.7,
-                            "rep_mult": 0.2
+                            "dollar_mult": 0.7
                         },
                         {
-                            "type": "Disorienting",
+                            "name": "Disorienting",
                             "unlockRep": 20,
                             "probability": 0.5,
-                            "dollar_mult": 0.75,
-                            "rep_mult": 0.22
+                            "dollar_mult": 0.75
                         }
                     ]
                 },
                 {
                     "type": "cocaine",
-                    "bonus_dollar": 400,
-                    "bonus_rep": 18,
-                    "base_dollar_mult": 1,
-                    "base_rep_mult": 1,
                     "unlockRep": 10,
+                    "base_dollar": 400,
+                    "base_rep": 18,
+                    "base_xp": 5,
+                    "rep_mult": 0.01,
+                    "xp_mult": 0.01,
                     "qualities": [
                         {
                             "type": "standard",
                             "dollar_mult": 0.25,
-                            "rep_mult": 0.25,
                             "unlockRep": 10
                         },
                         {
                             "type": "premium",
                             "dollar_mult": 0.4,
-                            "rep_mult": 0.4,
                             "unlockRep": 25
                         }
                     ],
                     "effects": [
                         {
-                            "type": "Energizing",
+                            "name": "Energizing",
                             "unlockRep": 10,
                             "probability": 1,
-                            "dollar_mult": 0.35,
-                            "rep_mult": 0.08
+                            "dollar_mult": 0.35
                         },
                         {
-                            "type": "Euphoric",
+                            "name": "Euphoric",
                             "unlockRep": 18,
                             "probability": 0.5,
-                            "dollar_mult": 0.4,
-                            "rep_mult": 0.1
+                            "dollar_mult": 0.4
                         },
                         {
-                            "type": "Explosive",
+                            "name": "Explosive",
                             "unlockRep": 22,
                             "probability": 0.5,
-                            "dollar_mult": 0.78,
-                            "rep_mult": 0.24
+                            "dollar_mult": 0.78
                         }
                     ]
                 }

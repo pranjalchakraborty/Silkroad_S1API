@@ -14,7 +14,8 @@ namespace Silkroad
         public static string CurrentBuyerImage { get; private set; }
         public static Dictionary<string, BlackmarketBuyer> Buyers { get; set; } = new Dictionary<string, BlackmarketBuyer>();
         public static BlackmarketBuyer saveBuyer { get; set; }
-        public static BlackmarketBuyer TESTBuyer { get; set; }
+        public static bool IsInitialized { get; private set; } = false;
+
         public static void Initialize()
         {
             // Load dealer data
@@ -55,7 +56,7 @@ namespace Silkroad
                     if (canUnlock)
                     {
                         var buyer = new BlackmarketBuyer(dealer);
-                        Buyers[dealer.Name] = buyer; 
+                        Buyers[dealer.Name] = buyer;
 
                         MelonLogger.Msg($"✅ Initialized dealer: {dealer.Name}");
                     }
@@ -64,7 +65,7 @@ namespace Silkroad
                         MelonLogger.Msg($"⚠️ Dealer {dealer.Name} is locked (unlock requirements not met)");
                     }
                 }
-
+                IsInitialized = true;
                 MelonLogger.Msg($"✅ Contacts.Buyers now contains {Buyers.Count} buyers.");
             }
             catch (JsonReaderException ex)

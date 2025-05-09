@@ -28,18 +28,33 @@ namespace Silkroad
     public static class RandomEffectSelector
     {
         //Create default values for completeList and count
-        public static List<string> GetRandomEffects(List<string> completeList = null, int count = 8)
+        public static List<string> GetRandomEffects(List<string> completeList = null, int count = 100)
         {
             // If completeList is null, initialize it with a default list of strings
             if (completeList == null)
             {
                 completeList = new List<string>
                 {
-                    "Munchies",
-                    "Refreshing",
-                    "Euphoric",
-                    "Sneaky",
-                    "Paranoia"
+"Euphoric",
+"Foggy",
+"Paranoia",
+"Munchies",
+"Calming",
+"Refreshing",
+"Disorienting",
+"Energizing",
+"Focused",
+"Glowing",
+"Lethal",
+"Toxic",
+"Thought-Provoking",
+"Spicy",
+"Smelly",
+"Explosive",
+"Seizure-Inducing",
+"Sneaky",
+"Sedating",
+"Jennerising"
                 };
             }
 
@@ -120,37 +135,32 @@ namespace Silkroad
         }
         protected override void OnLoaded()
         {
-            MelonLogger.Msg("OnLoaded called.");
+            MelonLogger.Msg("Quest OnLoaded called.");
             base.OnLoaded();
-            MelonLogger.Msg($"OnLoaded() done.");
-            buyer = Contacts.GetBuyer(Data.DealerName);
+            MelonCoroutines.Start(WaitForBuyerAndLoad());
+
+
             TimeManager.OnDayPass += ExpireCountdown;
-            MelonCoroutines.Start(WaitForBuyerAndSendStatus());
+            MelonLogger.Msg($"Quest OnLoaded() done.");
         }
 
-        private System.Collections.IEnumerator WaitForBuyerAndSendStatus()
+        private System.Collections.IEnumerator WaitForBuyerAndLoad()
         {
             float timeout = 5f;
             float waited = 0f;
-            MelonLogger.Msg("WaitForBuyerAndSendStatus-Waiting for buyer to be initialized...");
+            MelonLogger.Msg("Quest-WaitForBuyerAndLoad-Waiting for buyer to be initialized...");
             // while (Contacts.Buyers == null OR For all key value pairs in Contacts.Buyers, check if the value.IsInitialized is false for at least one of them OR waited < timeqout)
-            while ((Contacts.Buyers == null || !Contacts.Buyers.Values.All(buyer => buyer.IsInitialized)) && waited < timeout)
+            while (!Contacts.IsInitialized && waited < timeout)
             {
                 waited += Time.deltaTime;
                 yield return null; // wait 1 frame
             }
-
-            if ((Contacts.Buyers == null || !Contacts.Buyers.Values.All(buyer => buyer.IsInitialized)))
+            if (!Contacts.IsInitialized)
             {
-                MelonLogger.Warning("⚠️ Buyer NPC still not initialized after timeout. Skipping status sync.");
-                //Log the buyer who is not initialized by logging the key from Contacts
-                foreach (var buyer in Contacts.Buyers.Values.Where(b => !b.IsInitialized))
-                {
-                    MelonLogger.Warning($"Buyer is not initialized. Key: {Contacts.Buyers.FirstOrDefault(b => b.Value == buyer).Key}");
-                }
+                MelonLogger.Warning("⚠️ Buyer NPCs still not initialized after timeout. Skipping status sync.");
                 yield break;
             }
-
+            buyer = Contacts.GetBuyer(Data.DealerName);
         }
 
 
@@ -180,7 +190,7 @@ namespace Silkroad
             {
                 deliveryDrop = DeadDropManager.All.FirstOrDefault(d => d.GUID == Data.DeliveryDropGUID);
             }
-            MelonLogger.Msg("📦 Testing 1.");
+            //MelonLogger.Msg("📦 Testing 1.");
             deliveryEntry = AddEntry($"{Data.Task} at the dead drop.");
             deliveryEntry.POIPosition = deliveryDrop.Position;
             deliveryEntry.Begin();
@@ -242,21 +252,21 @@ namespace Silkroad
                     MelonLogger.Error("❌ NecessaryEffects is null");
                     return;
                 }
+                var productDef = ProductManager.DiscoveredProducts.FirstOrDefault(p => p.ID == item?.Definition.ID);
                 //Temporary list to hold the effects and test with dummy values
                 //TODO
-                List<string> productEffects = RandomEffectSelector.GetRandomEffects(Data.NecessaryEffects, 8);
+                List<string> productEffects = RandomEffectSelector.GetRandomEffects(Data.NecessaryEffects);
                 //Check isProductInstance AND if productEffects contains ALL of the necessary effects
                 //ADD non-dummy check for quality and effects
                 //TODO
-                if (isProductInstance && Data.NecessaryEffects.All(effect => Data.NecessaryEffects.Contains(effect)))
+                if (isProductInstance && Data.NecessaryEffects.All(effect => productEffects.Contains(effect)))
                 {
                     uint total = (uint)(quantity * PackageAmount(packaging));
                     if (total <= Data.RequiredAmount)
                     {
                         slot.AddQuantity(-quantity);
-                        UpdateReward(total, item);
+                        UpdateReward(total, item, productDef);
                         Data.RequiredAmount -= total;
-
                         MelonLogger.Msg($"✅ Delivered {total}x {slotProductID} to the stash. Remaining: {Data.RequiredAmount}. Reward now: {Data.Reward}");
                     }
                     else
@@ -265,7 +275,7 @@ namespace Silkroad
                         int toRemove = (int)Math.Ceiling((double)(Data.RequiredAmount / PackageAmount(packaging)));
                         toRemove = Math.Min(toRemove, slot.Quantity);
                         slot.AddQuantity(-toRemove);
-                        UpdateReward(Data.RequiredAmount, item);
+                        UpdateReward(Data.RequiredAmount, item, productDef);
                         Data.RequiredAmount = 0;
                         MelonLogger.Msg($"✅ Delivered {total}x {slotProductID} to the stash. Remaining: {Data.RequiredAmount}. Reward now: {Data.Reward}");
                         break;
@@ -274,12 +284,14 @@ namespace Silkroad
             }
             if (Data.RequiredAmount <= 0)
             {
+                //MelonLogger.Msg("Test2");
                 buyer.SendCustomMessage("Success", Data.ProductID, (int)Data.RequiredAmount, Data.Quality, Data.NecessaryEffects, Data.OptionalEffects);
                 MelonLogger.Msg("❌ No required amount to deliver. Quest done.");
+                deliveryDrop.Storage.OnClosed -= CheckDelivery;
                 deliveryEntry.Complete();
                 rewardEntry.SetState(QuestState.Active);
                 MelonCoroutines.Start(DelayedReward("Completed"));
-                deliveryDrop.Storage.OnClosed -= CheckDelivery;
+
             }
             else
             {
@@ -290,22 +302,24 @@ namespace Silkroad
 
         //Update Dummy with real effect and quality calculation
         //TODO
-        private void UpdateReward(uint total, ProductInstance? item)
+        private void UpdateReward(uint total, ProductInstance? item, ProductDefinition? productDef)
         {
-            var itemDef = ItemManager.GetItemDefinition(item?.Definition.ID);
-            if (itemDef is ProductDefinition productDef)
+            // Check if productDef is null or not a ProductDefinition
+            if (productDef == null)
             {
-                // Dummy Reward calculation - to be replaced with effects and quality calculation
-                MelonLogger.Msg($"Item Definition: {productDef.Name}");
-                MelonLogger.Msg($"Item Quality: {productDef.Price}");
-                Data.Reward += (int)(total * productDef.Price);
+                MelonLogger.Error("❌ Product definition is null or not a ProductDefinition. Reward calculation skipped.");
+                return;
             }
-            else
+            //  effects - TODO
+
+            if (Data.RequiredDrug != null)
             {
-                MelonLogger.Error("❌ Item definition is not a ProductDefinition. Reward calculation skipped.");
-                Data.Reward += (int)(total * 200);
+                var quality = Data.RequiredDrug.Qualities.FirstOrDefault(q => q.Type == Data.Quality);
+                Data.Reward += (int)(total * productDef.Price * (1 + quality.DollarMult) * (1 + Data.DealTimeMult));
             }
         }
+
+
 
         //Call with QuestState to be set as string - UPDATABLE
         private System.Collections.IEnumerator DelayedReward(string source)
@@ -319,7 +333,10 @@ namespace Silkroad
             TimeManager.OnDayPass -= ExpireCountdown;
 
             ConsoleHelper.RunCashCommand(Data.Reward);
-            buyer.GiveReputation((int)Data.RepReward );
+            MelonLogger.Msg($"   Rewarded : ${Data.Reward} to {Data.DealerName} and {Data.RepReward} with {Data.RepMult} in rep.");
+            Data.RepReward += (int)(Data.Reward * Data.RepMult);
+            buyer.GiveReputation((int)Data.RepReward);
+            //Calculate and give XP - TODO
             MelonLogger.Msg($"   Rewarded : ${Data.Reward} and Rep {Data.RepReward} to {Data.DealerName}");
 
             if (source == "Expired")

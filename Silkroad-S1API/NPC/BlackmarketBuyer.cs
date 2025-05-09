@@ -39,8 +39,9 @@ namespace Silkroad
             SavedNPCName.Contains(' ') ? SavedNPCName.Substring(SavedNPCName.IndexOf(' ') + 1) : "", npcSprite)
         {
             MelonLogger.Msg($"BlackmarketBuyer () Constructor {SavedNPCName} created.");
-            Contacts.Buyers[SavedNPCName] = this;
-
+             Contacts.Buyers[SavedNPCName] = this;
+             //Melonlogger - number of elements in contacts.Buyers
+            //MelonLogger.Msg($"2Contacts.Buyers Count: {Contacts.Buyers.Count}");
             // Ensure BuyerSaveData is initialized
             if (BuyerSaveData == null)
             {
@@ -116,12 +117,12 @@ namespace Silkroad
                     DealerName = dealer.Name,
                 };
                 SendCustomMessage("Intro");
-
             }
+            // Just Reduce _DealerData Shipping Tier by 1 
+            _DealerData.ShippingTier--;
             UnlockDrug(); // Check if the dealer has any unlocked drugs based on reputation
             UpgradeShipping(); // Upgrade the shipping tier if possible
-                               // Save the dealer data to the BuyerSaveData dictionary
-            SaveDealerData();
+            SaveDealerData();  // Save the dealer data to the BuyerSaveData dictionary
             IsInitialized = true;
             MelonLogger.Msg($"✅ Dealer initialized: {DealerName}");
         }
@@ -193,6 +194,8 @@ namespace Silkroad
             base.OnLoaded();
             IsInitialized = true;
             MelonCoroutines.Start(WaitForDealerSaveDataAndSendStatus());
+            //Melonlogger - number of elements in contacts.Buyers
+            //MelonLogger.Msg($"3Contacts.Buyers Count: {Contacts.Buyers.Count}");
             //DebugUtils.LogObjectJson(Contacts.GetBuyer(SavedNPCName).BuyerSaveData, "BlackmarketBuyer DealerSaveData");
         }
 
@@ -232,10 +235,11 @@ namespace Silkroad
                 {
                     Type = d.Type,
                     UnlockRep = d.UnlockRep,
-                    BonusDollar = d.BonusDollar,
-                    BonusRep = d.BonusRep,
-                    BaseDollarMult = d.BaseDollarMult,
-                    BaseRepMult = d.BaseRepMult,
+                    BaseDollar = d.BaseDollar,
+                    BaseRep = d.BaseRep,
+                    BaseXp = d.BaseXp,
+                    RepMult = d.RepMult,
+                    XpMult = d.XpMult,
                     // Unlock qualities where UnlockRep <= current reputation
                     Qualities = d.Qualities
                         .Where(q => q.UnlockRep <= _DealerData.Reputation)
@@ -306,7 +310,7 @@ namespace Silkroad
             string formatted = line
                 .Replace("{product}", $"<color=#34AD33>{product}</color>")
                 .Replace("{amount}", $"<color=#FF0004>{amount}x</color>")
-                .Replace("{quality}", $"<color=#FF0004>{quality}x</color>");
+                .Replace("{quality}", $"<color=#FF0004>{quality}</color>");
             if (necessaryEffects != null && necessaryEffects.Count > 0)
             {
                 string effects = string.Join(", ", necessaryEffects.Select(e => $"<color=#FF0004>{e}</color>"));
@@ -366,6 +370,8 @@ namespace Silkroad
 
 
             MelonLogger.Msg($"✅ Dealer {DealerName} initialized with save data");
+           
+
 
             // Additional initialization logic can go here
             // For example, syncing reputation, unlocks, etc.
