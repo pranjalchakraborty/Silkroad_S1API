@@ -13,11 +13,15 @@ Only one quest can be taken at a time. Complete it to take another.
 Generates one quest for each npc for each drug type on quest refresh.
 If multiple definitions of same product type exists, a random one will be chosen.
 Only max quality for each product type - unlocked at current rep will be taken.
-Effects will be random.
+Effects will be randomly chosen with probability [(0+)-1] indicating chance out of 1 to be optional effect and [(1+)-2] -1 indicating chance out of 1 to be necessary effect. 
+
 Reward Logic in existing Code:
-money reward = bonus_dollar + (price of all products delivered)*(base_dollar_mult+sum of all effects' dollar_mult)*(1+quality's dollar_mult)
-rep reward = bonus_rep + (price of all products delivered)*(base_rep_mult+sum of all effects' rep_mult)*(1+quality's rep_mult)
-Multiply both by (1+dealTimesMult)
+money reward = 
+base_dollar + (price of all products delivered)*(1+sum of all effects' dollar_mult)*(1+quality's dollar_mult)*(1+dealTimesMult)
+rep reward = base_rep + money reward * rep_mult
+xp reward = base_xp + money reward * xp_mult
+xp reward is currently unsupported by s1api
+
 UPDATABLE comments show parts of code to update with new game updates
 TODO comments show parts of code that may be changed/improved/added to later
 
@@ -37,23 +41,21 @@ penalties are the dollar and rep penalties for failure.
 reputation starts at 0 and can go upto any value.
 bonus_dollar and bonus_rep are actually the base rewards for any deal irrespective of product ordered or amount.
 while the mult fields are corresponding reward increases.
-probability=1 in effects means those are necessary effects in the product to be accepted. optional means you may give them to get the added rewards as expressed in mult field.
+
+Before Update:
+Complete Ongoing Quest.
+Backup NPC data from save file.
 
 
 Tasks:
 
 Recurring:
 re-visit TODO/UPDATABLE comments
+create default values for new added json fields and make them nullable for retroactive save/load support
+json - NPCs Creation, Balance, Gamification, More Products/Effects
 
 MVP Functions:
-\\ change placeholder dummy product effects and quality with real effects from s1api once supported
-\\ Implement rewards based on effects and quality 
-
-Design:
-NPCs Balance, Gamification - json
-
-Tools:
-JSON editor/manipulator, splitter based on dealer and combiner into empire.json
+// add deal xp when supported by s1api
 
 Tests:
 test - progression, rewards, effects/quality, save/load, put non items in drop
@@ -61,28 +63,38 @@ test - progression, rewards, effects/quality, save/load, put non items in drop
 UI Tracker:
 add ui panel to show relations, product, quality, shipping, effects unlocks with drop down selector for each npc
 add shipping unlock costs - now unavailable - on button press deduct corresponding fee and call shipping upgrade function
-also, its saying cancel current delivery after ive completed the delivery and after refreshing the orders
-// better UI
+// its saying cancel current delivery after ive completed the delivery and after refreshing the orders - remove listener, change button label
+better UI
 
-JSON splitter, save/load, combiner, editor workflow Choices:
-1. Split JSON then edit in web link = Possible
-2. Compile Git repo and splitter into one exe = Unknown 
-3. Create own splitter and editor = Done
-
-Optional/Ideas/Feedback:
-// make expiry penalty a percentage of the deal, or tiered by rep/rank etc.
-// free daily refresh
-// onboard bicky robby
-// cartel npc - force quests
-// partial json fields - order cooldown, order from product manager discovered products/ favorited products, unlock at rank/wealth, random necessary/optional effects on top
-// create real NPCs - restructure to derived of base npc if s1api onloaded works for each  - add NPC avatars
-// Dealer Image on Quest/Journal/DeadDrop Icons - do we  want it?
-// generate quests not always - at least 1 per npc - but change to max 1 per product from always 1
-// generate quest per variable day - days of order
-// blackmarket buyer as static npc with discovered products
+Optional/Ideas/Feedback/Usage:
+// npcs - onboard bicky robby - cartel npc - force quests - blackmarket buyer as static npc with discovered products
+// generate quests not always - at least 1 per npc - but change to max 1 per product from always 1 - free daily refresh - generate quest per variable day - days of order
+// add json fields - order cooldown/generation day, order from product manager discovered products/ favorited products, unlock at rank/wealth/deals complete 
+// add NPC avatars - appearances - spawn - dialogues 
+// npc relations and dialogue missions - relation matrix - mod or base game npcs(?)
 
 
 
+Checklist to Release:
+= Effects as 0-2 with values determining constant vs roll of both necessary & optional effects 
+=remove rep_mult and make xp and rep as mult of price - 
+=type/name inconsistencies
+= codebase consistency
+= 1.5 update
 
+// restructure json - deal related and penalty json - field in shipping(modifier) and in deals
+// asymptotic scaling with rep - shipping and price - log base x as multiplier(?)
+// random product from product manager - random necessary/optional effects on top
 
+// json - NPCs Creation, Balance, Gamification, More Products/Effects
+// restructure json for new probability
+
+// update json Tools
+// Minimal UI
+
+// Remove Silkroad references - make it Empire
+// create real NPCs - restructure to derived of base npc if s1api onloaded works for each
+
+// version update to s1api 1.7 when stable released
+// change placeholder dummy product effects and quality with real effects from s1api once supported - Implement rewards based on effects and quality
 
