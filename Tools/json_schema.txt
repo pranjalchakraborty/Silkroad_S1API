@@ -1,205 +1,243 @@
 {
   "type": "object",
   "properties": {
-    "dealers": {
+    "name": {
+      "type": "string"
+    },
+    "image": {
+      "type": "string"
+    },
+    "unlockRequirements": {
+      "type": "array"
+    },
+    "deals": {
       "type": "array",
-      "properties": {},
+      "items": {
+        "type": "array",
+        "items": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "integer"
+          }
+        ],
+        "minItems": 4,
+        "maxItems": 4
+      }
+    },
+    "repLogBase": {
+      "type": "integer"
+    },
+    "drugs": {
+      "type": "array",
       "items": {
         "type": "object",
         "properties": {
-          "name": {
+          "type": {
             "type": "string"
           },
-          "image": {
-            "type": "string"
+          "unlockRep": {
+            "type": "integer"
           },
-          "dealTimes": {
-            "type": "array",
-            "properties": {},
-            "items": {
-              "type": "integer"
-            }
+          "base_dollar": {
+            "type": "integer"
           },
-          "dealTimesMult": {
-            "type": "array",
-            "properties": {},
-            "items": {
-              "type": "number"
-            }
+          "base_rep": {
+            "type": "integer"
           },
-          "penalties": {
-            "type": "array",
-            "properties": {},
-            "items": {
-              "type": "integer"
-            }
+          "base_xp": {
+            "type": "integer"
           },
-          "unlockRequirements": {
-            "type": "array",
-            "properties": {}
+          "rep_mult": {
+            "type": "number"
           },
-          "drugs": {
+          "xp_mult": {
+            "type": "number"
+          },
+          "qualities": {
             "type": "array",
-            "properties": {},
             "items": {
               "type": "object",
               "properties": {
                 "type": {
                   "type": "string"
                 },
-                "bonus_dollar": {
-                  "type": "integer"
-                },
-                "bonus_rep": {
-                  "type": "integer"
-                },
-                "base_dollar_mult": {
-                  "type": "integer"
-                },
-                "base_rep_mult": {
-                  "type": "integer"
+                "dollar_mult": {
+                  "type": "number"
                 },
                 "unlockRep": {
                   "type": "integer"
-                },
-                "qualities": {
-                  "type": "array",
-                  "properties": {},
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "type": {
-                        "type": "string"
-                      },
-                      "dollar_mult": {
-                        "type": "number"
-                      },
-                      "rep_mult": {
-                        "type": "number"
-                      },
-                      "unlockRep": {
-                        "type": "integer"
-                      }
-                    }
-                  }
-                },
-                "effects": {
-                  "type": "array",
-                  "properties": {},
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "type": {
-                        "type": "string"
-                      },
-                      "unlockRep": {
-                        "type": "integer"
-                      },
-                      "probability": {
-                        "type": "integer"
-                      },
-                      "dollar_mult": {
-                        "type": "number"
-                      },
-                      "rep_mult": {
-                        "type": "number"
-                      }
-                    }
-                  }
                 }
-              }
+              },
+              "required": [
+                "type",
+                "dollar_mult",
+                "unlockRep"
+              ]
             }
           },
-          "shipping": {
+          "effects": {
             "type": "array",
-            "properties": {},
             "items": {
               "type": "object",
               "properties": {
                 "name": {
                   "type": "string"
                 },
-                "cost": {
-                  "type": "integer"
-                },
                 "unlockRep": {
                   "type": "integer"
                 },
-                "minAmount": {
-                  "type": "integer"
+                "probability": {
+                  "type": "number"
                 },
-                "stepAmount": {
-                  "type": "integer"
-                },
-                "maxAmount": {
-                  "type": "integer"
-                }
-              }
-            }
-          },
-          "dialogue": {
-            "type": "object",
-            "properties": {
-              "intro": {
-                "type": "array",
-                "properties": {},
-                "items": {
-                  "type": "string"
+                "dollar_mult": {
+                  "type": "number"
                 }
               },
-              "dealStart": {
-                "type": "array",
-                "properties": {},
-                "items": {
-                  "type": "string"
-                }
-              },
-              "accept": {
-                "type": "array",
-                "properties": {},
-                "items": {
-                  "type": "string"
-                }
-              },
-              "incomplete": {
-                "type": "array",
-                "properties": {},
-                "items": {
-                  "type": "string"
-                }
-              },
-              "expire": {
-                "type": "array",
-                "properties": {},
-                "items": {
-                  "type": "string"
-                }
-              },
-              "fail": {
-                "type": "array",
-                "properties": {},
-                "items": {
-                  "type": "string"
-                }
-              },
-              "success": {
-                "type": "array",
-                "properties": {},
-                "items": {
-                  "type": "string"
-                }
-              },
-              "reward": {
-                "type": "array",
-                "properties": {},
-                "items": {
-                  "type": "string"
-                }
-              }
+              "required": [
+                "name",
+                "unlockRep",
+                "probability",
+                "dollar_mult"
+              ]
             }
           }
-        }
+        },
+        "required": [
+          "type",
+          "unlockRep",
+          "base_dollar",
+          "base_rep",
+          "base_xp",
+          "rep_mult",
+          "xp_mult",
+          "qualities",
+          "effects"
+        ]
       }
+    },
+    "shipping": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "cost": {
+            "type": "integer"
+          },
+          "unlockRep": {
+            "type": "integer"
+          },
+          "minAmount": {
+            "type": "integer"
+          },
+          "stepAmount": {
+            "type": "integer"
+          },
+          "maxAmount": {
+            "type": "integer"
+          },
+          "dealModifier": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "minItems": 4,
+            "maxItems": 4
+          }
+        },
+        "required": [
+          "name",
+          "cost",
+          "unlockRep",
+          "minAmount",
+          "stepAmount",
+          "maxAmount",
+          "dealModifier"
+        ]
+      }
+    },
+    "dialogue": {
+      "type": "object",
+      "properties": {
+        "intro": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "dealStart": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "accept": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "incomplete": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "expire": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fail": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "success": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reward": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "intro",
+        "dealStart",
+        "accept",
+        "incomplete",
+        "expire",
+        "fail",
+        "success",
+        "reward"
+      ]
     }
-  }
+  },
+  "required": [
+    "name",
+    "image",
+    "unlockRequirements",
+    "deals",
+    "repLogBase",
+    "drugs",
+    "shipping",
+    "dialogue"
+  ]
 }

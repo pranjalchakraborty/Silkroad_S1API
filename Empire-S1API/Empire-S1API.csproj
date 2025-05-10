@@ -1,0 +1,122 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <!-- Imports any local build properties over the GitHub repository one. -->
+    <Import Project="../local.build.props" Condition="Exists('../local.build.props')" />
+
+    <!-- General properties -->
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <Authors>Team FunMods</Authors>
+        <PackageId>Empire</PackageId>
+        <Description>A Schedule One Mono / Il2Cpp Cross Compatibility Mod Framework</Description>
+        <RepositoryUrl>https://github.com/pranjalchakraborty/Silkroad_S1API.git</RepositoryUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Nullable>enable</Nullable>
+        <Configurations>Mono;Il2Cpp</Configurations>
+        <Platforms>AnyCPU</Platforms>
+        <RootNamespace>Empire</RootNamespace>
+    </PropertyGroup>
+
+    <!-- IL2CPP Specific Deps -->
+    <ItemGroup Condition="'$(Configuration)' == 'Il2Cpp'">
+        <Reference Include="Il2CppInterop.Runtime">
+            <HintPath>$(MelonLoaderAssembliesPath)\Il2CppInterop.Runtime.dll</HintPath>
+        </Reference>
+		<Reference Include="UnityEngine">
+			<HintPath>$(Il2CppAssembliesPath)\UnityEngine.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.CoreModule">
+			<HintPath>$(Il2CppAssembliesPath)\UnityEngine.CoreModule.dll</HintPath>
+		</Reference>
+        <Reference Include="Il2CppInterop.Common">
+            <HintPath>$(MelonLoaderAssembliesPath)\Il2CppInterop.Common.dll</HintPath>
+        </Reference>
+        <Reference Include="Il2CppInterop.HarmonySupport">
+            <HintPath>$(MelonLoaderAssembliesPath)\Il2CppInterop.HarmonySupport.dll</HintPath>
+        </Reference>
+        <Reference Include="Il2CppInterop.Generator">
+            <HintPath>$(MelonLoaderAssembliesPath)\Il2CppInterop.Generator.dll</HintPath>
+        </Reference>
+        <Reference Include="Assembly-CSharp">
+            <HintPath>$(Il2CppAssembliesPath)\Assembly-CSharp.dll</HintPath>
+        </Reference>
+        <Reference Include="Il2CppFishNet.Runtime">
+            <HintPath>$(Il2CppAssembliesPath)\Il2CppFishNet.Runtime.dll</HintPath>
+        </Reference>
+        <Reference Include="Il2Cppmscorlib">
+            <HintPath>$(Il2CppAssembliesPath)\Il2Cppmscorlib.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UI">
+            <HintPath>$(Il2CppAssembliesPath)\UnityEngine.UI.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UIModule">
+            <HintPath>$(Il2CppAssembliesPath)\UnityEngine.UIModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.JSONSerializeModule">
+            <HintPath>$(Il2CppAssembliesPath)\UnityEngine.JSONSerializeModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.TextRenderingModule">
+            <HintPath>$(Il2CppAssembliesPath)\UnityEngine.TextRenderingModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.ImageConversionModule">
+            <HintPath>$(Il2CppAssembliesPath)\UnityEngine.ImageConversionModule.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+
+    <!-- Mono Specific Deps -->
+    <ItemGroup Condition="'$(Configuration)' == 'Mono'">
+        <Reference Include="Assembly-CSharp">
+            <HintPath>$(MonoAssembliesPath)\Assembly-CSharp.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine">
+            <HintPath>$(MonoAssembliesPath)\UnityEngine.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.CoreModule">
+            <HintPath>$(MonoAssembliesPath)\UnityEngine.CoreModule.dll</HintPath>
+        </Reference>
+        <Reference Include="FishNet.Runtime">
+            <HintPath>$(MonoAssembliesPath)\FishNet.Runtime.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UI">
+            <HintPath>$(MonoAssembliesPath)\UnityEngine.UI.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UIModule">
+            <HintPath>$(MonoAssembliesPath)\UnityEngine.UIModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.JSONSerializeModule">
+            <HintPath>$(MonoAssembliesPath)\UnityEngine.JSONSerializeModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.TextRenderingModule">
+            <HintPath>$(MonoAssembliesPath)\UnityEngine.TextRenderingModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.ImageConversionModule">
+            <HintPath>$(MonoAssembliesPath)\UnityEngine.ImageConversionModule.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+
+    <!-- Shared Deps -->
+    <ItemGroup>
+        <!-- <PackageReference Include="S1API" Version="1.2.4" />-->
+       <Reference Include="0Harmony">
+           <HintPath>$(MelonLoaderAssembliesPath)\0Harmony.dll</HintPath>
+       </Reference>
+       <Reference Include="UnityEngine.InputModule">
+         <HintPath>..\..\Assemblies\Il2Cpp\UnityEngine.InputModule.dll</HintPath>
+       </Reference>
+       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+       <PackageReference Include="LavaGang.MelonLoader" Version="0.7.0" />
+       <PackageReference Include="S1API" Version="1.5.0" />
+
+
+    </ItemGroup>
+
+    <!-- Automated local deployment -->
+    <Target Name="PostBuildIl2Cpp" AfterTargets="Build" Condition=" '$(AutomateLocalDeployment)' == 'true' and '$(Configuration)' == 'Il2Cpp' ">
+        <Copy SourceFiles=".\bin\Il2Cpp\netstandard2.1\Empire-S1API.dll" DestinationFiles="$(LocalIl2CppDeploymentPath)\Mods\Empire.dll" />
+        <Copy SourceFiles=".\bin\Il2Cpp\netstandard2.1\Empire-S1API.dll" DestinationFiles="$(LocalMonoDeploymentPath)\Mods\Empire.dll" />
+		<Copy SourceFiles=".\References\empire.json" DestinationFiles="$(LocalIl2CppDeploymentPath)\Mods\Empire\empire.json" />
+		<Copy SourceFiles=".\References\empire.json" DestinationFiles="$(LocalMonoDeploymentPath)\Mods\Empire\empire.json" />
+		<Copy SourceFiles=".\bin\Il2Cpp\netstandard2.1\Empire-S1API.dll" DestinationFiles="..\Mods\Empire.dll" />
+		<Copy SourceFiles=".\References\empire.json" DestinationFiles="..\Mods\Empire\empire.json" />
+    </Target>
+</Project>
