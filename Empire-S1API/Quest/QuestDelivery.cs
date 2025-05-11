@@ -100,7 +100,6 @@ namespace Empire
             Fail();
         }
 
-
         private void ExpireCountdown()
         {
             //use syntax like += to add a new event handler to the DayPass event
@@ -359,11 +358,10 @@ namespace Empire
             }
             buyer.SaveDealerData();
             QuestActive = false;
-            //CompletedQuestKeys.Add($"{Data.ProductID}_{Data.RequiredAmount}");
             rewardEntry?.Complete();
             Complete();
+            // Trigger the event with no payload
             OnQuestCompleted?.Invoke();
-
         }
 
         protected override string Title =>

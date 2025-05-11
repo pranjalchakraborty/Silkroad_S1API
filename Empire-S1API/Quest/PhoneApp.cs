@@ -510,25 +510,25 @@ namespace Empire
             RefreshQuestList();
         }
 
-
-
-
-
         private void GenerateQuest(BlackmarketBuyer buyer, DealerSaveData dealerSaveData, string drugType)
         {
             var shipping = buyer.Shippings[dealerSaveData.ShippingTier];
-            int minAmount= shipping.MinAmount;
-            int maxAmount= shipping.MaxAmount;
-            if (buyer.RepLogBase!=0){
+            int minAmount = shipping.MinAmount;
+            int maxAmount = shipping.MaxAmount;
+            if (buyer.RepLogBase != 0)
+            {
                 double logResult = Math.Log((double)buyer._DealerData.Reputation, (double)buyer.RepLogBase);
-                minAmount = (int)(minAmount * (1+logResult));
-                maxAmount = (int)(maxAmount * (1+logResult));
+                // Clamp logResult so that it is at worst 0
+                if (logResult < 0)
+                    logResult = 0;
+                minAmount = (int)(minAmount * (1 + logResult));
+                maxAmount = (int)(maxAmount * (1 + logResult));
             }
             //Setting order amount
             int steps = (maxAmount - minAmount) / shipping.StepAmount;
             int randomStep = RandomUtils.RangeInt(0, steps);
             int amount = minAmount + randomStep * shipping.StepAmount;
-            //Iterate through unlocked drugs where drug type is the same as the one passed in
+
             var unlockedDrugs = dealerSaveData.UnlockedDrugs.Where(d => d.Type == drugType).ToList();
 
 
@@ -681,7 +681,6 @@ namespace Empire
             //MelonLogger.Msg($"   Amount Required: {quest.AmountRequired}");
             //MelonLogger.Msg($"   Required Drug: {quest.RequiredDrug}");
         }
-
         private void CancelCurrentQuest(QuestData quest)
         {
             var active = QuestDelivery.Active;
@@ -699,6 +698,18 @@ namespace Empire
                 deliveryStatus.text = "🚫 Delivery canceled.";
                 ButtonUtils.Disable(cancelButton, cancelLabel, "Canceled");
                 ButtonUtils.Enable(acceptButton, acceptLabel, "Accept Delivery");
+
+                // Remove quest from the UI and underlying list, then refresh the list.
+                if (questListContainer != null)
+                {
+                    //ClearChild(questListContainer, quest.Index);
+                    //quests.Remove(quest);
+                    RefreshQuestList();
+                }
+                else
+                {
+                    MelonLogger.Error("❌ questListContainer is null - Cancel Quest.");
+                }
             }
             catch (Exception ex)
             {
@@ -709,17 +720,22 @@ namespace Empire
         private void RefreshQuestList()
         {
             ClearChildren(questListContainer);
+            // Reset index if needed
             Index = 0;
             foreach (var quest in quests)
             {
                 if (quest == null) continue;
 
-                //MelonLogger.Msg($"✅ Adding quest to UI: {quest.Title}");
-
+                // Create the quest row and assign the quest entry UI elements
                 var row = UIFactory.CreateQuestRow(quest.Title, questListContainer, out var iconPanel, out var textPanel);
-                UIFactory.SetIcon(ImageUtils.LoadImage(quest.QuestImage ?? Path.Combine(MelonEnvironment.ModsDirectory, "Empire", "EmpireIcon_quest.png")), iconPanel.transform);
-                ButtonUtils.AddListener(row.GetComponent<Button>(), () => OnSelectQuest(quest));
+                // Set the quest's index based on the actual sibling index in questListContainer
+                quest.Index = row.transform.GetSiblingIndex();
 
+                UIFactory.SetIcon(
+                    ImageUtils.LoadImage(quest.QuestImage ?? Path.Combine(MelonEnvironment.ModsDirectory, "Empire", "EmpireIcon_quest.png")),
+                    iconPanel.transform
+                );
+                ButtonUtils.AddListener(row.GetComponent<Button>(), () => OnSelectQuest(quest));
                 UIFactory.CreateTextBlock(textPanel.transform, quest.Title, quest.Task,
                     QuestDelivery.CompletedQuestKeys?.Contains($"{quest.ProductID}_{quest.AmountRequired}") == true);
             }
@@ -730,11 +746,12 @@ namespace Empire
             var dialogue = Buyer.SendCustomMessage("DealStart", quest.ProductID, (int)quest.AmountRequired, quest.Quality, quest.NecessaryEffects, quest.OptionalEffects, true);
             questTitle.text = quest.Title;
             questTask.text = $"{dialogue}";
-            questReward.text = $" Rewards: ${quest.BaseDollar} + Pricex({quest.DollarMultiplierMin} - {quest.DollarMultiplierMax})\n" +
+            questReward.text = $"Rewards: ${quest.BaseDollar} + Pricex({quest.DollarMultiplierMin} - {quest.DollarMultiplierMax})\n" +
                 $"Rep :{quest.BaseRep} + Dollarx{quest.RepMult}\n\n" +
                 $"XP :{quest.BaseXp} + Dollarx{quest.XpMult}\n\n" +
                 $"Deal Expiry: {quest.DealTime} Day(s)\n" +
-                $"Failure Penalties: ${quest.Penalties[0]} + {quest.Penalties[1]} Rep\n";
+                $"Failure Penalties: ${quest.Penalties[0]} + {quest.Penalties[1]} Rep\n\n" +
+                $"Current Reputation: {Buyer._DealerData.Reputation}\n";
             deliveryStatus.text = "";
             if (!QuestDelivery.QuestActive)
             {
@@ -761,7 +778,12 @@ namespace Empire
             ButtonUtils.AddListener(refreshButton, () => RefreshButton());
 
         }
-
+        public void OnQuestComplete(QuestData quest)
+        {
+            //Remove Listeners from cancelBtn and make it say No quest active
+            ButtonUtils.ClearListeners(cancelButton);
+            ButtonUtils.Disable(cancelButton, cancelLabel, "No quest active");
+        }
 
         private void AcceptQuest(QuestData quest)
         {
@@ -780,9 +802,9 @@ namespace Empire
             ButtonUtils.Disable(acceptButton, acceptLabel, "In Progress");
             Buyer = Contacts.GetBuyer(quest.DealerName);
             var q = S1API.Quests.QuestManager.CreateQuest<QuestDelivery>();
-            //MelonLogger.Msg($"✅ Test 213: ");
             if (q is QuestDelivery delivery)
             {
+                // Populate delivery data...
                 delivery.Data.ProductID = quest.ProductID;
                 delivery.Data.RequiredAmount = quest.AmountRequired;
                 delivery.Data.DealerName = quest.DealerName;
@@ -802,7 +824,7 @@ namespace Empire
                 delivery.Data.OptionalEffects = quest.OptionalEffects;
                 delivery.Data.NecessaryEffectMult = quest.NecessaryEffectMult;
                 delivery.Data.OptionalEffectMult = quest.OptionalEffectMult;
-                QuestDelivery.Active = delivery; // ✅ FIX: set Active manually here
+                QuestDelivery.Active = delivery; 
 
                 if (Buyer is BlackmarketBuyer buyer)
                 {
@@ -815,10 +837,16 @@ namespace Empire
                 return;
             }
             MelonLogger.Msg($"✅ Quest accepted: {quest.Title}");
+            // Remove quest from the UI and underlying list
             if (questListContainer != null)
+            {
                 ClearChild(questListContainer, quest.Index);
-            else
-                MelonLogger.Warning("questListContainer is null in AcceptQuest, skipping ClearChild.");
+                quests.Remove(quest);
+                RefreshQuestList();
+            }
+            else{
+                MelonLogger.Error("❌ questListContainer is null - Accept Quest.");
+            }
             ButtonUtils.SetStyle(acceptButton, acceptLabel, "In Progress", new Color32(32, 0x82, 0xF6, 0xff));
             acceptButton.interactable = false;
             ButtonUtils.Enable(cancelButton, cancelLabel, "Cancel Current Delivery");
