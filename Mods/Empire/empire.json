@@ -98,7 +98,7 @@
                             "name": "Paranoia",
                             "unlockRep": 20,
                             "probability": 0.5,
-                            "dollar_mult": 0.60
+                            "dollar_mult": 0.6
                         },
                         {
                             "name": "Random",
@@ -138,10 +138,10 @@
                     "stepAmount": 5,
                     "maxAmount": 20,
                     "dealModifier": [
-                        1.5,
-                        1.25,
-                        2.0,
-                        2.0
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
                     ]
                 }
             ],
@@ -245,7 +245,7 @@
                             "name": "Paranoia",
                             "unlockRep": 30,
                             "probability": 0.5,
-                            "dollar_mult": 0.60
+                            "dollar_mult": 0.6
                         },
                         {
                             "name": "Random",
@@ -297,7 +297,7 @@
                             "name": "Calming",
                             "unlockRep": 60,
                             "probability": 0.5,
-                            "dollar_mult": 0.50
+                            "dollar_mult": 0.5
                         },
                         {
                             "name": "Random",
@@ -331,16 +331,16 @@
                 },
                 {
                     "name": "Beater 'Band' Van",
-                    "cost": 10000,
+                    "cost": 5000,
                     "unlockRep": 50,
                     "minAmount": 5,
                     "stepAmount": 5,
                     "maxAmount": 20,
                     "dealModifier": [
-                        1.5,
-                        1.25,
-                        2.0,
-                        2.0
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
                     ]
                 }
             ],
@@ -432,7 +432,7 @@
                             "name": "Calming",
                             "unlockRep": 0,
                             "probability": 2.0,
-                            "dollar_mult": 0.50
+                            "dollar_mult": 0.5
                         },
                         {
                             "name": "Munchies",
@@ -530,16 +530,16 @@
                 },
                 {
                     "name": "Chopper Crew Drop",
-                    "cost": 10000,
+                    "cost": 5000,
                     "unlockRep": 50,
                     "minAmount": 5,
                     "stepAmount": 5,
                     "maxAmount": 20,
                     "dealModifier": [
-                        1.5,
-                        1.25,
-                        2.0,
-                        2.0
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
                     ]
                 }
             ],
@@ -599,19 +599,19 @@
                     2,
                     1.25,
                     750,
-                    8
+                    7
                 ],
                 [
                     3,
                     1.0,
-                    900,
+                    1000,
                     10
                 ],
                 [
                     4,
                     0.85,
-                    1000,
-                    12
+                    1500,
+                    15
                 ]
             ],
             "repLogBase": 50,
@@ -632,7 +632,7 @@
                         },
                         {
                             "type": "premium",
-                            "dollar_mult": 0.30,
+                            "dollar_mult": 0.3,
                             "unlockRep": 25
                         },
                         {
@@ -658,25 +658,25 @@
                             "name": "Explosive",
                             "unlockRep": 30,
                             "probability": 0.4,
-                            "dollar_mult": 0.70
+                            "dollar_mult": 0.7
                         },
                         {
                             "name": "Random",
                             "unlockRep": 5,
                             "probability": 0.3,
-                            "dollar_mult": 0.20
+                            "dollar_mult": 0.2
                         },
                         {
                             "name": "Random",
                             "unlockRep": 20,
                             "probability": 0.35,
-                            "dollar_mult": 0.30
+                            "dollar_mult": 0.3
                         },
                         {
                             "name": "Random",
                             "unlockRep": 40,
                             "probability": 0.4,
-                            "dollar_mult": 0.40
+                            "dollar_mult": 0.4
                         }
                     ]
                 },
@@ -711,25 +711,25 @@
                             "name": "Calming",
                             "unlockRep": 25,
                             "probability": 0.5,
-                            "dollar_mult": 0.50
+                            "dollar_mult": 0.5
                         },
                         {
                             "name": "Random",
                             "unlockRep": 20,
                             "probability": 0.3,
-                            "dollar_mult": 0.20
+                            "dollar_mult": 0.2
                         },
                         {
                             "name": "Random",
                             "unlockRep": 40,
                             "probability": 0.35,
-                            "dollar_mult": 0.30
+                            "dollar_mult": 0.3
                         },
                         {
                             "name": "Random",
                             "unlockRep": 55,
                             "probability": 0.4,
-                            "dollar_mult": 0.40
+                            "dollar_mult": 0.4
                         }
                     ]
                 }
@@ -737,11 +737,11 @@
             "shipping": [
                 {
                     "name": "The Crystal Ship",
-                    "cost": 2000,
+                    "cost": 0,
                     "unlockRep": 0,
                     "minAmount": 5,
-                    "stepAmount": 1,
-                    "maxAmount": 25,
+                    "stepAmount": 5,
+                    "maxAmount": 20,
                     "dealModifier": [
                         1.0,
                         1.0,
@@ -751,9 +751,9 @@
                 },
                 {
                     "name": "Homie Hydraulics Crew",
-                    "cost": 7500,
+                    "cost": 10000,
                     "unlockRep": 20,
-                    "minAmount": 15,
+                    "minAmount": 20,
                     "stepAmount": 5,
                     "maxAmount": 50,
                     "dealModifier": [
@@ -765,11 +765,11 @@
                 },
                 {
                     "name": "Vamonos Pest Control Van",
-                    "cost": 15000,
+                    "cost": 25000,
                     "unlockRep": 45,
-                    "minAmount": 30,
-                    "stepAmount": 5,
-                    "maxAmount": 75,
+                    "minAmount": 40,
+                    "stepAmount": 20,
+                    "maxAmount": 100,
                     "dealModifier": [
                         1.0,
                         1.0,
@@ -833,20 +833,20 @@
                 [
                     1,
                     1.0,
-                    600,
-                    -10
+                    500,
+                    5
                 ],
                 [
                     2,
                     0.9,
-                    700,
-                    -12
+                    1000,
+                    10
                 ],
                 [
                     3,
                     0.8,
-                    800,
-                    -15
+                    1500,
+                    15
                 ]
             ],
             "repLogBase": 0,
@@ -894,13 +894,13 @@
                             "name": "Random",
                             "unlockRep": 8,
                             "probability": 0.3,
-                            "dollar_mult": 0.20
+                            "dollar_mult": 0.2
                         },
                         {
                             "name": "Random",
                             "unlockRep": 25,
                             "probability": 0.35,
-                            "dollar_mult": 0.30
+                            "dollar_mult": 0.3
                         }
                     ]
                 },
@@ -915,7 +915,7 @@
                     "qualities": [
                         {
                             "type": "standard",
-                            "dollar_mult": 0.20,
+                            "dollar_mult": 0.2,
                             "unlockRep": 10
                         },
                         {
@@ -941,13 +941,13 @@
                             "name": "Random",
                             "unlockRep": 15,
                             "probability": 0.3,
-                            "dollar_mult": 0.20
+                            "dollar_mult": 0.2
                         },
                         {
                             "name": "Random",
                             "unlockRep": 35,
                             "probability": 0.35,
-                            "dollar_mult": 0.30
+                            "dollar_mult": 0.3
                         }
                     ]
                 }
@@ -955,11 +955,11 @@
             "shipping": [
                 {
                     "name": "Esteem 'Legal Document' Courier",
-                    "cost": 800,
+                    "cost": 0,
                     "unlockRep": 0,
-                    "minAmount": 1,
+                    "minAmount": 5,
                     "stepAmount": 1,
-                    "maxAmount": 15,
+                    "maxAmount": 20,
                     "dealModifier": [
                         1.0,
                         1.0,
@@ -969,11 +969,11 @@
                 },
                 {
                     "name": "Vacuum Repair Van",
-                    "cost": 5000,
+                    "cost": 10000,
                     "unlockRep": 18,
-                    "minAmount": 5,
+                    "minAmount": 20,
                     "stepAmount": 5,
-                    "maxAmount": 30,
+                    "maxAmount": 40,
                     "dealModifier": [
                         1.0,
                         1.0,
@@ -1035,19 +1035,19 @@
             ],
             "deals": [
                 [
-                    3,
+                    2,
                     1.3,
-                    2500,
+                    1500,
+                    10
+                ],
+                [
+                    3,
+                    1.1,
+                    2000,
                     15
                 ],
                 [
                     4,
-                    1.1,
-                    2800,
-                    18
-                ],
-                [
-                    5,
                     0.9,
                     3000,
                     20
@@ -1098,13 +1098,13 @@
                             "name": "Random",
                             "unlockRep": 15,
                             "probability": 0.3,
-                            "dollar_mult": 0.20
+                            "dollar_mult": 0.2
                         },
                         {
                             "name": "Random",
                             "unlockRep": 35,
                             "probability": 0.35,
-                            "dollar_mult": 0.30
+                            "dollar_mult": 0.3
                         }
                     ]
                 },
@@ -1124,7 +1124,7 @@
                         },
                         {
                             "type": "heavenly",
-                            "dollar_mult": 0.60,
+                            "dollar_mult": 0.6,
                             "unlockRep": 40
                         }
                     ],
@@ -1139,7 +1139,7 @@
                             "name": "Toxic",
                             "unlockRep": 25,
                             "probability": 0.4,
-                            "dollar_mult": 0.70
+                            "dollar_mult": 0.7
                         },
                         {
                             "name": "Sedating",
@@ -1151,13 +1151,13 @@
                             "name": "Random",
                             "unlockRep": 20,
                             "probability": 0.3,
-                            "dollar_mult": 0.20
+                            "dollar_mult": 0.2
                         },
                         {
                             "name": "Random",
                             "unlockRep": 45,
                             "probability": 0.35,
-                            "dollar_mult": 0.30
+                            "dollar_mult": 0.3
                         }
                     ]
                 }
@@ -1165,11 +1165,11 @@
             "shipping": [
                 {
                     "name": "Parking Attendant Pickup",
-                    "cost": 4000,
+                    "cost": 0,
                     "unlockRep": 0,
-                    "minAmount": 10,
+                    "minAmount": 5,
                     "stepAmount": 5,
-                    "maxAmount": 60,
+                    "maxAmount": 25,
                     "dealModifier": [
                         1.0,
                         1.0,
@@ -1179,11 +1179,11 @@
                 },
                 {
                     "name": "Kaylee's College Fund Transport",
-                    "cost": 15000,
+                    "cost": 25000,
                     "unlockRep": 25,
-                    "minAmount": 25,
-                    "stepAmount": 5,
-                    "maxAmount": 120,
+                    "minAmount": 20,
+                    "stepAmount": 20,
+                    "maxAmount": 100,
                     "dealModifier": [
                         1.0,
                         1.0,
@@ -1248,7 +1248,7 @@
                     2,
                     1.3,
                     1600,
-                    9
+                    7
                 ],
                 [
                     3,
@@ -1260,7 +1260,7 @@
                     4,
                     0.9,
                     1900,
-                    11
+                    15
                 ]
             ],
             "repLogBase": 60,
@@ -1276,7 +1276,7 @@
                     "qualities": [
                         {
                             "type": "standard",
-                            "dollar_mult": 0.20,
+                            "dollar_mult": 0.2,
                             "unlockRep": 0
                         },
                         {
@@ -1296,7 +1296,7 @@
                             "name": "Paranoia",
                             "unlockRep": 8,
                             "probability": 2.0,
-                            "dollar_mult": 0.70
+                            "dollar_mult": 0.7
                         },
                         {
                             "name": "Disorienting",
@@ -1308,13 +1308,13 @@
                             "name": "Random",
                             "unlockRep": 10,
                             "probability": 0.3,
-                            "dollar_mult": 0.20
+                            "dollar_mult": 0.2
                         },
                         {
                             "name": "Random",
                             "unlockRep": 25,
                             "probability": 0.35,
-                            "dollar_mult": 0.30
+                            "dollar_mult": 0.3
                         }
                     ]
                 },
@@ -1361,13 +1361,13 @@
                             "name": "Random",
                             "unlockRep": 20,
                             "probability": 0.3,
-                            "dollar_mult": 0.20
+                            "dollar_mult": 0.2
                         },
                         {
                             "name": "Random",
                             "unlockRep": 35,
                             "probability": 0.35,
-                            "dollar_mult": 0.30
+                            "dollar_mult": 0.3
                         }
                     ]
                 }
@@ -1375,11 +1375,11 @@
             "shipping": [
                 {
                     "name": "Molina Furniture Delivery",
-                    "cost": 3000,
+                    "cost": 0,
                     "unlockRep": 0,
                     "minAmount": 5,
-                    "stepAmount": 1,
-                    "maxAmount": 30,
+                    "stepAmount": 5,
+                    "maxAmount": 25,
                     "dealModifier": [
                         1.0,
                         1.0,
@@ -1389,11 +1389,11 @@
                 },
                 {
                     "name": "Repo Yard Runners",
-                    "cost": 9000,
+                    "cost": 10000,
                     "unlockRep": 15,
                     "minAmount": 10,
                     "stepAmount": 5,
-                    "maxAmount": 55,
+                    "maxAmount": 50,
                     "dealModifier": [
                         1.0,
                         1.0,
@@ -1403,11 +1403,11 @@
                 },
                 {
                     "name": "Discrete Armored Transport",
-                    "cost": 18000,
+                    "cost": 25000,
                     "unlockRep": 30,
                     "minAmount": 20,
-                    "stepAmount": 5,
-                    "maxAmount": 90,
+                    "stepAmount": 20,
+                    "maxAmount": 100,
                     "dealModifier": [
                         1.0,
                         1.0,
@@ -1471,14 +1471,14 @@
                 [
                     1,
                     1.6,
-                    3500,
-                    15
+                    2500,
+                    10
                 ],
                 [
                     2,
                     1.3,
-                    4000,
-                    18
+                    5000,
+                    20
                 ]
             ],
             "repLogBase": 0,
@@ -1499,7 +1499,7 @@
                         },
                         {
                             "type": "heavenly",
-                            "dollar_mult": 0.50,
+                            "dollar_mult": 0.5,
                             "unlockRep": 20
                         }
                     ],
@@ -1508,7 +1508,7 @@
                             "name": "Explosive",
                             "unlockRep": 0,
                             "probability": 2.0,
-                            "dollar_mult": 0.80
+                            "dollar_mult": 0.8
                         },
                         {
                             "name": "Euphoric",
@@ -1520,7 +1520,7 @@
                             "name": "Paranoia",
                             "unlockRep": 15,
                             "probability": 0.6,
-                            "dollar_mult": 0.70
+                            "dollar_mult": 0.7
                         },
                         {
                             "name": "Random",
@@ -1553,7 +1553,7 @@
                     "qualities": [
                         {
                             "type": "premium",
-                            "dollar_mult": 0.40,
+                            "dollar_mult": 0.4,
                             "unlockRep": 10
                         },
                         {
@@ -1605,7 +1605,7 @@
             "shipping": [
                 {
                     "name": "Salamanca Muscle Convoy",
-                    "cost": 7000,
+                    "cost": 0,
                     "unlockRep": 0,
                     "minAmount": 20,
                     "stepAmount": 5,
@@ -1622,10 +1622,10 @@
                     "cost": 20000,
                     "unlockRep": 20,
                     "minAmount": 40,
-                    "stepAmount": 10,
+                    "stepAmount": 20,
                     "maxAmount": 100,
                     "dealModifier": [
-                        1.0,
+                        1.5,
                         1.0,
                         1.0,
                         1.0
@@ -1639,10 +1639,10 @@
                     "stepAmount": 20,
                     "maxAmount": 200,
                     "dealModifier": [
+                        2.0,
                         1.0,
-                        1.0,
-                        1.0,
-                        1.0
+                        2.0,
+                        2.0
                     ]
                 }
             ],
@@ -1701,20 +1701,20 @@
                 [
                     4,
                     1.6,
-                    7000,
-                    25
+                    5000,
+                    20
                 ],
                 [
                     5,
                     1.3,
                     8000,
-                    28
+                    30
                 ],
                 [
                     6,
                     1.0,
-                    9000,
-                    30
+                    12000,
+                    40
                 ]
             ],
             "repLogBase": 0,
@@ -1750,7 +1750,7 @@
                             "name": "Calming",
                             "unlockRep": 10,
                             "probability": 2.0,
-                            "dollar_mult": 0.60
+                            "dollar_mult": 0.6
                         },
                         {
                             "name": "ThoughtProvoking",
@@ -1794,7 +1794,7 @@
                         },
                         {
                             "type": "heavenly",
-                            "dollar_mult": 0.60,
+                            "dollar_mult": 0.6,
                             "unlockRep": 50
                         }
                     ],
@@ -1803,7 +1803,7 @@
                             "name": "Energizing",
                             "unlockRep": 15,
                             "probability": 2.0,
-                            "dollar_mult": 0.40
+                            "dollar_mult": 0.4
                         },
                         {
                             "name": "Focused",
@@ -1841,11 +1841,11 @@
             "shipping": [
                 {
                     "name": "Pollos Refrigerated Trucks",
-                    "cost": 25000,
+                    "cost": 0,
                     "unlockRep": 0,
                     "minAmount": 50,
                     "stepAmount": 10,
-                    "maxAmount": 150,
+                    "maxAmount": 100,
                     "dealModifier": [
                         1.0,
                         1.0,
@@ -1937,20 +1937,20 @@
                 [
                     2,
                     1.25,
-                    5500,
+                    5000,
                     20
                 ],
                 [
-                    4,
+                    3,
                     1.0,
-                    6000,
-                    22
+                    7000,
+                    40
                 ],
                 [
-                    6,
+                    4,
                     0.8,
-                    6500,
-                    25
+                    10000,
+                    50
                 ]
             ],
             "repLogBase": 100,
@@ -1966,12 +1966,12 @@
                     "qualities": [
                         {
                             "type": "standard",
-                            "dollar_mult": 0.30,
+                            "dollar_mult": 0.3,
                             "unlockRep": 0
                         },
                         {
                             "type": "premium",
-                            "dollar_mult": 0.50,
+                            "dollar_mult": 0.5,
                             "unlockRep": 25
                         }
                     ],
@@ -2033,7 +2033,7 @@
                             "name": "Euphoric",
                             "unlockRep": 10,
                             "probability": 2.0,
-                            "dollar_mult": 0.40
+                            "dollar_mult": 0.4
                         },
                         {
                             "name": "Paranoia",
@@ -2053,7 +2053,7 @@
             "shipping": [
                 {
                     "name": "El Paso Trucking Co.",
-                    "cost": 10000,
+                    "cost": 0,
                     "unlockRep": 0,
                     "minAmount": 30,
                     "stepAmount": 10,
@@ -2173,13 +2173,13 @@
                             "name": "Lethal",
                             "unlockRep": 0,
                             "probability": 2.0,
-                            "dollar_mult": 0.90
+                            "dollar_mult": 0.9
                         },
                         {
                             "name": "Energizing",
                             "unlockRep": 5,
                             "probability": 2.0,
-                            "dollar_mult": 0.40
+                            "dollar_mult": 0.4
                         },
                         {
                             "name": "Explosive",
@@ -2191,13 +2191,13 @@
                             "name": "Random",
                             "unlockRep": 10,
                             "probability": 0.3,
-                            "dollar_mult": 0.30
+                            "dollar_mult": 0.3
                         },
                         {
                             "name": "Random",
                             "unlockRep": 20,
                             "probability": 0.35,
-                            "dollar_mult": 0.40
+                            "dollar_mult": 0.4
                         }
                     ]
                 },
@@ -2212,12 +2212,12 @@
                     "qualities": [
                         {
                             "type": "premium",
-                            "dollar_mult": 0.50,
+                            "dollar_mult": 0.5,
                             "unlockRep": 10
                         },
                         {
                             "type": "heavenly",
-                            "dollar_mult": 0.70,
+                            "dollar_mult": 0.7,
                             "unlockRep": 30
                         }
                     ],
@@ -2238,7 +2238,7 @@
                             "name": "Random",
                             "unlockRep": 22,
                             "probability": 0.3,
-                            "dollar_mult": 0.30
+                            "dollar_mult": 0.3
                         }
                     ]
                 }
@@ -2362,7 +2362,7 @@
                     "qualities": [
                         {
                             "type": "premium",
-                            "dollar_mult": 0.60,
+                            "dollar_mult": 0.6,
                             "unlockRep": 0
                         },
                         {
@@ -2394,19 +2394,19 @@
                             "name": "Random",
                             "unlockRep": 10,
                             "probability": 0.3,
-                            "dollar_mult": 0.30
+                            "dollar_mult": 0.3
                         },
                         {
                             "name": "Random",
                             "unlockRep": 20,
                             "probability": 0.35,
-                            "dollar_mult": 0.40
+                            "dollar_mult": 0.4
                         },
                         {
                             "name": "Random",
                             "unlockRep": 35,
                             "probability": 0.4,
-                            "dollar_mult": 0.50
+                            "dollar_mult": 0.5
                         }
                     ]
                 },
@@ -2421,7 +2421,7 @@
                     "qualities": [
                         {
                             "type": "heavenly",
-                            "dollar_mult": 0.70,
+                            "dollar_mult": 0.7,
                             "unlockRep": 10
                         }
                     ],
@@ -2442,13 +2442,13 @@
                             "name": "Random",
                             "unlockRep": 15,
                             "probability": 0.3,
-                            "dollar_mult": 0.30
+                            "dollar_mult": 0.3
                         },
                         {
                             "name": "Random",
                             "unlockRep": 30,
                             "probability": 0.35,
-                            "dollar_mult": 0.40
+                            "dollar_mult": 0.4
                         }
                     ]
                 }
@@ -2586,7 +2586,7 @@
                         },
                         {
                             "type": "heavenly",
-                            "dollar_mult": 0.70,
+                            "dollar_mult": 0.7,
                             "unlockRep": 25
                         }
                     ],
@@ -2601,7 +2601,7 @@
                             "name": "ThoughtProvoking",
                             "unlockRep": 8,
                             "probability": 2.0,
-                            "dollar_mult": 0.20
+                            "dollar_mult": 0.2
                         },
                         {
                             "name": "Paranoia",
@@ -2752,12 +2752,12 @@
                     "qualities": [
                         {
                             "type": "standard",
-                            "dollar_mult": 0.30,
+                            "dollar_mult": 0.3,
                             "unlockRep": 0
                         },
                         {
                             "type": "premium",
-                            "dollar_mult": 0.50,
+                            "dollar_mult": 0.5,
                             "unlockRep": 18
                         }
                     ],
@@ -2772,7 +2772,7 @@
                             "name": "Euphoric",
                             "unlockRep": 10,
                             "probability": 0.5,
-                            "dollar_mult": 0.40
+                            "dollar_mult": 0.4
                         },
                         {
                             "name": "Sedating",
@@ -2784,13 +2784,13 @@
                             "name": "Random",
                             "unlockRep": 15,
                             "probability": 0.3,
-                            "dollar_mult": 0.20
+                            "dollar_mult": 0.2
                         },
                         {
                             "name": "Random",
                             "unlockRep": 28,
                             "probability": 0.35,
-                            "dollar_mult": 0.30
+                            "dollar_mult": 0.3
                         }
                     ]
                 }
@@ -2909,7 +2909,7 @@
                     "qualities": [
                         {
                             "type": "standard",
-                            "dollar_mult": 0.30,
+                            "dollar_mult": 0.3,
                             "unlockRep": 0
                         },
                         {
@@ -2923,13 +2923,13 @@
                             "name": "Lethal",
                             "unlockRep": 0,
                             "probability": 2.0,
-                            "dollar_mult": 0.90
+                            "dollar_mult": 0.9
                         },
                         {
                             "name": "Focused",
                             "unlockRep": 5,
                             "probability": 2.0,
-                            "dollar_mult": 0.50
+                            "dollar_mult": 0.5
                         },
                         {
                             "name": "Paranoia",
@@ -3074,7 +3074,7 @@
                     "qualities": [
                         {
                             "type": "heavenly",
-                            "dollar_mult": 0.90,
+                            "dollar_mult": 0.9,
                             "unlockRep": 0
                         }
                     ],
@@ -3089,7 +3089,7 @@
                             "name": "Euphoric",
                             "unlockRep": 5,
                             "probability": 2.0,
-                            "dollar_mult": 0.50
+                            "dollar_mult": 0.5
                         },
                         {
                             "name": "ThoughtProvoking",
@@ -3101,19 +3101,19 @@
                             "name": "Random",
                             "unlockRep": 10,
                             "probability": 0.3,
-                            "dollar_mult": 0.30
+                            "dollar_mult": 0.3
                         },
                         {
                             "name": "Random",
                             "unlockRep": 25,
                             "probability": 0.35,
-                            "dollar_mult": 0.40
+                            "dollar_mult": 0.4
                         },
                         {
                             "name": "Random",
                             "unlockRep": 40,
                             "probability": 0.4,
-                            "dollar_mult": 0.50
+                            "dollar_mult": 0.5
                         }
                     ]
                 }

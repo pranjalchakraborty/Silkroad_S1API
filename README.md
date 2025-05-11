@@ -272,29 +272,21 @@ This mod is an ongoing project with many plans for expansion and refinement!
 
 We hope you enjoy the NPC Custom Buyers & Dealers Expansion Mod! Your feedback and contributions are welcome.
 
+// Optional Restructure of empire json to point to npc folders and each folder containing npc specific json and icon
+// Separate NPC relation(currently NPC specific rep) and reputation(one global rep)
+// Real NPC restructure
+// Shipping Upgrade Button
 
 
 Checklist to Release:
-= Effects as 0-2 with values determining constant vs roll of both necessary & optional effects 
-=remove rep_mult and make xp and rep as mult of price - 
-=type/name inconsistencies
-= codebase consistency
-= 1.5 update
-= restructure json for new probability
-= Make Dialogue instead of Task visible in App
-= restructure json - deal related and penalty json - field in shipping(modifier) and in deals
-= asymptotic scaling with rep - shipping - log base x as multiplier(?) - 0 is off
-= random necessary/optional effects on top - Random = rolls extra unset effect with same rules as specified effects
-= Code Changes to support above 3 json changes
-= improve initialize npc json logic on reward received
-= update json Tools
-= json - NPCs Balance, Gamification, More Products/Effects, Proper Effect Names
-= add drugs, quality in JSON
-= Remove Silkroad references - make it Empire
-// Basic Testing
+= fix quest removal logic bug - index
+= fix -inf amount bug due to log
+= Show reputation of dealers below rewards - temp. fix
+= * **UI Bug Fixes:** Address issues like the "cancel current delivery" button behavior after quest completion/refresh.
 
-// Minimal UI - Shipping Buttons/Upgrade
+// NPC balancing
+// Basic Testing
+// Play
 
 // version update to s1api 1.7 when stable released
 // change placeholder dummy product effects and quality with real effects from s1api once supported - Implement rewards based on effects and quality - check and rewards
-

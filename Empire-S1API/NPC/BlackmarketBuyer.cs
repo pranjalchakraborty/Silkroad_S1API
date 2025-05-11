@@ -18,7 +18,6 @@ namespace Empire
         public bool IsInitialized { get; private set; } = false;
         public DealerSaveData _DealerData;
         public List<UnlockRequirement> UnlockRequirements { get; set; } = new List<UnlockRequirement>();
-        // Updated to match JSON structure
         private List<Drug> Drugs = new List<Drug>(); // Initialize Drugs list
         public List<Shipping> Shippings { get; set; } = new List<Shipping>(); // Initialize Shippings list
         private Dialogue Dialogues = new Dialogue();
@@ -214,6 +213,16 @@ namespace Empire
         public void GiveReputation(int amount)
         {
             _DealerData.Reputation += amount;
+            //if reputation <1 make it 1
+            if (_DealerData.Reputation < 1)
+            {
+                _DealerData.Reputation = 1;
+            }
+            //if reputation > 100 make it 100 - TODO - Once Global Reputation is implemented, make this NPC specific relationship
+            /*if (_DealerData.Reputation > 100)
+            {
+                _DealerData.Reputation = 100;
+            }*/
             MelonLogger.Msg($"✅ {DealerName}'s reputation increased by {amount}. New Reputation: {_DealerData.Reputation}");
         }
         //A method to check if the new reputation unlocks any new drug, quality or effects for the dealer 
