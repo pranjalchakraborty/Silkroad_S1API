@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 public static class DebugUtils
 {
     // Maximum depth to recurse into nested objects.
-    private const int MaxDepth = 4;
+    private const int MaxDepth = 2;
     /// <summary>
     /// Logs the JSON representation of an object.
     /// </summary>
