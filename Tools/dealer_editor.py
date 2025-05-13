@@ -30,11 +30,11 @@ class MergeConflictDialog(simpledialog.Dialog):
         keep_button.pack(side=tk.LEFT, padx=5, pady=10)
         overwrite_button = ttk.Button(box, text="Overwrite with New", width=18, command=self.overwrite)
         overwrite_button.pack(side=tk.LEFT, padx=5, pady=10)
-        cancel_button = ttk.Button(box, text="Cancel Merge", width=15, command=self.cancel_merge) # Renamed to avoid conflict
+        cancel_button = ttk.Button(box, text="Cancel Merge", width=15, command=self.cancel_merge) 
         cancel_button.pack(side=tk.LEFT, padx=5, pady=10)
 
-        self.bind("<Return>", lambda event: self.keep_existing()) # Default action on Enter
-        self.bind("<Escape>", self.cancel_merge) # Action on Escape
+        self.bind("<Return>", lambda event: self.keep_existing()) 
+        self.bind("<Escape>", self.cancel_merge) 
 
         box.pack()
 
@@ -51,7 +51,7 @@ class MergeConflictDialog(simpledialog.Dialog):
     def cancel_merge(self, event=None):
         """Sets result to 'cancel' and closes dialog using standard cancel method."""
         self.result = "cancel"
-        self.cancel() # simpledialog.Dialog's cancel method
+        self.cancel() 
 
 class DealerEditorApp:
     """
@@ -102,7 +102,7 @@ class DealerEditorApp:
         filemenu.add_separator()
         filemenu.add_command(label="Split Dealers...", command=self.split_dealers)
         filemenu.add_command(label="Combine Dealers...", command=self.combine_dealers)
-        filemenu.add_command(label="Merge empire.json...", command=self.merge_dealers) # Renamed here
+        filemenu.add_command(label="Merge empire.json...", command=self.merge_dealers) 
         filemenu.add_separator()
         filemenu.add_command(label="Exit", command=self.root.quit)
         menubar.add_cascade(label="File", menu=filemenu)
@@ -185,12 +185,13 @@ class DealerEditorApp:
         
         self.name_entry = self._create_label_entry_pair(basic_info_frame, "Name (str):", 0)
         self.image_entry = self._create_label_entry_pair(basic_info_frame, "Image (str):", 1)
+        self.tier_entry = self._create_label_entry_pair(basic_info_frame, "Tier (int):", 2) # New tier field
         
         unlock_req_outer_label = ttk.Label(basic_info_frame, text="Unlock Requirements (JSON objects, one per line):")
-        unlock_req_outer_label.grid(row=2, column=0, padx=5, pady=2, sticky="nw")
+        unlock_req_outer_label.grid(row=3, column=0, padx=5, pady=2, sticky="nw") # Adjusted row
         
         unlock_req_text_frame = ttk.Frame(basic_info_frame) 
-        unlock_req_text_frame.grid(row=2, column=1, padx=5, pady=2, sticky="ew")
+        unlock_req_text_frame.grid(row=3, column=1, padx=5, pady=2, sticky="ew") # Adjusted row
         unlock_req_text_frame.columnconfigure(0, weight=1) 
 
         self.unlock_requirements_text = tk.Text(unlock_req_text_frame, height=4, width=30, wrap=tk.WORD)
@@ -199,7 +200,7 @@ class DealerEditorApp:
         unlock_req_scrollbar.grid(row=0, column=1, sticky="ns")
         self.unlock_requirements_text.configure(yscrollcommand=unlock_req_scrollbar.set)
         
-        self.rep_log_base_entry = self._create_label_entry_pair(basic_info_frame, "Rep Log Base (int):", 3) 
+        self.rep_log_base_entry = self._create_label_entry_pair(basic_info_frame, "Rep Log Base (int):", 4) # Adjusted row
 
         deals_frame = ttk.LabelFrame(parent_frame, text="Deals (Each line: int, float, int, int)", padding=(10,5))
         deals_frame.grid(row=current_row, column=0, padx=5, pady=5, sticky="nsew"); current_row +=1
@@ -316,7 +317,7 @@ class DealerEditorApp:
         self.shipping_min_amount_entry = self._create_label_entry_pair(parent_frame, "Min Amount (int):", current_row); current_row+=1
         self.shipping_step_amount_entry = self._create_label_entry_pair(parent_frame, "Step Amount (int):", current_row); current_row+=1
         self.shipping_max_amount_entry = self._create_label_entry_pair(parent_frame, "Max Amount (int):", current_row); current_row+=1
-        self.shipping_deal_modifier_entry = self._create_label_entry_pair(parent_frame, "Deal Modifier (4 floats, comma-sep):", current_row); current_row+=1 # Label updated
+        self.shipping_deal_modifier_entry = self._create_label_entry_pair(parent_frame, "Deal Modifier (4 floats, comma-sep):", current_row); current_row+=1 
         self.set_widget_state(parent_frame, 'disabled')
 
     def create_dialogue_details_widgets(self, parent_frame):
@@ -426,21 +427,17 @@ class DealerEditorApp:
             text_widget.insert("1.0", "\n".join(lines))
             
     def text_from_list_of_json_objects(self, text_widget, list_of_objects):
-        """Writes a list of Python objects to a Text widget, each as a JSON string on a new line."""
         self.clear_text(text_widget)
         if isinstance(list_of_objects, list):
             try:
-                # Ensure consistent output for easier diffing if users edit manually
                 lines = [json.dumps(obj, sort_keys=True, indent=None) for obj in list_of_objects] 
                 text_widget.insert("1.0", "\n".join(lines))
             except TypeError as e:
                 messagebox.showerror("JSON Error", f"Could not serialize object to JSON for display: {e}\nObject: {obj}")
-                # Fallback: display as simple strings if JSON serialization fails for some reason
                 text_widget.insert("1.0", "\n".join(map(str, list_of_objects)))
 
 
     def list_of_json_objects_from_text(self, text_widget):
-        """Reads lines from a Text widget, parsing each line as a JSON string into a Python object."""
         lines = self.list_from_text(text_widget) 
         parsed_objects = []
         for i, line_str in enumerate(lines):
@@ -783,7 +780,7 @@ class DealerEditorApp:
     # --- CRUD Operations for Dealers and Sub-Items ---
     def add_dealer(self):
         new_dealer = {
-            "name": "New Dealer", "image": "", "unlockRequirements": [], "deals": [],
+            "name": "New Dealer", "image": "", "tier": 0, "unlockRequirements": [], "deals": [], # Added tier
             "repLogBase": 10, 
             "drugs": [], "shipping": [],
             "dialogue": {key: [] for key in ["intro", "dealStart", "accept", "incomplete", "expire", "fail", "success", "reward"]}
@@ -833,6 +830,7 @@ class DealerEditorApp:
 
             self.clear_entry(self.name_entry); self.name_entry.insert(0, dealer.get("name", ""))
             self.clear_entry(self.image_entry); self.image_entry.insert(0, dealer.get("image", ""))
+            self.clear_entry(self.tier_entry); self.tier_entry.insert(0, str(dealer.get("tier", 0))) # Load tier
             
             self.text_from_list_of_json_objects(self.unlock_requirements_text, dealer.get("unlockRequirements", []))
             
@@ -874,6 +872,7 @@ class DealerEditorApp:
 
             dealer["name"] = self.name_entry.get()
             dealer["image"] = self.image_entry.get()
+            dealer["tier"] = self.safe_int(self.tier_entry.get(), 0) # Save tier
             
             parsed_unlock_reqs = self.list_of_json_objects_from_text(self.unlock_requirements_text)
             if parsed_unlock_reqs is None: 
@@ -912,7 +911,7 @@ class DealerEditorApp:
             if show_success: messagebox.showerror("Save Error", f"An error occurred while saving dealer: {e}\n{traceback.format_exc()}"); return False
 
     def clear_dealer_details(self):
-        self.clear_entry(self.name_entry); self.clear_entry(self.image_entry)
+        self.clear_entry(self.name_entry); self.clear_entry(self.image_entry); self.clear_entry(self.tier_entry) # Clear tier
         self.clear_text(self.unlock_requirements_text) 
         self.clear_entry(self.rep_log_base_entry)
         self.clear_text(self.deals_text)
@@ -1278,7 +1277,7 @@ class DealerEditorApp:
         if self.current_dealer_index == -1 or not (0 <= self.current_dealer_index < len(self.data['dealers'])):
             messagebox.showwarning("Add Shipping Error", "Please select a valid dealer first.")
             return
-        new_shipping = {"name": "New Shipping", "cost": 0, "unlockRep": 0, "minAmount": 0, "stepAmount": 1, "maxAmount": 100, "dealModifier": [0.0,0.0,0.0,0.0]} # Deal Modifier now floats
+        new_shipping = {"name": "New Shipping", "cost": 0, "unlockRep": 0, "minAmount": 0, "stepAmount": 1, "maxAmount": 100, "dealModifier": [0.0,0.0,0.0,0.0]} 
         try:
             dealer = self.data["dealers"][self.current_dealer_index]
             if not isinstance(dealer.get("shipping"), list): dealer["shipping"] = []
@@ -1331,7 +1330,7 @@ class DealerEditorApp:
             self.clear_entry(self.shipping_min_amount_entry); self.shipping_min_amount_entry.insert(0, str(shipping_item.get("minAmount", 0)))
             self.clear_entry(self.shipping_step_amount_entry); self.shipping_step_amount_entry.insert(0, str(shipping_item.get("stepAmount", 1)))
             self.clear_entry(self.shipping_max_amount_entry); self.shipping_max_amount_entry.insert(0, str(shipping_item.get("maxAmount", 100)))
-            self.clear_entry(self.shipping_deal_modifier_entry); self.shipping_deal_modifier_entry.insert(0, self.string_from_list(shipping_item.get("dealModifier", [0.0,0.0,0.0,0.0]))) # Default to floats
+            self.clear_entry(self.shipping_deal_modifier_entry); self.shipping_deal_modifier_entry.insert(0, self.string_from_list(shipping_item.get("dealModifier", [0.0,0.0,0.0,0.0]))) 
         except (IndexError, KeyError) as e: 
             messagebox.showerror("Load Shipping Error", f"Failed to load shipping details: {e}"); 
             self.clear_shipping_details(); self.current_shipping_index = -1
@@ -1355,7 +1354,7 @@ class DealerEditorApp:
             dm_list = self.list_from_string(self.shipping_deal_modifier_entry.get(), float) # Changed to float
             if len(dm_list) == 4: shipping_item["dealModifier"] = dm_list
             else:
-                shipping_item["dealModifier"] = shipping_item.get("dealModifier", [0.0,0.0,0.0,0.0]) # Default to floats
+                shipping_item["dealModifier"] = shipping_item.get("dealModifier", [0.0,0.0,0.0,0.0]) 
                 if show_success: 
                     messagebox.showwarning("Save Shipping Warning", "Deal Modifier for shipping option was not 4 numbers separated by commas. Its value was not updated or reverted to default.")
             return True
