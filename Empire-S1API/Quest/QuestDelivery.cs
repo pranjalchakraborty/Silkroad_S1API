@@ -238,6 +238,7 @@ namespace Empire
                 var item = slot.ItemInstance as ProductInstance;
                 if (item == null)
                 {
+                    buyer.SendCustomMessage("This is not even a product...");
                     MelonLogger.Warning("⚠️ Item is not a ProductInstance, skipping...");
                     continue;
                 }
@@ -258,6 +259,12 @@ namespace Empire
                 //Check isProductInstance AND if productEffects contains ALL of the necessary effects
                 //ADD non-dummy check for quality and effects
                 //TODO
+                if (GetProductType(productDef) != Data.ProductID)
+                {
+                    MelonLogger.Error($"❌ Product type mismatch: {GetProductType(productDef)} != {Data.ProductID}");
+                    buyer.SendCustomMessage("This is not the drug type I ordered.");
+                    continue;
+                }
                 if (isProductInstance && Data.NecessaryEffects.All(effect => productEffects.Contains(effect)))
                 {
                     uint total = (uint)(quantity * PackageAmount(packaging));
@@ -299,6 +306,27 @@ namespace Empire
             }
         }
 
+        //A method that checks class type of a product definition. If it WeedDefinition, return weed string, MethDefinition return meth string, CocaineDefinition return cocaine string, else return null.
+        //TODO - UPDATABLE
+        private string? GetProductType(ProductDefinition? productDef)
+        {
+            if (productDef is WeedDefinition)
+            {
+                return "weed";
+            }
+            else if (productDef is MethDefinition)
+            {
+                return "meth";
+            }
+            else if (productDef is CocaineDefinition)
+            {
+                return "cocaine";
+            }
+            else
+            {
+                return null;
+            }
+        }
         //Update Dummy with real effect and quality calculation
         //TODO
         private void UpdateReward(uint total, ProductInstance? item, ProductDefinition? productDef)
@@ -349,14 +377,13 @@ namespace Empire
                 buyer.SendCustomMessage("Reward", Data.ProductID, (int)Data.RequiredAmount, Data.Quality, Data.NecessaryEffects, Data.OptionalEffects);
                 buyer.IncreaseCompletedDeals(1);
                 buyer.UnlockDrug();
-                Contacts.Initialize();
+                Contacts.Update();
             }
             else
             {
                 MelonLogger.Error($"❌ Unknown source: {source}.");
                 return;
             }
-            buyer.SaveDealerData();
             QuestActive = false;
             rewardEntry?.Complete();
             Complete();

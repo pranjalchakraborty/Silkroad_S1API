@@ -62,12 +62,13 @@ namespace Empire
         {
             try
             {
-                Contacts.Initialize();
-                statusText.text = "✅ Dealers initialized";
+                JSONDeserializer.Initialize();
+                MelonLogger.Msg("✅ Dealers initialized");
+                Contacts.Update();
+                MelonLogger.Msg($"Contacts.Buyers Count: {Contacts.Buyers.Count}");
             }
             catch (Exception ex)
             {
-                statusText.text = "❌ Failed to initialize dealers";
                 MelonLogger.Error($"Failed to initialize dealers: {ex}");
             }
         }
@@ -78,7 +79,7 @@ namespace Empire
 
             UIFactory.TopBar(name: "TopBar",
                 parent: bg.transform,
-                title: "Silk Road",
+                title: "Empire",
                 topbarSize: 0.82f,
                 paddingLeft: 75,
                 paddingRight: 75,
@@ -186,6 +187,7 @@ namespace Empire
             refreshRect.anchoredPosition = new Vector2(-10f, -10f);
             refreshRect.sizeDelta = new Vector2(50, 25);
 
+            InitializeDealers();
             MelonCoroutines.Start(WaitForBuyerAndInitialize());
         }
 
@@ -351,33 +353,23 @@ namespace Empire
             float timeout = 5f;
             float waited = 0f;
 
-            MelonLogger.Msg("PhoneApp-WaitForBuyerAndInitialize-Waiting for save buyer to be initialized...");
-            var savebuyer = Contacts.GetBuyer(BlackmarketBuyer.SavedNPCName);
-            //Melonlogger - number of elements in contacts.Buyers
-            //MelonLogger.Msg($"1Contacts.Buyers Count: {Contacts.Buyers.Count}");
-
-            // Wait until Contacts.Buyers is initialized and all buyers are marked as initialized, or until the timeout is reached
-            while ((savebuyer == null || !savebuyer.IsInitialized) && waited < timeout)
+            MelonLogger.Msg("PhoneApp-WaitForBuyerAndInitialize-Waiting for Contacts to be initialized...");
+            while ((!Contacts.IsUnlocked) && waited < timeout)
             {
-                savebuyer = Contacts.GetBuyer(BlackmarketBuyer.SavedNPCName);
                 waited += Time.deltaTime;
                 yield return null; // Wait for the next frame
             }
 
             // Check if the timeout was reached
-            if (savebuyer == null || !savebuyer.IsInitialized)
+            if (!Contacts.IsUnlocked)
             {
-                MelonLogger.Warning("⚠️ PhoneApp-Timeout reached. Save buyer is still not initialized.");
+                MelonLogger.Warning("⚠️ PhoneApp-Timeout reached. Contacts are still not unlocked.");
                 yield break; // Exit the coroutine
             }
-            //Melonlogger - number of elements in contacts.Buyers
-            //MelonLogger.Msg($"4Contacts.Buyers Count: {Contacts.Buyers.Count}");
-            // Log that the default buyer is initialized
-            MelonLogger.Msg($"✅ Default Buyer with save data initialized: {Contacts.Buyers.Count} buyers found.");
 
-            // Call InitializeDealers after save data buyers is initialized
-            InitializeDealers();
-            MelonLogger.Msg("Dealers initialized successfully.");
+            MelonLogger.Msg($"✅ Contacts initialized: {Contacts.Buyers.Count} buyers found.");
+
+            MelonLogger.Msg("Dealers and Buyers initialized successfully.");
             // Load quests after initialization
             LoadQuests();
         }
@@ -480,8 +472,9 @@ namespace Empire
                     MelonLogger.Warning($"⚠️ Dealer {buyer.DealerName} not found in Buyers dictionary.");
                     continue;
                 }
-                if (buyer.DealerName==BlackmarketBuyer.SavedNPCName){
-                    MelonLogger.Warning($"⚠️ Dealer {buyer.DealerName} found in Buyers dictionary. Not progressing further");
+                if (buyer.IsInitialized == false)
+                {
+                    MelonLogger.Warning($"⚠️ Dealer {buyer.DealerName} found in Buyers dictionary as not unlocked. Not progressing further");
                     continue;
                 }
                 var shipping = buyer.Shippings[dealerSaveData.ShippingTier];
@@ -490,15 +483,17 @@ namespace Empire
                 MelonLogger.Msg($"   Unlocked Drugs: {string.Join(", ", dealerSaveData.UnlockedDrugs)}");
                 MelonLogger.Msg($"   MinDeliveryAmount: {shipping.MinAmount}, MaxDeliveryAmount: {shipping.MaxAmount}");
 
-                //drugTypes are unique dealerSaveData.UnlockedDrugs.Type
+                //drugTypes are unique dealerSaveData.UnlockedDrugs.Type 
                 var drugTypes = dealerSaveData.UnlockedDrugs.Select(d => d.Type).Distinct().ToArray();
-
+                // order drugTypes randomly
+                drugTypes = drugTypes.OrderBy(_ => UnityEngine.Random.value).ToArray();
                 // Iterate through unlocked drugs and generate a quest for each drugTypes in dealerSaveData
                 foreach (var drugType in drugTypes)
                 {
                     if (dealerSaveData.UnlockedDrugs.Any(d => d.Type == drugType))
                     {
                         GenerateQuest(buyer, dealerSaveData, drugType);
+                        break; // Only 1 quest per dealer
                     }
                 }
             }
@@ -515,12 +510,14 @@ namespace Empire
             var shipping = buyer.Shippings[dealerSaveData.ShippingTier];
             int minAmount = shipping.MinAmount;
             int maxAmount = shipping.MaxAmount;
-            if (buyer.RepLogBase != 0)
+            if (buyer.RepLogBase > 1)
             {
                 double logResult = Math.Log((double)buyer._DealerData.Reputation, (double)buyer.RepLogBase);
-                // Clamp logResult so that it is at worst 0
-                if (logResult < 0)
+                // Clamp logResult so that it is at worst 0 - and offset by 4 - UPDATABLE
+                if (logResult < 5)
                     logResult = 0;
+                else
+                    logResult = logResult - 5;
                 minAmount = (int)(minAmount * (1 + logResult));
                 maxAmount = (int)(maxAmount * (1 + logResult));
             }
@@ -550,13 +547,15 @@ namespace Empire
             //Get a random drug from the unlocked drugs
             var randomDrug = unlockedDrugs[RandomUtils.RangeInt(0, unlockedDrugs.Count)];
             //Store the last quality. Also store dollar and rep multiplier
-            var lastQuality = randomDrug.Qualities.LastOrDefault();
+            //var lastQuality = randomDrug.Qualities.LastOrDefault();
             var qualityMult = 0f;
-            if (lastQuality != null)
+            //choose a random quality from the randomDrug.Qualities list
+            var randomQuality = randomDrug.Qualities[RandomUtils.RangeInt(0, randomDrug.Qualities.Count)];
+            if (randomQuality != null)
             {
-                quality = lastQuality.Type;
-                qualityMult = lastQuality.DollarMult;
-                aggregateDollarMultMin = (1 + lastQuality.DollarMult) * dealTimesMult;
+                quality = randomQuality.Type;
+                qualityMult = randomQuality.DollarMult;
+                aggregateDollarMultMin = (1 + randomQuality.DollarMult) * dealTimesMult;
                 aggregateDollarMultMax = aggregateDollarMultMin;
 
             }
@@ -641,7 +640,12 @@ namespace Empire
             var Penalties = new List<int> { 0, 0 };
             //Roll a random index for buyer.DealTimes
 
-
+            //roll a random number to scale various values
+            var randomNum1 = UnityEngine.Random.Range(0.5f, 1.5f);
+            var randomNum2 = UnityEngine.Random.Range(0.5f, 1.5f);
+            var randomNum3 = UnityEngine.Random.Range(0.5f, 1.5f);
+            var randomNum4 = UnityEngine.Random.Range(0.5f, 1.0f);
+            var randomNum5 = UnityEngine.Random.Range(0.5f, 1.0f);
 
             var quest = new QuestData
             {
@@ -652,17 +656,17 @@ namespace Empire
                 TargetObjectName = buyer.DealerName,
                 DealerName = buyer.DealerName,
                 QuestImage = Path.Combine(MelonEnvironment.ModsDirectory, "Empire", buyer.DealerImage ?? "EmpireIcon_quest.png"),
-                BaseDollar = randomDrug.BaseDollar,
-                BaseRep = randomDrug.BaseRep,
-                BaseXp = randomDrug.BaseXp,
-                RepMult = randomDrug.RepMult,
-                XpMult = randomDrug.XpMult,
+                BaseDollar = (int)(randomDrug.BaseDollar * randomNum4),
+                BaseRep = (int)(randomDrug.BaseRep * randomNum2),
+                BaseXp = (int)(randomDrug.BaseXp * randomNum3),
+                RepMult = randomDrug.RepMult * randomNum2,
+                XpMult = randomDrug.XpMult * randomNum3,
                 DollarMultiplierMin = (float)Math.Round(aggregateDollarMultMin, 2),
                 DollarMultiplierMax = (float)Math.Round(aggregateDollarMultMax, 2),
 
                 DealTime = dealTime,
-                DealTimeMult = dealTimesMult,
-                Penalties = new List<int> { (int)(buyer.Deals[randomIndex][2] * shipping.DealModifier[2]), (int)(buyer.Deals[randomIndex][3] * shipping.DealModifier[3]) },
+                DealTimeMult = dealTimesMult * randomNum5,
+                Penalties = new List<int> { (int)(buyer.Deals[randomIndex][2] * shipping.DealModifier[2] * randomNum1), (int)(buyer.Deals[randomIndex][3] * shipping.DealModifier[3] * randomNum1) },
 
                 Quality = quality,
                 QualityMult = qualityMult,
@@ -746,12 +750,14 @@ namespace Empire
             var dialogue = Buyer.SendCustomMessage("DealStart", quest.ProductID, (int)quest.AmountRequired, quest.Quality, quest.NecessaryEffects, quest.OptionalEffects, true);
             questTitle.text = quest.Title;
             questTask.text = $"{dialogue}";
-            questReward.text = $"Rewards: ${quest.BaseDollar} + Pricex({quest.DollarMultiplierMin} - {quest.DollarMultiplierMax})\n" +
-                $"Rep :{quest.BaseRep} + Dollarx{quest.RepMult}\n\n" +
-                $"XP :{quest.BaseXp} + Dollarx{quest.XpMult}\n\n" +
-                $"Deal Expiry: {quest.DealTime} Day(s)\n" +
-                $"Failure Penalties: ${quest.Penalties[0]} + {quest.Penalties[1]} Rep\n\n" +
-                $"Current Reputation: {Buyer._DealerData.Reputation}\n";
+            questReward.text = 
+    $"<b><color=#FFD700>Rewards:</color></b> <color=#00FF00>${quest.BaseDollar}</color> + <i>Price x</i> (<color=#00FFFF>{quest.DollarMultiplierMin}</color> - <color=#00FFFF>{quest.DollarMultiplierMax}</color>)\n" +
+    $"<b><color=#FFD700>Reputation:</color></b> <color=#00FF00>{quest.BaseRep}</color> + Dollar x <color=#00FFFF>{Math.Round(quest.RepMult, 4)}</color>\n" +
+    $"<b><color=#FFD700>XP:</color></b> <color=#00FF00>{quest.BaseXp}</color> + Dollar x <color=#00FFFF>{Math.Round(quest.XpMult, 4)}</color>\n\n" +
+    $"<b><color=#FF6347>Deal Expiry:</color></b> <color=#FFA500>{quest.DealTime}</color> Day(s)\n" +
+    $"<b><color=#FF6347>Failure Penalties:</color></b> <color=#FF0000>${quest.Penalties[0]}</color> + <color=#FF4500>{quest.Penalties[1]} Rep</color>\n\n" +
+    $"<b><color=#87CEEB>Current Reputation:</color></b> <color=#FFFFFF>{Buyer._DealerData.Reputation}</color>\n";
+
             deliveryStatus.text = "";
             if (!QuestDelivery.QuestActive)
             {
@@ -824,7 +830,7 @@ namespace Empire
                 delivery.Data.OptionalEffects = quest.OptionalEffects;
                 delivery.Data.NecessaryEffectMult = quest.NecessaryEffectMult;
                 delivery.Data.OptionalEffectMult = quest.OptionalEffectMult;
-                QuestDelivery.Active = delivery; 
+                QuestDelivery.Active = delivery;
 
                 if (Buyer is BlackmarketBuyer buyer)
                 {
@@ -844,7 +850,8 @@ namespace Empire
                 quests.Remove(quest);
                 RefreshQuestList();
             }
-            else{
+            else
+            {
                 MelonLogger.Error("❌ questListContainer is null - Accept Quest.");
             }
             ButtonUtils.SetStyle(acceptButton, acceptLabel, "In Progress", new Color32(32, 0x82, 0xF6, 0xff));

@@ -12,7 +12,7 @@ public class DealerSaveData
 
     public DealerSaveData()
     {
-        Reputation = 1;
+        Reputation = 0;
         ShippingTier = 0;
         DealsCompleted = 0;
         UnlockedDrugs = new List<Drug>();
