@@ -504,6 +504,25 @@ namespace Empire
             // Refresh the UI to display the quests
             RefreshQuestList();
         }
+        int RoundToHalfMSD(int value)
+        {
+            if (value == 0) return 0;
+
+            // Count number of digits in the number
+            int digits = (int)Math.Floor(Math.Log10(value)) + 1;
+
+            // Calculate how many most significant digits to keep
+            int keep = (digits + 1) / 2;
+
+            // Determine rounding base (i.e., 10, 100, 1000, etc.)
+            int roundFactor = (int)Math.Pow(10, digits - keep);
+
+            // Round up to nearest multiple of roundFactor
+            int rounded = ((value + roundFactor - 1) / roundFactor) * roundFactor;
+
+            return rounded;
+        }
+
 
         private void GenerateQuest(BlackmarketBuyer buyer, DealerSaveData dealerSaveData, string drugType)
         {
@@ -555,7 +574,7 @@ namespace Empire
             {
                 quality = randomQuality.Type;
                 qualityMult = randomQuality.DollarMult;
-                aggregateDollarMultMin = (1 + randomQuality.DollarMult) * dealTimesMult;
+                aggregateDollarMultMin = 1 + randomQuality.DollarMult;
                 aggregateDollarMultMax = aggregateDollarMultMin;
 
             }
@@ -565,7 +584,7 @@ namespace Empire
 
 
             //Iterate through randomDrug.Effects and check if the effect is necessary or optional. Also multiply aggregate dollar and rep multipliers with base dollar+sum of effects dollar mult. Same for rep.
-
+var randomNum1 = UnityEngine.Random.Range(0.1f, 0.3f);//$ Effect Mult Random
             foreach (var effect in randomDrug.Effects)
             {
                 //If the effect is necessary, add it to the necessaryEffects list and multiply the aggregate dollar and rep multipliers with the effect's dollar and rep multipliers
@@ -576,9 +595,9 @@ namespace Empire
                     if (effect.Name != "Random")
                     {
                         necessaryEffects.Add(effect.Name);
-                        necessaryEffectMult.Add(effect.DollarMult);
-                        tempMult11 += effect.DollarMult;
-                        tempMult21 += effect.DollarMult;
+                        necessaryEffectMult.Add(effect.DollarMult * randomNum1);
+                        tempMult11 += effect.DollarMult * randomNum1;
+                        tempMult21 += effect.DollarMult * randomNum1;
                     }
                     else
                     {
@@ -590,9 +609,19 @@ namespace Empire
                         if (randomEffect != null)
                         {
                             necessaryEffects.Add(randomEffect);
-                            necessaryEffectMult.Add(effect.DollarMult);
-                            tempMult11 += effect.DollarMult;
-                            tempMult21 += effect.DollarMult;
+                            // Random Hardcoded to Take from List - TODO - use based on take_from_list
+                            if (!JSONDeserializer.EffectsDollarMult.ContainsKey(randomEffect))
+                            {
+                                MelonLogger.Warning($"⚠️ No dollar multiplier found for effect {randomEffect}.");
+                            }
+                            else
+                            {
+                                var EffectDollarMult = JSONDeserializer.EffectsDollarMult[randomEffect];
+                                necessaryEffectMult.Add(EffectDollarMult * randomNum1);
+                                tempMult11 += EffectDollarMult * randomNum1;
+                                tempMult21 += EffectDollarMult * randomNum1;
+                            }
+
                         }
                     }
 
@@ -602,8 +631,8 @@ namespace Empire
                     if (effect.Name != "Random")
                     {
                         optionalEffects.Add(effect.Name);
-                        optionalEffectMult.Add(effect.DollarMult);
-                        tempMult21 += effect.DollarMult;
+                        optionalEffectMult.Add(effect.DollarMult * randomNum1);
+                        tempMult21 += effect.DollarMult * randomNum1;
                     }
                     else
                     {
@@ -614,16 +643,23 @@ namespace Empire
                         if (randomEffect != null)
                         {
                             optionalEffects.Add(randomEffect);
-                            optionalEffectMult.Add(effect.DollarMult);
-                            tempMult21 += effect.DollarMult;
+                            // Random Hardcoded to Take from List - TODO - use based on take_from_list
+                            if (JSONDeserializer.EffectsDollarMult.ContainsKey(randomEffect))
+                            {
+                                var EffectDollarMult = JSONDeserializer.EffectsDollarMult[randomEffect];
+                                optionalEffectMult.Add(EffectDollarMult * randomNum1);
+                                tempMult21 += EffectDollarMult * randomNum1;
+                            }
+                            else
+                            {
+                                MelonLogger.Warning($"⚠️ No dollar multiplier found for effect {randomEffect}.");
+                            }
                         }
                     }
                 }
             }
-
-
+            
             aggregateDollarMultMin *= tempMult11;
-
             aggregateDollarMultMax *= tempMult21;
 
             //remove from randomDrug.Effects the optional effects that are not in the list of optional effects and have a probability < 1f
@@ -641,12 +677,22 @@ namespace Empire
             //Roll a random index for buyer.DealTimes
 
             //roll a random number to scale various values
-            var randomNum1 = UnityEngine.Random.Range(0.5f, 1.5f);
-            var randomNum2 = UnityEngine.Random.Range(0.5f, 1.5f);
-            var randomNum3 = UnityEngine.Random.Range(0.5f, 1.5f);
-            var randomNum4 = UnityEngine.Random.Range(0.5f, 1.0f);
-            var randomNum5 = UnityEngine.Random.Range(0.5f, 1.0f);
 
+            var randomNum2 = UnityEngine.Random.Range(0.5f, 1.5f);//Rep Random
+            var randomNum3 = UnityEngine.Random.Range(0.5f, 1.5f);//XP Random
+            var randomNum4 = UnityEngine.Random.Range(0.5f, 0.75f);//$ Base Random
+            MelonLogger.Msg($"RandomNum1: {randomNum1}, RandomNum2: {randomNum2}, RandomNum3: {randomNum3}, RandomNum4: {randomNum4}");
+            //If dealTimesMult>1 subtract 1 else multiply by randomNum1
+            if (dealTimesMult > 1)
+            {
+                dealTimesMult = Math.Min(dealTimesMult - 1, dealTimesMult * randomNum1);
+            }
+            else
+            {
+                dealTimesMult *= randomNum1;
+            }
+            aggregateDollarMultMin *= dealTimesMult;
+            aggregateDollarMultMax *= dealTimesMult;
             var quest = new QuestData
             {
                 Title = $"{buyer.DealerName} wants {drugType} delivered.",
@@ -656,17 +702,17 @@ namespace Empire
                 TargetObjectName = buyer.DealerName,
                 DealerName = buyer.DealerName,
                 QuestImage = Path.Combine(MelonEnvironment.ModsDirectory, "Empire", buyer.DealerImage ?? "EmpireIcon_quest.png"),
-                BaseDollar = (int)(randomDrug.BaseDollar * randomNum4),
-                BaseRep = (int)(randomDrug.BaseRep * randomNum2),
-                BaseXp = (int)(randomDrug.BaseXp * randomNum3),
+                BaseDollar = RoundToHalfMSD((int)(randomDrug.BaseDollar * randomNum4)),
+                BaseRep = RoundToHalfMSD((int)(randomDrug.BaseRep * randomNum2)),
+                BaseXp = RoundToHalfMSD((int)(randomDrug.BaseXp * randomNum3)),
                 RepMult = randomDrug.RepMult * randomNum2,
                 XpMult = randomDrug.XpMult * randomNum3,
                 DollarMultiplierMin = (float)Math.Round(aggregateDollarMultMin, 2),
                 DollarMultiplierMax = (float)Math.Round(aggregateDollarMultMax, 2),
 
                 DealTime = dealTime,
-                DealTimeMult = dealTimesMult * randomNum5,
-                Penalties = new List<int> { (int)(buyer.Deals[randomIndex][2] * shipping.DealModifier[2] * randomNum1), (int)(buyer.Deals[randomIndex][3] * shipping.DealModifier[3] * randomNum1) },
+                DealTimeMult = dealTimesMult,
+                Penalties = new List<int> { RoundToHalfMSD((int)(buyer.Deals[randomIndex][2] * shipping.DealModifier[2] * randomNum1)), RoundToHalfMSD((int)(buyer.Deals[randomIndex][3] * shipping.DealModifier[3] * randomNum2)) },
 
                 Quality = quality,
                 QualityMult = qualityMult,
@@ -750,10 +796,10 @@ namespace Empire
             var dialogue = Buyer.SendCustomMessage("DealStart", quest.ProductID, (int)quest.AmountRequired, quest.Quality, quest.NecessaryEffects, quest.OptionalEffects, true);
             questTitle.text = quest.Title;
             questTask.text = $"{dialogue}";
-            questReward.text = 
-    $"<b><color=#FFD700>Rewards:</color></b> <color=#00FF00>${quest.BaseDollar}</color> + <i>Price x</i> (<color=#00FFFF>{quest.DollarMultiplierMin}</color> - <color=#00FFFF>{quest.DollarMultiplierMax}</color>)\n" +
-    $"<b><color=#FFD700>Reputation:</color></b> <color=#00FF00>{quest.BaseRep}</color> + Dollar x <color=#00FFFF>{Math.Round(quest.RepMult, 4)}</color>\n" +
-    $"<b><color=#FFD700>XP:</color></b> <color=#00FF00>{quest.BaseXp}</color> + Dollar x <color=#00FFFF>{Math.Round(quest.XpMult, 4)}</color>\n\n" +
+            questReward.text =
+    $"<b><color=#FFD700>Rewards:</color></b> <color=#00FF00>${quest.BaseDollar} / {quest.BaseDollar / quest.AmountRequired} per piece</color> + <i>Price x</i> (<color=#00FFFF>{quest.DollarMultiplierMin}</color> - <color=#00FFFF>{quest.DollarMultiplierMax}</color>)\n" +
+    $"<b><color=#FFD700>Reputation:</color></b> <color=#00FF00>{quest.BaseRep}</color> + Rewards x <color=#00FFFF>{Math.Round(quest.RepMult, 4)}</color>\n" +
+    $"<b><color=#FFD700>XP:</color></b> <color=#00FF00>{quest.BaseXp}</color> + Rewards x <color=#00FFFF>{Math.Round(quest.XpMult, 4)}</color>\n\n" +
     $"<b><color=#FF6347>Deal Expiry:</color></b> <color=#FFA500>{quest.DealTime}</color> Day(s)\n" +
     $"<b><color=#FF6347>Failure Penalties:</color></b> <color=#FF0000>${quest.Penalties[0]}</color> + <color=#FF4500>{quest.Penalties[1]} Rep</color>\n\n" +
     $"<b><color=#87CEEB>Current Reputation:</color></b> <color=#FFFFFF>{Buyer._DealerData.Reputation}</color>\n";

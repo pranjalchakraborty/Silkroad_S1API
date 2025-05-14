@@ -52,6 +52,7 @@ namespace Empire
         public string Type { get; set; }
         public int UnlockRep { get; set; }
         public float DollarMult { get; set; }
+        //public bool TakeFromList { get; set; } // Change to use JSON "take_from_list"
     }
 
     public class Effect
@@ -64,6 +65,7 @@ namespace Empire
         public float Probability { get; set; }
         [JsonProperty("dollar_mult")]
         public float DollarMult { get; set; }
+        //public bool TakeFromList { get; set; } // Change to use JSON "take_from_list"
     }
 
     public class Shipping
@@ -100,6 +102,9 @@ namespace Empire
     {
         
         public List<string> EffectsName { get; set; }
+        public List<float> EffectsDollarMult { get; set; }
+        public List<string> QualitiesName { get; set; }
+        public List<float> QualitiesDollarMult { get; set; }
         public List<Dealer> Dealers { get; set; }
     }
 }
