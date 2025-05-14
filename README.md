@@ -121,8 +121,8 @@ Standard dialogue event types include:
 
 To prevent issues when updating to a newer version of this mod:
 
-1.  **Complete Ongoing Quests:** Finish or cancel any active delivery quests from this mod.
-2.  **Backup NPC Data:** It's highly recommended to backup this mod's NPC-specific data from your save file. (Specify path or method if known, otherwise general advice).
+1.  **Complete Ongoing Quests:** Finish or cancel any active delivery quests from this mod. Then Save. 
+2.  **Backup NPC Data:** It's highly recommended to backup this mod's NPC-specific data from your save file. (Specify path or method if known, otherwise general advice). Backup whole save file and if later you find any mod NPC lost data, you can copy paste his folder from backup to new save.
 
 ## Creating & Customizing NPCs (JSON Guide)
 
@@ -133,14 +133,12 @@ This mod uses JSON (JavaScript Object Notation) files to define all aspects of N
 * **Manual Editing:** Use any text editor (like Notepad++, VS Code, etc.).
 * **JSON Editor Tool:** A dedicated JSON Editor tool is provided with this mod to help you easily merge, view, and edit NPC JSON configurations.
 
-> **Note:** For advanced organization, you may optionally restructure your empire JSONs into separate folders, with each folder containing NPC-specific JSON files and icons.
-
 ### Key JSON Concepts & Fields
 
 Below are some of the crucial fields and structures you'll encounter in the NPC JSON files:
 
 * **NPC Object:** Each NPC is typically an object within a larger JSON array.
-* **`reputation` (Initial):** While reputation is tracked dynamically in-game, NPCs effectively start at `1`.
+* **`reputation` (Initial):** While reputation is tracked dynamically in-game, NPCs start at `0`.
 * **`unlockRep`:** An integer value specifying the reputation level required with *this* NPC to unlock:
     * Specific drug types they will order.
     * Higher qualities of existing drugs.
@@ -177,14 +175,12 @@ Below are some of the crucial fields and structures you'll encounter in the NPC 
     * `base_dollar`, `base_rep`, `base_xp`: Base reward amounts for any successful deal with this NPC.
     * `price_mult`, `rep_mult`, `xp_mult`: Multipliers used in the detailed reward calculations.
 
-> **Note:** If you wish to load dealers from all JSON files in the Empire folder and its subfolders, this is supported as an optional advanced feature.
+> **Note:** If you wish to load dealers from all JSON files in the Empire folder and its subfolders, this may be later supported as an optional advanced feature. For advanced organization, optional idea - not yet implemented - restructure your empire JSONs into separate folders, with each folder containing NPC-specific JSON files and icons.
 
 ### Important JSON Rules & Assumptions
 
 * **Initial Unlock:** Each NPC must have at least one drug type + quality unlocked at `unlockRep: 1` and at least one `shippingTier` unlocked at `unlockRep: 1`. This ensures the player can start building reputation with them.
-* **Reputation 1 Effects:** Any effects available at `unlockRep: 1` should generally be configured as optional (probability `[0,1)`).
-* **String Matching:** `DrugType`, `EffectsName`, and `QualityName` strings in your JSON **must exactly match** the corresponding strings used by `s1api` and the base game. These are often provided at the top of reference JSON files.
-* **NPC Definition Order (CRITICAL):** In your JSON file(s) containing multiple NPCs, **NPCs MUST be sorted according to their `unlockRequirements`**. An NPC should appear *after* any NPCs that are prerequisites for its unlock. Failure to do so will result in NPCs not unlocking correctly at game start; they will only unlock dynamically if their prerequisites are met through gameplay *after* the game has loaded.
+* **String Matching:** `DrugType`, `EffectsName`, and `QualityName` strings in your JSON **must exactly match** the corresponding strings used by `s1api` and the base game. These are provided at the top of reference JSON files.
 * **`deals` and `dealsModifier` Size:** Both the `deals[index]` array and the `dealsModifier` array within a `shippingTier` must have 4 elements.
 
 > **Note:** The current code requires both a first and last name for each NPC. This limitation will be removed in a future update when supported by the underlying API.
@@ -206,8 +202,8 @@ To aid in the creation and management of complex NPC configurations, this mod in
 ### Current Gameplay Notes & Limitations
 
 * **Single Active Quest:** Only one quest from this mod can be active at a time.
-* **Quest Generation:** One quest is generated per NPC for each drug type they handle when quests are refreshed.
-* **Random Product Choice:** If multiple definitions of the same product type exist in the JSON, one is chosen at random for a quest.
+* **Quest Generation:** One quest is generated per NPC when quests are refreshed.
+* **Random Product Choice:** If multiple definitions of product type exist in the JSON, one is chosen at random for a quest.
 * **Max Quality Orders:** NPCs only order up to the maximum quality for each product type that the player has unlocked with them based on current reputation.
 * **Effect Logic:** Effects are chosen randomly based on probabilities defined in the `preferredEffects` section of an NPC's JSON.
 
@@ -229,7 +225,7 @@ This mod is an ongoing project with many plans for expansion and refinement!
 
 * **NPC Information Panel:** An in-game UI panel to display:
     * NPC relations.
-    * Unlock progress for products, qualities, shipping tiers, and effects (possibly with a dropdown selector per NPC).
+    * Unlock progress for products, qualities, shipping tiers, and effects.
 * **Shipping Tier Upgrades:**
     * Display costs for unlocking new shipping tiers.
     * Allow players to press a button to deduct the fee and upgrade their shipping tier with an NPC.
@@ -240,14 +236,15 @@ This mod is an ongoing project with many plans for expansion and refinement!
 ### Future Concepts & Possibilities (Optional/Ideas)
 
 * **New NPC Archetypes:**
-    * Special NPCs like "Bicky Robby."
-    * Cartel-affiliated NPCs with unique questlines or mechanics (e.g., forced quests).
+    * NPCs like "Bicky Robby." - JSON field Support
+    * Cartel-affiliated NPCs with unique questlines or mechanics (e.g., forced quests, debt payoff).
     * A static "Blackmarket Buyer" NPC who buys any products the player has discovered.
 * **Quest Generation Enhancements:**
-    * Variable quest generation frequency (e.g., not always one per NPC, but a maximum of one per product).
+    * Variable quest generation frequency (e.g., not always one per NPC, but a maximum of one per product type).
     * Free daily quest refreshes.
     * Variable cooldowns or "days of order" for quest regeneration.
-    * NPCs ordering from a list of "Product Manager Discovered Products" or "Favorited Products."
+    * NPCs ordering from a list of "Product Manager Discovered Products" or "Favorited Products." - Json support
+	* Scale refresh cost with unlocked NPCs
 * **Deeper NPC Immersion:**
     * Unlock criteria based on player rank, wealth, or total deals completed.
     * Custom NPC avatars and appearances.
@@ -272,14 +269,14 @@ This mod is an ongoing project with many plans for expansion and refinement!
 * **Source Code Comments:** Pay attention to:
     * `UPDATABLE` comments: These mark parts of the code that may need adjustment when the base game (Schedule 1) or `s1api` receives significant updates.
     * `TODO` comments: These highlight areas where improvements, new features, or changes are planned or could be implemented.
-* **Content Creation:** You are encouraged to create and share your own NPC JSON packs!
+* **Content Creation:** You are encouraged to create and share your own NPC JSON packs and git pull or send me in dicord suggested edits!
 * **Testing Checklist (when creating/modifying content):**
     * NPC progression (unlocks, reputation gains).
     * Reward calculations (money, rep).
     * Logarithmic scaling of order amounts.
     * Effect logic (optional/necessary selection during delivery and impact on rewards).
     * Save and load functionality with custom NPCs.
-    * Attempting to drop non-quest items in the delivery zone.
+    * Attempting to drop non-quest items(type, quality, effects, non product) in the delivery zone.
     * Quest cancellation logic and penalties.
     * Ensure that if a product type is meth and the required quality is "heavenly," the system treats "premium" as acceptable.
     * When calculating rewards, pay for the ordered quality and up to the maximum quality in the list.
@@ -307,8 +304,8 @@ We hope you enjoy the NPC Custom Buyers & Dealers Expansion Mod! Your feedback a
 - [x] Reduce base reward and deal multiple
 - [x] Only 1 quest per dealer
 - [ ] Note: Until game releases heavenly meth, premium = heavenly for meth (in code too)
-- [ ] Basic Testing
-- [ ] Play
+- [x] Basic Testing
+- [ ] Play game
 - [ ] Version update to s1api 1.7 when stable released
 - [ ] Change placeholder dummy product effects and quality with real effects from s1api once supported; implement rewards based on effects and quality; check and reward product type
 - [ ] NPC responses on product [type], quality, necessary effects
@@ -316,5 +313,10 @@ We hope you enjoy the NPC Custom Buyers & Dealers Expansion Mod! Your feedback a
 - [ ] Update EffectSum with optional effect multiplier present
 - [ ] If product type is meth and quality required is heavenly, give a pass
 - [ ] Pay for ordered quality and up to max quality in list
+- [x] There are 3 random ranges in which rewards, rep and xp will be scaled.
+- [x] Round up UI stuff to most significant digits 
 
-
+// Optional - Implement take_from_list and possibly restructure json from 2 list to 1 dictionary format
+// All rewards are currently in testing - so affect by random number ranges
+// In rewards, base_dollar is affected by one random number, (1 + sum_of_all_effects_dollar_mult) by another random number
+// base_rep and rep_mult by another random number and base_xp and xp_mult by another random number

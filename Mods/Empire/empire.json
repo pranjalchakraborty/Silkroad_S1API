@@ -81,7 +81,7 @@
                     "base_rep": 9,
                     "base_xp": 6,
                     "rep_mult": 0.001,
-                    "xp_mult": 0.01,
+                    "xp_mult": 0.001,
                     "qualities": [
                         {
                             "type": "trash",
@@ -116,13 +116,13 @@
                             "name": "Random",
                             "unlockRep": 78,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 100,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         }
                     ]
                 }
@@ -258,13 +258,13 @@
                             "name": "Random",
                             "unlockRep": 80,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 105,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         }
                     ]
                 }
@@ -400,13 +400,13 @@
                             "name": "Random",
                             "unlockRep": 88,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 110,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         }
                     ]
                 }
@@ -526,7 +526,7 @@
                     "base_rep": 80,
                     "base_xp": 39,
                     "rep_mult": 0.002,
-                    "xp_mult": 0.01,
+                    "xp_mult": 0.001,
                     "qualities": [
                         {
                             "type": "standard",
@@ -552,10 +552,10 @@
                             "dollar_mult": 0.82
                         },
                         {
-                            "name": "Focused",
+                            "name": "Random",
                             "unlockRep": 60,
                             "probability": 2.0,
-                            "dollar_mult": 0.84
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Explosive",
@@ -566,20 +566,20 @@
                         {
                             "name": "Random",
                             "unlockRep": 690,
-                            "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "probability": 1.0,
+                            "dollar_mult": 0.65
                         },
                         {
-                            "name": "CalorieDense",
+                            "name": "Random",
                             "unlockRep": 885,
                             "probability": 0.3,
-                            "dollar_mult": 0.72
+                            "dollar_mult": 0.65
                         },
                         {
-                            "name": "Cyclopean",
+                            "name": "Random",
                             "unlockRep": 1090,
                             "probability": 0.3,
-                            "dollar_mult": 0.44
+                            "dollar_mult": 0.65
                         }
                     ]
                 },
@@ -590,7 +590,7 @@
                     "base_rep": 60,
                     "base_xp": 41,
                     "rep_mult": 0.004,
-                    "xp_mult": 0.01,
+                    "xp_mult": 0.001,
                     "qualities": [
                         {
                             "type": "standard",
@@ -611,10 +611,10 @@
                             "dollar_mult": 0.68
                         },
                         {
-                            "name": "Balding",
+                            "name": "Random",
                             "unlockRep": 780,
                             "probability": 2.0,
-                            "dollar_mult": 0.7
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "CalorieDense",
@@ -625,20 +625,20 @@
                         {
                             "name": "Random",
                             "unlockRep": 1230,
-                            "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "probability": 1.0,
+                            "dollar_mult": 0.65
                         },
                         {
-                            "name": "BrightEyed",
+                            "name": "Random",
                             "unlockRep": 1340,
                             "probability": 0.3,
-                            "dollar_mult": 0.6
+                            "dollar_mult": 0.65
                         },
                         {
-                            "name": "Disorienting",
+                            "name": "Random",
                             "unlockRep": 1490,
                             "probability": 0.3,
-                            "dollar_mult": 1.0
+                            "dollar_mult": 0.65
                         }
                     ]
                 }
@@ -776,7 +776,7 @@
                     "base_rep": 26,
                     "base_xp": 17,
                     "rep_mult": 0.004,
-                    "xp_mult": 0.01,
+                    "xp_mult": 0.001,
                     "qualities": [
                         {
                             "type": "poor",
@@ -797,28 +797,28 @@
                             "dollar_mult": 0.9
                         },
                         {
-                            "name": "Sneaky",
+                            "name": "Random",
                             "unlockRep": 40,
                             "probability": 1.5,
-                            "dollar_mult": 0.76
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 380,
                             "probability": 1.0,
-                            "dollar_mult": 0.5
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 475,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 590,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         }
                     ]
                 },
@@ -829,7 +829,7 @@
                     "base_rep": 17,
                     "base_xp": 18,
                     "rep_mult": 0.001,
-                    "xp_mult": 0.01,
+                    "xp_mult": 0.001,
                     "qualities": [
                         {
                             "type": "poor",
@@ -859,19 +859,19 @@
                             "name": "Random",
                             "unlockRep": 435,
                             "probability": 1.0,
-                            "dollar_mult": 0.5
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 540,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 665,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         }
                     ]
                 }
@@ -995,7 +995,7 @@
                     "base_rep": 50,
                     "base_xp": 39,
                     "rep_mult": 0.002,
-                    "xp_mult": 0.01,
+                    "xp_mult": 0.001,
                     "qualities": [
                         {
                             "type": "poor",
@@ -1016,28 +1016,28 @@
                             "dollar_mult": 0.84
                         },
                         {
-                            "name": "Lethal",
+                            "name": "Random",
                             "unlockRep": 75,
                             "probability": 1.5,
-                            "dollar_mult": 1.0
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 705,
                             "probability": 1.0,
-                            "dollar_mult": 0.5
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 890,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 1115,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         }
                     ]
                 },
@@ -1048,7 +1048,7 @@
                     "base_rep": 65,
                     "base_xp": 41,
                     "rep_mult": 0.001,
-                    "xp_mult": 0.01,
+                    "xp_mult": 0.001,
                     "qualities": [
                         {
                             "type": "poor",
@@ -1069,28 +1069,28 @@
                             "dollar_mult": 0.78
                         },
                         {
-                            "name": "Sedating",
+                            "name": "Random",
                             "unlockRep": 485,
                             "probability": 1.5,
-                            "dollar_mult": 0.74
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 805,
                             "probability": 1.0,
-                            "dollar_mult": 0.5
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 1010,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 1255,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         }
                     ]
                 }
@@ -1214,7 +1214,7 @@
                     "base_rep": 42,
                     "base_xp": 31,
                     "rep_mult": 0.002,
-                    "xp_mult": 0.01,
+                    "xp_mult": 0.001,
                     "qualities": [
                         {
                             "type": "poor",
@@ -1235,28 +1235,28 @@
                             "dollar_mult": 0.82
                         },
                         {
-                            "name": "Paranoia",
+                            "name": "Random",
                             "unlockRep": 130,
                             "probability": 1.5,
-                            "dollar_mult": 1.0
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 375,
                             "probability": 1.0,
-                            "dollar_mult": 0.5
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 670,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 885,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         }
                     ]
                 },
@@ -1267,7 +1267,7 @@
                     "base_rep": 50,
                     "base_xp": 33,
                     "rep_mult": 0.001,
-                    "xp_mult": 0.01,
+                    "xp_mult": 0.001,
                     "qualities": [
                         {
                             "type": "poor",
@@ -1297,19 +1297,19 @@
                             "name": "Random",
                             "unlockRep": 765,
                             "probability": 1.0,
-                            "dollar_mult": 0.5
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 990,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 1120,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         }
                     ]
                 }
@@ -1439,7 +1439,7 @@
                     "base_rep": 88,
                     "base_xp": 62,
                     "rep_mult": 0.002,
-                    "xp_mult": 0.01,
+                    "xp_mult": 0.001,
                     "qualities": [
                         {
                             "type": "standard",
@@ -1460,10 +1460,10 @@
                             "dollar_mult": 1.0
                         },
                         {
-                            "name": "Euphoric",
+                            "name": "Random",
                             "unlockRep": 190,
                             "probability": 2.0,
-                            "dollar_mult": 0.82
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Paranoia",
@@ -1474,20 +1474,20 @@
                         {
                             "name": "Random",
                             "unlockRep": 1100,
-                            "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "probability": 1.0,
+                            "dollar_mult": 0.65
                         },
                         {
-                            "name": "Athletic",
+                            "name": "Random",
                             "unlockRep": 1400,
                             "probability": 0.3,
-                            "dollar_mult": 0.68
+                            "dollar_mult": 0.65
                         },
                         {
-                            "name": "Balding",
+                            "name": "Random",
                             "unlockRep": 1700,
                             "probability": 0.3,
-                            "dollar_mult": 0.7
+                            "dollar_mult": 0.65
                         }
                     ]
                 },
@@ -1498,7 +1498,7 @@
                     "base_rep": 69,
                     "base_xp": 66,
                     "rep_mult": 0.001,
-                    "xp_mult": 0.01,
+                    "xp_mult": 0.001,
                     "qualities": [
                         {
                             "type": "standard",
@@ -1519,10 +1519,10 @@
                             "dollar_mult": 0.78
                         },
                         {
-                            "name": "Calming",
+                            "name": "Random",
                             "unlockRep": 1270,
                             "probability": 2.0,
-                            "dollar_mult": 0.9
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Focused",
@@ -1533,20 +1533,20 @@
                         {
                             "name": "Random",
                             "unlockRep": 1920,
-                            "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "probability": 1.0,
+                            "dollar_mult": 0.65
                         },
                         {
-                            "name": "BrightEyed",
+                            "name": "Random",
                             "unlockRep": 2070,
                             "probability": 0.3,
-                            "dollar_mult": 0.6
+                            "dollar_mult": 0.65
                         },
                         {
-                            "name": "Gingeritis",
+                            "name": "Random",
                             "unlockRep": 2310,
                             "probability": 0.3,
-                            "dollar_mult": 0.8
+                            "dollar_mult": 0.65
                         }
                     ]
                 }
@@ -1690,7 +1690,7 @@
                     "base_rep": 260,
                     "base_xp": 215,
                     "rep_mult": 0.002,
-                    "xp_mult": 0.01,
+                    "xp_mult": 0.001,
                     "qualities": [
                         {
                             "type": "premium",
@@ -1705,46 +1705,46 @@
                     ],
                     "effects": [
                         {
-                            "name": "Random",
+                            "name": "Explosive",
                             "unlockRep": 0,
                             "probability": 2.0,
                             "dollar_mult": 0.84
                         },
                         {
-                            "name": "Calming",
+                            "name": "Random",
                             "unlockRep": 580,
                             "probability": 2.0,
-                            "dollar_mult": 0.9
+                            "dollar_mult": 0.65
                         },
                         {
-                            "name": "Explosive",
+                            "name": "Random",
                             "unlockRep": 1300,
                             "probability": 1.0,
-                            "dollar_mult": 1.0
+                            "dollar_mult": 0.65
                         },
                         {
-                            "name": "Euphoric",
+                            "name": "Random",
                             "unlockRep": 2630,
                             "probability": 1.0,
-                            "dollar_mult": 0.82
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 4130,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 5200,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 6400,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         }
                     ]
                 },
@@ -1755,7 +1755,7 @@
                     "base_rep": 220,
                     "base_xp": 224,
                     "rep_mult": 0.001,
-                    "xp_mult": 0.01,
+                    "xp_mult": 0.001,
                     "qualities": [
                         {
                             "type": "premium",
@@ -1765,46 +1765,46 @@
                     ],
                     "effects": [
                         {
-                            "name": "Energizing",
+                            "name": "Explosive",
                             "unlockRep": 1750,
                             "probability": 2.0,
-                            "dollar_mult": 0.78
+                            "dollar_mult": 0.84
                         },
                         {
-                            "name": "Athletic",
+                            "name": "Random",
                             "unlockRep": 3050,
                             "probability": 2.0,
-                            "dollar_mult": 0.68
+                            "dollar_mult": 0.65
                         },
                         {
-                            "name": "Balding",
+                            "name": "Random",
                             "unlockRep": 4650,
                             "probability": 1.0,
-                            "dollar_mult": 0.7
+                            "dollar_mult": 0.65
                         },
                         {
-                            "name": "BrightEyed",
+                            "name": "Random",
                             "unlockRep": 5780,
                             "probability": 1.0,
-                            "dollar_mult": 0.6
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 7050,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 7730,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 8430,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         }
                     ]
                 }
@@ -1956,7 +1956,7 @@
                     "base_rep": 60,
                     "base_xp": 57,
                     "rep_mult": 0.001,
-                    "xp_mult": 0.01,
+                    "xp_mult": 0.001,
                     "qualities": [
                         {
                             "type": "poor",
@@ -1986,19 +1986,19 @@
                             "name": "Random",
                             "unlockRep": 690,
                             "probability": 1.0,
-                            "dollar_mult": 0.5
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 1270,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 1710,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         }
                     ]
                 },
@@ -2009,7 +2009,7 @@
                     "base_rep": 70,
                     "base_xp": 60,
                     "rep_mult": 0.002,
-                    "xp_mult": 0.01,
+                    "xp_mult": 0.001,
                     "qualities": [
                         {
                             "type": "poor",
@@ -2039,19 +2039,19 @@
                             "name": "Random",
                             "unlockRep": 1460,
                             "probability": 1.0,
-                            "dollar_mult": 0.5
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 1940,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 2210,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         }
                     ]
                 }
@@ -2176,7 +2176,7 @@
                     "base_rep": 181,
                     "base_xp": 153,
                     "rep_mult": 0.001,
-                    "xp_mult": 0.01,
+                    "xp_mult": 0.001,
                     "qualities": [
                         {
                             "type": "poor",
@@ -2191,34 +2191,34 @@
                     ],
                     "effects": [
                         {
-                            "name": "Lethal",
+                            "name": "Energizing",
                             "unlockRep": 0,
                             "probability": 2.0,
                             "dollar_mult": 1.0
                         },
                         {
-                            "name": "Energizing",
+                            "name": "Random",
                             "unlockRep": 490,
                             "probability": 1.5,
-                            "dollar_mult": 0.78
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 1420,
                             "probability": 1.0,
-                            "dollar_mult": 0.5
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 2590,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 3470,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         }
                     ]
                 },
@@ -2229,7 +2229,7 @@
                     "base_rep": 168,
                     "base_xp": 161,
                     "rep_mult": 0.002,
-                    "xp_mult": 0.01,
+                    "xp_mult": 0.001,
                     "qualities": [
                         {
                             "type": "poor",
@@ -2259,19 +2259,19 @@
                             "name": "Random",
                             "unlockRep": 2970,
                             "probability": 1.0,
-                            "dollar_mult": 0.5
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 3890,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 4440,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         }
                     ]
                 }
@@ -2406,7 +2406,7 @@
                     "base_rep": 423,
                     "base_xp": 367,
                     "rep_mult": 0.001,
-                    "xp_mult": 0.01,
+                    "xp_mult": 0.001,
                     "qualities": [
                         {
                             "type": "premium",
@@ -2421,46 +2421,46 @@
                     ],
                     "effects": [
                         {
-                            "name": "Focused",
+                            "name": "Toxic",
                             "unlockRep": 0,
                             "probability": 2.0,
                             "dollar_mult": 0.84
                         },
                         {
-                            "name": "Calming",
+                            "name": "Random",
                             "unlockRep": 950,
                             "probability": 2.0,
-                            "dollar_mult": 0.9
+                            "dollar_mult": 0.65
                         },
                         {
-                            "name": "Explosive",
+                            "name": "Random",
                             "unlockRep": 3050,
                             "probability": 1.0,
-                            "dollar_mult": 1.0
+                            "dollar_mult": 0.65
                         },
                         {
-                            "name": "Euphoric",
+                            "name": "Random",
                             "unlockRep": 5550,
                             "probability": 1.0,
-                            "dollar_mult": 0.82
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 8600,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 10800,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 13100,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         }
                     ]
                 },
@@ -2471,7 +2471,7 @@
                     "base_rep": 398,
                     "base_xp": 383,
                     "rep_mult": 0.002,
-                    "xp_mult": 0.01,
+                    "xp_mult": 0.001,
                     "qualities": [
                         {
                             "type": "premium",
@@ -2481,46 +2481,46 @@
                     ],
                     "effects": [
                         {
-                            "name": "Energizing",
+                            "name": "Toxic",
                             "unlockRep": 2450,
                             "probability": 2.0,
                             "dollar_mult": 0.78
                         },
                         {
-                            "name": "Athletic",
+                            "name": "Random",
                             "unlockRep": 4700,
                             "probability": 2.0,
-                            "dollar_mult": 0.68
+                            "dollar_mult": 0.65
                         },
                         {
-                            "name": "Balding",
+                            "name": "Random",
                             "unlockRep": 7600,
                             "probability": 1.0,
-                            "dollar_mult": 0.7
+                            "dollar_mult": 0.65
                         },
                         {
-                            "name": "BrightEyed",
+                            "name": "Random",
                             "unlockRep": 9650,
                             "probability": 1.0,
-                            "dollar_mult": 0.6
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 11900,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 14350,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 15620,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         }
                     ]
                 }
@@ -2678,7 +2678,7 @@
                     "base_rep": 181,
                     "base_xp": 155,
                     "rep_mult": 0.002,
-                    "xp_mult": 0.01,
+                    "xp_mult": 0.001,
                     "qualities": [
                         {
                             "type": "premium",
@@ -2688,46 +2688,46 @@
                     ],
                     "effects": [
                         {
-                            "name": "Focused",
+                            "name": "Shrinking",
                             "unlockRep": 0,
                             "probability": 2.0,
                             "dollar_mult": 0.84
                         },
                         {
-                            "name": "ThoughtProvoking",
+                            "name": "Random",
                             "unlockRep": 220,
                             "probability": 2.0,
-                            "dollar_mult": 0.56
+                            "dollar_mult": 0.65
                         },
                         {
-                            "name": "Paranoia",
+                            "name": "Random",
                             "unlockRep": 770,
                             "probability": 1.0,
-                            "dollar_mult": 1.0
+                            "dollar_mult": 0.65
                         },
                         {
-                            "name": "Sedating",
+                            "name": "Random",
                             "unlockRep": 1520,
                             "probability": 1.0,
-                            "dollar_mult": 0.74
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 2470,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 2950,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 3470,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         }
                     ]
                 }
@@ -2879,7 +2879,7 @@
                     "base_rep": 85,
                     "base_xp": 71,
                     "rep_mult": 0.002,
-                    "xp_mult": 0.01,
+                    "xp_mult": 0.001,
                     "qualities": [
                         {
                             "type": "poor",
@@ -2909,19 +2909,19 @@
                             "name": "Random",
                             "unlockRep": 660,
                             "probability": 1.0,
-                            "dollar_mult": 0.5
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 880,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 1130,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         }
                     ]
                 }
@@ -3051,7 +3051,7 @@
                     "base_rep": 241,
                     "base_xp": 211,
                     "rep_mult": 0.002,
-                    "xp_mult": 0.01,
+                    "xp_mult": 0.001,
                     "qualities": [
                         {
                             "type": "standard",
@@ -3066,16 +3066,16 @@
                     ],
                     "effects": [
                         {
-                            "name": "Lethal",
+                            "name": "Zombifying",
                             "unlockRep": 0,
                             "probability": 2.0,
                             "dollar_mult": 1.0
                         },
                         {
-                            "name": "Focused",
+                            "name": "Random",
                             "unlockRep": 670,
                             "probability": 2.0,
-                            "dollar_mult": 0.84
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Paranoia",
@@ -3087,19 +3087,19 @@
                             "name": "Random",
                             "unlockRep": 2920,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         },
                         {
-                            "name": "Sneaky",
+                            "name": "Random",
                             "unlockRep": 3570,
                             "probability": 0.3,
-                            "dollar_mult": 0.76
+                            "dollar_mult": 0.65
                         },
                         {
-                            "name": "Spicy",
+                            "name": "Random",
                             "unlockRep": 4320,
                             "probability": 0.3,
-                            "dollar_mult": 0.62
+                            "dollar_mult": 0.65
                         }
                     ]
                 }
@@ -3251,7 +3251,7 @@
                     "base_rep": 668,
                     "base_xp": 624,
                     "rep_mult": 0.002,
-                    "xp_mult": 0.01,
+                    "xp_mult": 0.001,
                     "qualities": [
                         {
                             "type": "heavenly",
@@ -3261,16 +3261,16 @@
                     ],
                     "effects": [
                         {
-                            "name": "Focused",
+                            "name": "Random",
                             "unlockRep": 0,
                             "probability": 2.0,
-                            "dollar_mult": 0.84
+                            "dollar_mult": 0.65
                         },
                         {
-                            "name": "Euphoric",
+                            "name": "Random",
                             "unlockRep": 700,
                             "probability": 2.0,
-                            "dollar_mult": 0.82
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "ThoughtProvoking",
@@ -3288,25 +3288,25 @@
                             "name": "Random",
                             "unlockRep": 7400,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 10500,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 12100,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         },
                         {
                             "name": "Random",
                             "unlockRep": 13850,
                             "probability": 0.3,
-                            "dollar_mult": 0.15
+                            "dollar_mult": 0.65
                         }
                     ]
                 }
