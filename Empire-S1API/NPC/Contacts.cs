@@ -165,7 +165,8 @@ namespace Empire
             //Create two dictionary from EffectsName and EffectsDollarMult; and QualitiesName and QualitiesDollarMult Lists
             EffectsDollarMult = dealerData?.EffectsName?.Select((name, index) => new { name, index })
                 .ToDictionary(x => x.name, x => dealerData?.EffectsDollarMult?[x.index] ?? 0f);
-            QualitiesDollarMult = dealerData?.QualitiesName?.Select((name, index) => new { name, index })
+            QualitiesDollarMult = (dealerData?.QualitiesType ?? new List<string>())
+                .Select((name, index) => new { name, index })
                 .ToDictionary(x => x.name, x => dealerData?.QualitiesDollarMult?[x.index] ?? 0f);
                 //Log both in Melonlogger
             MelonLogger.Msg($"Effects Dollar Mult: {string.Join(", ", EffectsDollarMult.Select(x => $"{x.Key}: {x.Value}"))}");

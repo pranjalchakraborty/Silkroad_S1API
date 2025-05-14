@@ -316,7 +316,7 @@ We hope you enjoy the NPC Custom Buyers & Dealers Expansion Mod! Your feedback a
 - [x] There are 3 random ranges in which rewards, rep and xp will be scaled.
 - [x] Round up UI stuff to most significant digits 
 
-// Optional - Implement take_from_list and possibly restructure json from 2 list to 1 dictionary format
-// All rewards are currently in testing - so affect by random number ranges
+// Optional QOL - Implement take_from_list and possibly restructure json from 2 list to 1 dictionary format
+// All rewards are currently in testing - so affected by random number ranges
 // In rewards, base_dollar is affected by one random number, (1 + sum_of_all_effects_dollar_mult) by another random number
 // base_rep and rep_mult by another random number and base_xp and xp_mult by another random number

@@ -100,11 +100,11 @@ namespace Empire
 
     public class DealerData
     {
-        
         public List<string> EffectsName { get; set; }
         public List<float> EffectsDollarMult { get; set; }
-        public List<string> QualitiesName { get; set; }
+        public List<string> QualitiesType { get; set; }
         public List<float> QualitiesDollarMult { get; set; }
+
         public List<Dealer> Dealers { get; set; }
     }
 }

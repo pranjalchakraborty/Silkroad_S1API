@@ -29,7 +29,11 @@ namespace Empire
         public List<List<float>> Deals { get; set; } = new List<List<float>>(); // List of Deals
         public string DealerName { get; private set; }
         public string? DealerImage { get; private set; }
-        static Sprite? npcSprite => ImageUtils.LoadImage(Path.Combine(MelonEnvironment.ModsDirectory, "Empire", dealer.Image) ?? Path.Combine(MelonEnvironment.ModsDirectory, "Empire", "EmpireIcon_quest.png"));
+        static Sprite? npcSprite => ImageUtils.LoadImage(
+            string.IsNullOrEmpty(dealer?.Image)
+                ? Path.Combine(MelonEnvironment.ModsDirectory, "Empire", "EmpireIcon_quest.png")
+                : Path.Combine(MelonEnvironment.ModsDirectory, "Empire", dealer.Image)
+        );
 
         //Parameterless Constructor for the S1API call
         public BlackmarketBuyer() : base(
@@ -161,6 +165,40 @@ namespace Empire
             }
         }
 
+        // New method to show unlocked and upcoming drug unlocks in a detailed string
+        public string GetDrugUnlockInfo()
+        {
+            System.Text.StringBuilder info = new System.Text.StringBuilder();
+            info.AppendLine($"<b>Dealer: {DealerName}</b> (Reputation: {_DealerData.Reputation})");
+            info.AppendLine("<u>Drug Unlocks</u>:");
+            foreach (var drug in Drugs)
+            {
+                string drugStatus = drug.UnlockRep <= _DealerData.Reputation ? "Unlocked" : $"Locked (Unlock at: {drug.UnlockRep})";
+                info.AppendLine($"<b>• {drug.Type}</b> - {drugStatus}");
+                // Qualities
+                if (drug.Qualities != null && drug.Qualities.Count > 0)
+                {
+                    info.AppendLine("  Qualities:");
+                    foreach (var quality in drug.Qualities)
+                    {
+                        string qualityStatus = quality.UnlockRep <= _DealerData.Reputation ? "Unlocked" : $"Locked (Unlock at: {quality.UnlockRep})";
+                        info.AppendLine($"    - {quality.Type} (x{quality.DollarMult:F2}) : {qualityStatus}");
+                    }
+                }
+                // Effects
+                if (drug.Effects != null && drug.Effects.Count > 0)
+                {
+                    info.AppendLine("  Effects:");
+                    foreach (var effect in drug.Effects)
+                    {
+                        string effectStatus = effect.UnlockRep <= _DealerData.Reputation ? "Unlocked" : $"Locked (Unlock at: {effect.UnlockRep})";
+                        info.AppendLine($"    - {effect.Name} (Prob {effect.Probability:F2}, x{effect.DollarMult:F2}) : {effectStatus}");
+                    }
+                }
+                info.AppendLine(""); // spacer between drugs
+            }
+            return info.ToString();
+        }
 
         //A method that upgrades ShippingTier to the next available shipping option
         public bool UpgradeShipping()

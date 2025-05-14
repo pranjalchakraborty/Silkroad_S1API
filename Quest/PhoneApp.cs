@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using MelonLoader;
 using UnityEngine;
@@ -411,27 +411,29 @@ namespace Empire
             string content = "";
             if (tab == "Reputation")
             {
-                // Load and display dealer image (like in quest rows)
                 var imagePath = selectedBuyer.DealerImage ?? Path.Combine(MelonEnvironment.ModsDirectory, "Empire", "EmpireIcon_quest.png");
                 UIFactory.SetIcon(ImageUtils.LoadImage(imagePath), managementDetailPanel.transform);
                 // Force NPC image to display at 128x128
                 var icon = managementDetailPanel.transform.GetComponentInChildren<Image>();
                 if (icon != null)
                     icon.GetComponent<RectTransform>().sizeDelta = new Vector2(128, 128);
-                content = $"<b>Reputation:</b> {selectedBuyer._DealerData.Reputation}";
-                // Update pending unlocks to use Any() on UnlockRequirements and display each requirement's MinRep
+                
+                // Beautified reputation text
+                content = $"<b><color=#ADFF2F>Reputation:</color></b> <color=#FFFFFF>{selectedBuyer._DealerData.Reputation}</color>";
+                // Updated pending unlocks: Only show if current rep is lower than the unlock requirement.
                 var pendingBuyers = Contacts.Buyers.Values
                     .Where(b => !b.IsInitialized &&
                                 b.UnlockRequirements != null &&
-                                b.UnlockRequirements.Any(req => req.Name == selectedBuyer.DealerName))
+                                b.UnlockRequirements.Any(req => req.Name == selectedBuyer.DealerName 
+                                                                && selectedBuyer._DealerData.Reputation < req.MinRep))
                     .ToList();
                 if (pendingBuyers.Count > 0)
                 {
-                    content += "\n\n<b>Pending Unlocks:</b>\n";
+                    content += "\n\n<b><color=#FF4500>Pending Unlocks:</color></b>\n";
                     foreach (var buyer in pendingBuyers)
                     {
                         var req = buyer.UnlockRequirements.FirstOrDefault(r => r.Name == selectedBuyer.DealerName);
-                        content += $"• {buyer.DealerName}: Requires Rep {req?.MinRep}\n";
+                        content += $"• <color=#FFFFFF>{buyer.DealerName}</color>: Requires Rep <color=#00FFFF>{req?.MinRep}</color>\n";
                     }
                 }
                 MelonLogger.Msg($"[MyApp] Showing Reputation: {selectedBuyer._DealerData.Reputation}");
@@ -439,9 +441,28 @@ namespace Empire
             }
             else if (tab == "Product")
             {
-                // NEW: show full drugs information (locked and unlocked) from BlackmarketBuyer
-                content = selectedBuyer.GetDrugUnlockInfo();
-                MelonLogger.Msg($"[MyApp] Displaying Product info from GetDrugUnlockInfo():\n{content}");
+                // NEW: Build product info with quality details and price multipliers.
+                var dealerSaveData = BlackmarketBuyer.GetDealerSaveData(selectedBuyer.DealerName);
+                if (dealerSaveData != null && dealerSaveData.UnlockedDrugs != null)
+                {
+                    var sb = new System.Text.StringBuilder();
+                    sb.AppendLine("<b><color=#FFD700>Available Products</color></b>");
+                    foreach (var drug in dealerSaveData.UnlockedDrugs)
+                    {
+                        sb.AppendLine($"<color=#FFFFFF>{drug.Type}</color>:");
+                        foreach (var qual in drug.Qualities)
+                        {
+                            sb.AppendLine($"\t• <i>{qual.Type}</i> - Price Multiplier: <color=#00FFFF>{qual.DollarMult}</color>");
+                        }
+                        sb.AppendLine();
+                    }
+                    content = sb.ToString();
+                }
+                else
+                {
+                    content = "<b><color=#FF6347>No product information available.</color></b>";
+                }
+                MelonLogger.Msg($"[MyApp] Displaying Product info:\n{content}");
                 UIFactory.Text("ProductDetailText", content, managementDetailPanel.transform, 18);
             }
             else if (tab == "Shipping")
@@ -454,11 +475,11 @@ namespace Empire
                 {
                     var currentShip = selectedBuyer.Shippings[currentTier];
                     currentShipping = $"<b>Current Tier ({currentTier}):</b>\n" +
-                                      $"   • <i>Name:</i> {currentShip.Name}\n" +
-                                      $"   • <i>Cost:</i> {currentShip.Cost}\n" +
-                                      $"   • <i>Unlock Rep:</i> {currentShip.UnlockRep}\n" +
-                                      $"   • <i>Amounts:</i> {currentShip.MinAmount} - {currentShip.MaxAmount}\n" +
-                                      $"   • <i>Deal Modifier:</i> {string.Join(", ", currentShip.DealModifier)}\n";
+                                    $"   • <i>Name:</i> {currentShip.Name}\n" +
+                                    $"   • <i>Cost:</i> {currentShip.Cost}\n" +
+                                    $"   • <i>Unlock Rep:</i> {currentShip.UnlockRep}\n" +
+                                    $"   • <i>Amounts:</i> {currentShip.MinAmount} - {currentShip.MaxAmount}\n" +
+                                    $"   • <i>Deal Modifier:</i> {string.Join(", ", currentShip.DealModifier)}\n";
                 }
                 else
                 {
@@ -470,11 +491,11 @@ namespace Empire
                 {
                     var nextShip = selectedBuyer.Shippings[currentTier + 1];
                     nextShipping = $"<b>Next Tier ({currentTier + 1}):</b>\n" +
-                                   $"   • <i>Name:</i> {nextShip.Name}\n" +
-                                   $"   • <i>Cost:</i> {nextShip.Cost}\n" +
-                                   $"   • <i>Unlock Rep:</i> {nextShip.UnlockRep}\n" +
-                                   $"   • <i>Amounts:</i> {nextShip.MinAmount} - {nextShip.MaxAmount}\n" +
-                                   $"   • <i>Deal Modifier:</i> {string.Join(", ", nextShip.DealModifier)}\n";
+                                $"   • <i>Name:</i> {nextShip.Name}\n" +
+                                $"   • <i>Cost:</i> {nextShip.Cost}\n" +
+                                $"   • <i>Unlock Rep:</i> {nextShip.UnlockRep}\n" +
+                                $"   • <i>Amounts:</i> {nextShip.MinAmount} - {nextShip.MaxAmount}\n" +
+                                $"   • <i>Deal Modifier:</i> {string.Join(", ", nextShip.DealModifier)}\n";
                 }
                 else
                 {
@@ -529,7 +550,7 @@ namespace Empire
             }
             else
             {
-                content = "No content available.";
+                content = "<b><i><color=#FF4500>No content available.</color></i></b>";
                 MelonLogger.Msg("[MyApp] Unknown tab requested in UpdateBuyerDetails.");
                 UIFactory.Text("DefaultDetailText", content, managementDetailPanel.transform, 18);
             }
