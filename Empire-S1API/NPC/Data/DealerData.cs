@@ -8,7 +8,7 @@ namespace Empire
         public string Name { get; set; }
         public string? Image { get; set; }
         public List<UnlockRequirement> UnlockRequirements { get; set; }
-        
+        public List<string> DealDays { get; set; }
         public List<List<float>> Deals { get; set; }
         public float RepLogBase { get; set; }
         public List<Drug> Drugs { get; set; }
@@ -100,11 +100,15 @@ namespace Empire
 
     public class DealerData
     {
+        [JsonProperty("effectsName")]
         public List<string> EffectsName { get; set; }
+        [JsonProperty("effectsDollarMult")]
         public List<float> EffectsDollarMult { get; set; }
-        public List<string> QualitiesType { get; set; }
+        [JsonProperty("qualityTypes")]
+        public List<string> QualityTypes { get; set; }
+        [JsonProperty("qualitiesDollarMult")]
         public List<float> QualitiesDollarMult { get; set; }
-
+        [JsonProperty("dealers")]
         public List<Dealer> Dealers { get; set; }
     }
 }

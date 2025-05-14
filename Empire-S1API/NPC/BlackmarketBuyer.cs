@@ -29,6 +29,7 @@ namespace Empire
         public List<List<float>> Deals { get; set; } = new List<List<float>>(); // List of Deals
         public string DealerName { get; private set; }
         public string? DealerImage { get; private set; }
+        public List<string> DealDays { get; set; }
         static Sprite? npcSprite => ImageUtils.LoadImage(
             string.IsNullOrEmpty(dealer?.Image)
                 ? Path.Combine(MelonEnvironment.ModsDirectory, "Empire", "EmpireIcon_quest.png")
@@ -66,6 +67,7 @@ namespace Empire
             Drugs = dealer.Drugs ?? new List<Drug>();
             Shippings = dealer.Shippings ?? new List<Shipping>();
             Deals = dealer.Deals ?? new List<List<float>>();
+            DealDays = dealer.DealDays ?? new List<string>();
             RepLogBase = dealer.RepLogBase;
             if (_DealerData != null)
             {
@@ -169,11 +171,13 @@ namespace Empire
         public string GetDrugUnlockInfo()
         {
             System.Text.StringBuilder info = new System.Text.StringBuilder();
-            info.AppendLine($"<b>Dealer: {DealerName}</b> (Reputation: {_DealerData.Reputation})");
-            info.AppendLine("<u>Drug Unlocks</u>:");
+            info.AppendLine($"<b>Dealer: {DealerName}</b> (Reputation: <color=#FFFFFF>{_DealerData.Reputation}</color>)");
+            //info.AppendLine("<u>Drug Unlocks</u>:");
             foreach (var drug in Drugs)
             {
-                string drugStatus = drug.UnlockRep <= _DealerData.Reputation ? "Unlocked" : $"Locked (Unlock at: {drug.UnlockRep})";
+                string drugStatus = drug.UnlockRep <= _DealerData.Reputation 
+                    ? "<color=#00FF00>Unlocked</color>" 
+                    : $"<color=#FF4500>Locked (Unlock at: {drug.UnlockRep})</color>";
                 info.AppendLine($"<b>• {drug.Type}</b> - {drugStatus}");
                 // Qualities
                 if (drug.Qualities != null && drug.Qualities.Count > 0)
@@ -181,8 +185,15 @@ namespace Empire
                     info.AppendLine("  Qualities:");
                     foreach (var quality in drug.Qualities)
                     {
-                        string qualityStatus = quality.UnlockRep <= _DealerData.Reputation ? "Unlocked" : $"Locked (Unlock at: {quality.UnlockRep})";
-                        info.AppendLine($"    - {quality.Type} (x{quality.DollarMult:F2}) : {qualityStatus}");
+                        float effectiveQuality = quality.DollarMult;
+                        if (JSONDeserializer.QualitiesDollarMult.ContainsKey(quality.Type))
+                        {
+                            effectiveQuality += JSONDeserializer.QualitiesDollarMult[quality.Type];
+                        }
+                        string qualityStatus = quality.UnlockRep <= _DealerData.Reputation 
+                            ? "<color=#00FF00>Unlocked</color>" 
+                            : $"<color=#FF4500>Locked (Unlock at: {quality.UnlockRep})</color>";
+                        info.AppendLine($"    - {quality.Type} (x<color=#00FFFF>{effectiveQuality:F2}</color>) : {qualityStatus}");
                     }
                 }
                 // Effects
@@ -191,11 +202,18 @@ namespace Empire
                     info.AppendLine("  Effects:");
                     foreach (var effect in drug.Effects)
                     {
-                        string effectStatus = effect.UnlockRep <= _DealerData.Reputation ? "Unlocked" : $"Locked (Unlock at: {effect.UnlockRep})";
-                        info.AppendLine($"    - {effect.Name} (Prob {effect.Probability:F2}, x{effect.DollarMult:F2}) : {effectStatus}");
+                        float effectiveEffect = effect.DollarMult;
+                        if (JSONDeserializer.EffectsDollarMult.ContainsKey(effect.Name))
+                        {
+                            effectiveEffect += JSONDeserializer.EffectsDollarMult[effect.Name];
+                        }
+                        string effectStatus = effect.UnlockRep <= _DealerData.Reputation 
+                            ? "<color=#00FF00>Unlocked</color>" 
+                            : $"<color=#FF4500>Locked (Unlock at: {effect.UnlockRep})</color>";
+                        info.AppendLine($"    - {effect.Name} (Prob <color=#FFA500>{effect.Probability:F2}</color>, x<color=#00FFFF>{effectiveEffect:F2}</color>) : {effectStatus}");
                     }
                 }
-                info.AppendLine(""); // spacer between drugs
+                info.AppendLine(""); // spacer
             }
             return info.ToString();
         }

@@ -52,6 +52,8 @@ namespace Empire
         public static void Update()
         {
             BlackmarketBuyer testBuyer = new BlackmarketBuyer();
+            //MelonLogger.Msg($"Testing Effects Dictionary: {JSONDeserializer.EffectsDollarMult["Munchies"]}");
+            //MelonLogger.Msg($"Testing Qualities Dictionary: {JSONDeserializer.QualitiesDollarMult["poor"]}");
             MelonLoader.MelonCoroutines.Start(UpdateCoroutine());
         }
 
@@ -162,11 +164,11 @@ namespace Empire
             {
                 MelonLogger.Error($"❌ Unexpected error during initialization: {ex}");
             }
-            //Create two dictionary from EffectsName and EffectsDollarMult; and QualitiesName and QualitiesDollarMult Lists
-            EffectsDollarMult = dealerData?.EffectsName?.Select((name, index) => new { name, index })
+            //Create two dictionary from EffectsName and EffectsDollarMult; and QualityTypes and QualitiesDollarMult Lists
+            EffectsDollarMult = dealerData?.EffectsName?.Select((name, index) => new { name = name.Trim().ToLowerInvariant(), index })
                 .ToDictionary(x => x.name, x => dealerData?.EffectsDollarMult?[x.index] ?? 0f);
-            QualitiesDollarMult = (dealerData?.QualitiesType ?? new List<string>())
-                .Select((name, index) => new { name, index })
+            QualitiesDollarMult = (dealerData?.QualityTypes ?? new List<string>())
+                .Select((name, index) => new { name = name.Trim().ToLowerInvariant(), index })
                 .ToDictionary(x => x.name, x => dealerData?.QualitiesDollarMult?[x.index] ?? 0f);
                 //Log both in Melonlogger
             MelonLogger.Msg($"Effects Dollar Mult: {string.Join(", ", EffectsDollarMult.Select(x => $"{x.Key}: {x.Value}"))}");

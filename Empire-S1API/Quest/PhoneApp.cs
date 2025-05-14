@@ -48,6 +48,7 @@ namespace Empire
             productButton,
             shippingButton;
         private Text statusText;
+        private Text managementTabLabel; // <<--- new field for the management tab label
         public static int Index;
 
         private BlackmarketBuyer selectedBuyer;
@@ -69,6 +70,8 @@ namespace Empire
                 MelonLogger.Msg("✅ Dealers initialized");
                 Contacts.Update();
                 MelonLogger.Msg($"Contacts.Buyers Count: {Contacts.Buyers.Count}");
+                TimeManager.OnDayPass += RefreshQuestList;
+                MelonLogger.Msg("✅ TimeManager.OnDayPass event subscribed");
             }
             catch (Exception ex)
             {
@@ -80,9 +83,10 @@ namespace Empire
 
             var bg = UIFactory.Panel("MainBG", container.transform, Color.black, fullAnchor: true);
 
+            // Set the top bar title to "Deals" for the default quest screen.
             UIFactory.TopBar(name: "TopBar",
                 parent: bg.transform,
-                title: "Empire",
+                title: "Deals",
                 topbarSize: 0.82f,
                 paddingLeft: 75,
                 paddingRight: 75,
@@ -146,9 +150,9 @@ namespace Empire
                     "Manage",
                     bg.transform,
                     new Color(0.2f, 0.2f, 0.2f, 1f),
-                    20,
-                    20,
-                    22,
+                    100, // Width 
+                    40,  // Height
+                    16,  // Font size
                     Color.white
                 );
 
@@ -196,309 +200,202 @@ namespace Empire
 
         private void OpenManageUI(GameObject bg)
         {
-            var managementPanel = UIFactory.Panel("ManagementPanel", bg.transform, new Color(200, 200, 200, 0.3f), fullAnchor: true);
+            // Create main management modal panel
+            var managementPanel = UIFactory.Panel("ManagementPanel", bg.transform, new Color(200 / 255f, 200 / 255f, 200 / 255f, 0.3f), fullAnchor: true);
             managementPanel.gameObject.SetActive(true);
             managementPanel.transform.SetAsLastSibling();
 
-            var (contentBackground, topBar, buttonRow) = SetupInitialPanel(managementPanel);
+            // Create Top Bar panel (occupies top 15% of the modal)
+            var topBar = UIFactory.Panel("ManageTopBar", managementPanel.transform, new Color(50 / 255f, 50 / 255f, 50 / 255f, 1f));
+            var topBarRect = topBar.GetComponent<RectTransform>();
+            topBarRect.anchorMin = new Vector2(0, 0.85f); // Adjusted height for better visibility
+            topBarRect.anchorMax = new Vector2(1, 1);
+            topBarRect.offsetMin = Vector2.zero;
+            topBarRect.offsetMax = Vector2.zero;
+            UIFactory.HorizontalLayoutOnGO(topBar, spacing: 20, padLeft: 20, padRight: 20, padTop: 10, padBottom: 10, alignment: TextAnchor.MiddleLeft);
 
-            // --- New: repurpose top bar buttons for buyer details ---
-            // Change RelationsButton text to "Reputation" and ShippingButton text remains "Shipping"
-            relationsLabel.text = "Reputation";
-            shippingLabel.text = "Shipping";
-            // Wire up new listeners for reputation and shipping
-            ButtonUtils.ClearListeners(relationsButton);
-            ButtonUtils.AddListener(relationsButton, () => UpdateBuyerDetails("Reputation"));
-            ButtonUtils.ClearListeners(shippingButton);
-            ButtonUtils.AddListener(shippingButton, () => UpdateBuyerDetails("Shipping"));
-            // (Product button remains unchanged for now)
-            // --- End new ---
+            // Add Reputation, Product, and Shipping buttons to the top bar
+            var (repGO, repBtn, repLbl) = UIFactory.RoundedButtonWithLabel("RepButton", "Reputation", topBar.transform, new Color(0.2f, 0.2f, 0.2f, 1f), 120, 40, 16, Color.white);
+            ButtonUtils.ClearListeners(repBtn);
+            ButtonUtils.AddListener(repBtn, () => UpdateBuyerDetails("Reputation"));
 
-            var detailsPanel = UIFactory.Panel("DetailsPanel", managementPanel.transform, new Color(0.1f, 0.1f, 0.1f),
-                new Vector2(0, 0), new Vector2(1, 0.82f));
+            var (prodGO, prodBtn, prodLbl) = UIFactory.RoundedButtonWithLabel("ProdButton", "Product", topBar.transform, new Color(0.2f, 0.2f, 0.2f, 1f), 120, 40, 16, Color.white);
+            ButtonUtils.ClearListeners(prodBtn);
+            ButtonUtils.AddListener(prodBtn, () => UpdateBuyerDetails("Product"));
 
-            var leftPanel = UIFactory.Panel("BuyerListPanel", detailsPanel.transform, new Color(0.1f, 0.1f, 0.1f),
-                new Vector2(0.02f, 0.05f), new Vector2(0.49f, 0.82f));
-            questListContainer = UIFactory.ScrollableVerticalList("BuyerListScroll", leftPanel.transform, out _);
-            UIFactory.FitContentHeight(questListContainer);
-            PopulateBuyerList(questListContainer); // populate left panel with buyers
+            var (shipGO, shipBtn, shipLbl) = UIFactory.RoundedButtonWithLabel("ShipButton", "Shipping", topBar.transform, new Color(0.2f, 0.2f, 0.2f, 1f), 120, 40, 16, Color.white);
+            ButtonUtils.ClearListeners(shipBtn);
+            ButtonUtils.AddListener(shipBtn, () => UpdateBuyerDetails("Shipping"));
 
-            var rightPanel = UIFactory.Panel("DetailPanel", detailsPanel.transform, new Color(0.12f, 0.12f, 0.12f),
-                new Vector2(0.49f, 0f), new Vector2(0.98f, 0.82f));
-            UIFactory.VerticalLayoutOnGO(rightPanel, spacing: 14, padding: new RectOffset(24, 50, 15, 70));
-            managementDetailPanel = rightPanel; // store reference for updates
-        }
+            // Instead of creating a new spacerObj, add a flexible LayoutElement directly to topBar
+            var spacer = topBar.AddComponent<LayoutElement>();
+            spacer.flexibleWidth = 1;
 
-        private (GameObject contentBackground, GameObject topBar, GameObject buttonRow) SetupInitialPanel(GameObject managementPanel)
-        {
-            var contentBackground = UIFactory.Panel("ContentBackground", managementPanel.transform, new Color(0.2f, 0.2f, 0.2f, 1f));
-            var contentRect = contentBackground.GetComponent<RectTransform>();
-            contentRect.anchorMin = new Vector2(0.0f, 0.0f);
-            contentRect.anchorMax = new Vector2(1f, 1f);
+            // Create active tab label
+            managementTabLabel = UIFactory.Text("ManagementTabLabel", "Reputation", topBar.transform, 20, TextAnchor.MiddleCenter, FontStyle.Bold);
+
+            // Create Close button at the far right in top bar
+            var (closeGO, closeBtn, closeLbl) = UIFactory.RoundedButtonWithLabel("CloseButton", "X", topBar.transform, new Color32(235, 53, 56, 255), 50, 40, 16, Color.white);
+            ButtonUtils.AddListener(closeBtn, () => Object.Destroy(managementPanel));
+            closeGO.GetComponent<RectTransform>().SetAsLastSibling();
+
+            // Create Content Panel (occupies remaining height reduced to 85%)
+            var contentPanel = UIFactory.Panel("ManageContent", managementPanel.transform, new Color(0.12f, 0.12f, 0.12f, 1f));
+            var contentRect = contentPanel.GetComponent<RectTransform>();
+            contentRect.anchorMin = new Vector2(0, 0);
+            contentRect.anchorMax = new Vector2(1, 0.85f); // Reduced to 0.85f 
             contentRect.offsetMin = Vector2.zero;
             contentRect.offsetMax = Vector2.zero;
 
-            var topBar = UIFactory.Panel("TopBar", managementPanel.transform, new Color(0.1f, 0.1f, 0.1f, 1f));
-            var topBarRect = topBar.GetComponent<RectTransform>();
-            topBarRect.anchorMin = new Vector2(0f, 0.9f);
-            topBarRect.anchorMax = new Vector2(1f, 1f);
-            topBarRect.offsetMin = Vector2.zero;
-            topBarRect.offsetMax = Vector2.zero;
+            // Left Panel: Buyer List (40% width)
+            var leftPanel = UIFactory.Panel("BuyerListPanel", contentPanel.transform, new Color(0.1f, 0.1f, 0.1f, 1f));
+            var leftRect = leftPanel.GetComponent<RectTransform>();
+            leftRect.anchorMin = new Vector2(0, 0);
+            leftRect.anchorMax = new Vector2(0.4f, 1);
+            leftRect.offsetMin = Vector2.zero;
+            leftRect.offsetMax = Vector2.zero;
+            questListContainer = UIFactory.ScrollableVerticalList("BuyerListScroll", leftPanel.transform, out _);
+            UIFactory.FitContentHeight(questListContainer);
+            PopulateBuyerList(questListContainer.transform);
 
-            var buttonRow = UIFactory.ButtonRow("TopButtons", topBar.transform, spacing: 2);
-
-            var buttonRowRect = buttonRow.GetComponent<RectTransform>();
-            buttonRowRect.anchorMin = new Vector2(0, 1);
-            buttonRowRect.anchorMax = new Vector2(0, 1);
-            buttonRowRect.anchoredPosition = new Vector2(2, -33);
-            buttonRowRect.sizeDelta = new Vector2(0, 60);
-
-            AddButtonsToRow(buttonRow);
-
-            var (closeGO, closeBtn, closeLbl) = UIFactory.RoundedButtonWithLabel(
-                "CloseButton",
-                "X",
-                managementPanel.transform,
-                new Color32(235, 53, 56, 255),
-                50,
-                20,
-                12,
-                Color.white
-            );
-
-            var closeRect = closeGO.GetComponent<RectTransform>();
-            closeRect.anchorMin = new Vector2(0.98f, 0.98f);
-            closeRect.anchorMax = new Vector2(1f, 1f);
-            closeRect.pivot = new Vector2(1f, 1f);
-            closeRect.anchoredPosition = new Vector2(-10f, -10f);
-            closeRect.sizeDelta = new Vector2(25, 25);
-
-            ButtonUtils.AddListener(closeBtn, () => Object.Destroy(managementPanel.gameObject));
-
-            if (contentBackground == null || topBar == null || buttonRow == null)
+            // Auto-select first buyer if any exists (to initialize selectedBuyer)
+            if (questListContainer.childCount > 0)
             {
-                MelonLogger.Error("Failed to create management panel components.");
-                return (null, null, null);
+                var firstButton = questListContainer.GetChild(0).GetComponent<Button>();
+                firstButton?.onClick.Invoke();
             }
 
-            return (contentBackground, topBar, buttonRow);
+            // Right Panel: Detail Display (60% width)
+            var rightPanel = UIFactory.Panel("DetailPanel", contentPanel.transform, new Color(0.12f, 0.12f, 0.12f, 1f));
+            var rightRect = rightPanel.GetComponent<RectTransform>();
+            rightRect.anchorMin = new Vector2(0.4f, 0);
+            rightRect.anchorMax = new Vector2(1, 0.85f);
+            rightRect.offsetMin = Vector2.zero;
+            rightRect.offsetMax = Vector2.zero;
+            UIFactory.VerticalLayoutOnGO(rightPanel, spacing: 14, padding: new RectOffset(24, 50, 15, 70));
+            managementDetailPanel = rightPanel; // store detail panel for updates
         }
 
-        private void AddButtonsToRow(GameObject buttonRow)
+        private void AddManagementButtons(Transform parent)
         {
-            var (relationsGO, relationsBtn, relationsLbl) = UIFactory.RoundedButtonWithLabel(
-                "RelationsButton",
-                "Relations",
-                buttonRow.transform,
-                new Color(0.2f, 0.2f, 0.2f, 1f),
-                100,
-                100,
-                18,
-                Color.white
-            );
-            RectTransformNavButton(relationsGO.GetComponent<RectTransform>());
-            relationsButton = relationsBtn;
-            relationsLabel = relationsLbl;
-            ButtonUtils.ClearListeners(relationsButton);
-            ButtonUtils.AddListener(relationsButton, () =>
-            {
-                MelonLogger.Msg("[MyApp] Relations button clicked.");
-                UpdateBuyerDetails("Reputation");
-            });
-
-            var (productGO, productBtn, productLbl) = UIFactory.RoundedButtonWithLabel(
-                "ProductButton",
-                "Product",
-                buttonRow.transform,
-                new Color(0.2f, 0.2f, 0.2f, 1f),
-                100,
-                100,
-                18,
-                Color.white
-            );
-            productButton = productBtn;
-            productLabel = productLbl;
-            RectTransformNavButton(productGO.GetComponent<RectTransform>());
-            ButtonUtils.ClearListeners(productButton);
-            ButtonUtils.AddListener(productButton, () =>
-            {
-                MelonLogger.Msg("[MyApp] Product button clicked.");
-                UpdateBuyerDetails("Product");
-            });
-
-            var (shippingGO, shippingBtn, shippingLbl) = UIFactory.RoundedButtonWithLabel(
-                "ShippingButton",
-                "Shipping",
-                buttonRow.transform,
-                new Color(0.2f, 0.2f, 0.2f, 1f),
-                100,
-                100,
-                18,
-                Color.white
-            );
-            shippingButton = shippingBtn;
-            shippingLabel = shippingLbl;
-            RectTransformNavButton(shippingGO.GetComponent<RectTransform>());
-            ButtonUtils.ClearListeners(shippingButton);
-            ButtonUtils.AddListener(shippingButton, () =>
-            {
-                MelonLogger.Msg("[MyApp] Shipping button clicked.");
-                UpdateBuyerDetails("Shipping");
-            });
-        }
-
-        private void RectTransformNavButton(RectTransform rect)
-        {
-            rect.anchorMin = new Vector2(0.05f, 0.5f);
-            rect.anchorMax = new Vector2(0.05f, 0.5f);
-            rect.anchoredPosition = new Vector2(10f, 10f);
-            rect.sizeDelta = new Vector2(100, 60);
-        }
-
-        private void SetDetailsContent(Text description, string tab)
-        {
-            switch (tab)
-            {
-                case "Relations":
-                    description.text = "Relations content goes here.";
-                    break;
-                case "Product":
-                    description.text = "Product content goes here.";
-                    break;
-                case "Shipping":
-                    description.text = "Shipping content goes here.";
-                    break;
-                default:
-                    description.text = "No content available.";
-                    break;
-            }
-        }
-
-        private void PopulateBuyerList(Transform container)
-        {
-            ClearChildren(container);
-            foreach (var buyer in Contacts.Buyers.Values)
-            {
-                if (!buyer.IsInitialized) continue;
-                // Create a row using existing UIFactory row creation
-                var row = UIFactory.CreateQuestRow(buyer.DealerName, container, out var iconPanel, out var textPanel);
-                UIFactory.CreateTextBlock(textPanel.transform, buyer.DealerName, "", false);
-                ButtonUtils.AddListener(row.GetComponent<Button>(), () => OnSelectBuyer(buyer));
-            }
-        }
-
-        private void OnSelectBuyer(BlackmarketBuyer buyer)
-        {
-            selectedBuyer = buyer;
-            UpdateBuyerDetails("Reputation"); // default to reputation view
+            // Create a horizontal container for the three buttons.
+            var buttonContainer = UIFactory.Panel("MgmtButtons", parent, Color.clear);
+            UIFactory.HorizontalLayoutOnGO(buttonContainer, spacing: 10);
+            // Create Reputation button:
+            var (repGO, repBtn, repLbl) = UIFactory.RoundedButtonWithLabel("RepButton", "Reputation", buttonContainer.transform, new Color(0.2f, 0.2f, 0.2f, 1f), 100, 40, 16, Color.white);
+            ButtonUtils.ClearListeners(repBtn);
+            ButtonUtils.AddListener(repBtn, () => UpdateBuyerDetails("Reputation"));
+            // Create Product button:
+            var (prodGO, prodBtn, prodLbl) = UIFactory.RoundedButtonWithLabel("ProdButton", "Product", buttonContainer.transform, new Color(0.2f, 0.2f, 0.2f, 1f), 100, 40, 16, Color.white);
+            ButtonUtils.ClearListeners(prodBtn);
+            ButtonUtils.AddListener(prodBtn, () => UpdateBuyerDetails("Product"));
+            // Create Shipping button:
+            var (shipGO, shipBtn, shipLbl) = UIFactory.RoundedButtonWithLabel("ShipButton", "Shipping", buttonContainer.transform, new Color(0.2f, 0.2f, 0.2f, 1f), 100, 40, 16, Color.white);
+            ButtonUtils.ClearListeners(shipBtn);
+            ButtonUtils.AddListener(shipBtn, () => UpdateBuyerDetails("Shipping"));
         }
 
         private void UpdateBuyerDetails(string tab)
         {
-            if (selectedBuyer == null)
+            // NEW: Guard against null managementDetailPanel.
+            if (managementDetailPanel == null)
             {
-                MelonLogger.Warning("[MyApp] UpdateBuyerDetails called but no buyer is selected.");
+                MelonLogger.Warning("[MyApp] UpdateBuyerDetails called but managementDetailPanel is null.");
                 return;
             }
-
-            // Clear detail panel using a for-loop to avoid invalid cast exceptions.
+            // Clear detail panel
             for (int i = managementDetailPanel.transform.childCount - 1; i >= 0; i--)
             {
-                var child = managementDetailPanel.transform.GetChild(i);
-                Object.Destroy(child.gameObject);
+                Object.Destroy(managementDetailPanel.transform.GetChild(i).gameObject);
             }
 
             string content = "";
             if (tab == "Reputation")
             {
-                // Load and display dealer image (like in quest rows)
                 var imagePath = selectedBuyer.DealerImage ?? Path.Combine(MelonEnvironment.ModsDirectory, "Empire", "EmpireIcon_quest.png");
                 UIFactory.SetIcon(ImageUtils.LoadImage(imagePath), managementDetailPanel.transform);
-                // Force NPC image to display at 128x128
                 var icon = managementDetailPanel.transform.GetComponentInChildren<Image>();
                 if (icon != null)
                     icon.GetComponent<RectTransform>().sizeDelta = new Vector2(128, 128);
                 content = $"<b>Reputation:</b> {selectedBuyer._DealerData.Reputation}";
-                // Update pending unlocks to use Any() on UnlockRequirements and display each requirement's MinRep
+                // NEW: Append stylized Deal Days under reputation.
+                if (selectedBuyer.DealDays != null && selectedBuyer.DealDays.Count > 0)
+                {
+                    string daysStr = string.Join(", ", selectedBuyer.DealDays);
+                    content += $"\n\n<b><color=#FFA500>Deal Days:</color></b> <color=#FFFFFF>{daysStr}</color>";
+                    MelonLogger.Msg($"[MyApp] Displaying Deal Days for {selectedBuyer.DealerName}: {daysStr}");
+                }
                 var pendingBuyers = Contacts.Buyers.Values
                     .Where(b => !b.IsInitialized &&
                                 b.UnlockRequirements != null &&
-                                b.UnlockRequirements.Any(req => req.Name == selectedBuyer.DealerName))
+                                b.UnlockRequirements.Any(r => r.Name == selectedBuyer.DealerName && r.MinRep > selectedBuyer._DealerData.Reputation))
                     .ToList();
                 if (pendingBuyers.Count > 0)
                 {
                     content += "\n\n<b>Pending Unlocks:</b>\n";
                     foreach (var buyer in pendingBuyers)
                     {
-                        var req = buyer.UnlockRequirements.FirstOrDefault(r => r.Name == selectedBuyer.DealerName);
+                        var req = buyer.UnlockRequirements.FirstOrDefault(r => r.Name == selectedBuyer.DealerName && r.MinRep > selectedBuyer._DealerData.Reputation);
                         content += $"• {buyer.DealerName}: Requires Rep {req?.MinRep}\n";
                     }
                 }
-                MelonLogger.Msg($"[MyApp] Showing Reputation: {selectedBuyer._DealerData.Reputation}");
+                //MelonLogger.Msg($"[MyApp] Showing Reputation: {selectedBuyer._DealerData.Reputation}");
                 UIFactory.Text("DetailText", content, managementDetailPanel.transform, 18);
             }
             else if (tab == "Product")
             {
-                // NEW: show full drugs information (locked and unlocked) from BlackmarketBuyer
                 content = selectedBuyer.GetDrugUnlockInfo();
-                MelonLogger.Msg($"[MyApp] Displaying Product info from GetDrugUnlockInfo():\n{content}");
+                //MelonLogger.Msg($"[MyApp] Displaying Product info from GetDrugUnlockInfo():\n{content}");
                 UIFactory.Text("ProductDetailText", content, managementDetailPanel.transform, 18);
             }
             else if (tab == "Shipping")
             {
-                // Display current shipping tier info and next tier info if available.
                 int currentTier = selectedBuyer._DealerData.ShippingTier;
                 string currentShipping = "";
                 string nextShipping = "";
                 if (selectedBuyer.Shippings != null && currentTier < selectedBuyer.Shippings.Count)
                 {
                     var currentShip = selectedBuyer.Shippings[currentTier];
-                    currentShipping = $"<b>Current Tier ({currentTier}):</b>\n" +
-                                      $"   • <i>Name:</i> {currentShip.Name}\n" +
-                                      $"   • <i>Cost:</i> {currentShip.Cost}\n" +
-                                      $"   • <i>Unlock Rep:</i> {currentShip.UnlockRep}\n" +
-                                      $"   • <i>Amounts:</i> {currentShip.MinAmount} - {currentShip.MaxAmount}\n" +
-                                      $"   • <i>Deal Modifier:</i> {string.Join(", ", currentShip.DealModifier)}\n";
+                    currentShipping = $"<b><color=#FF6347>Current Tier ({currentTier})</color></b>\n" +
+                                      $"   • <i>Name:</i> <color=#FFFFFF>{currentShip.Name}</color>\n" +
+                                      $"   • <i>Cost:</i> <color=#00FFFF>{currentShip.Cost}</color>\n" +
+                                      $"   • <i>Unlock Rep:</i> <color=#00FF00>{currentShip.UnlockRep}</color>\n" +
+                                      $"   • <i>Amounts:</i> <color=#FFFF00>{currentShip.MinAmount} - {currentShip.MaxAmount}</color>\n" +
+                                      $"   • <i>Deal Modifier:</i> <color=#FFA500>{string.Join(", ", currentShip.DealModifier)}</color>\n";
                 }
                 else
                 {
-                    currentShipping = "Current shipping info not available.";
+                    currentShipping = "<b><color=#FF6347>Current shipping info not available.</color></b>";
                     MelonLogger.Warning("[MyApp] Current shipping tier index out of range.");
                 }
-
                 if (selectedBuyer.Shippings != null && currentTier + 1 < selectedBuyer.Shippings.Count)
                 {
                     var nextShip = selectedBuyer.Shippings[currentTier + 1];
-                    nextShipping = $"<b>Next Tier ({currentTier + 1}):</b>\n" +
-                                   $"   • <i>Name:</i> {nextShip.Name}\n" +
-                                   $"   • <i>Cost:</i> {nextShip.Cost}\n" +
-                                   $"   • <i>Unlock Rep:</i> {nextShip.UnlockRep}\n" +
-                                   $"   • <i>Amounts:</i> {nextShip.MinAmount} - {nextShip.MaxAmount}\n" +
-                                   $"   • <i>Deal Modifier:</i> {string.Join(", ", nextShip.DealModifier)}\n";
+                    nextShipping = $"<b><color=#FF6347>Next Tier ({currentTier + 1})</color></b>\n" +
+                                   $"   • <i>Name:</i> <color=#FFFFFF>{nextShip.Name}</color>\n" +
+                                   $"   • <i>Cost:</i> <color=#00FFFF>{nextShip.Cost}</color>\n" +
+                                   $"   • <i>Unlock Rep:</i> <color=#00FF00>{nextShip.UnlockRep}</color>\n" +
+                                   $"   • <i>Amounts:</i> <color=#FFFF00>{nextShip.MinAmount} - {nextShip.MaxAmount}</color>\n" +
+                                   $"   • <i>Deal Modifier:</i> <color=#FFA500>{string.Join(", ", nextShip.DealModifier)}</color>\n";
                 }
                 else
                 {
-                    nextShipping = "<b>Next Tier:</b> Maximum tier unlocked.";
+                    nextShipping = "<b><color=#FF6347>Next Tier:</color></b> <color=#FFFFFF>Maximum tier unlocked.</color>";
                     MelonLogger.Msg("[MyApp] No next shipping tier available; maximum tier reached.");
                 }
-
                 content = currentShipping + "\n" + nextShipping;
-                MelonLogger.Msg($"[MyApp] Displaying Shipping info:\n{content}");
+                //MelonLogger.Msg($"[MyApp] Displaying Shipping info:\n{content}");
                 UIFactory.Text("ShippingDetailText", content, managementDetailPanel.transform, 18);
-
-                // Add an Upgrade Shipping button if a next tier exists
+                // Existing shipping upgrade code remains unchanged.
                 if (selectedBuyer.Shippings != null && currentTier + 1 < selectedBuyer.Shippings.Count)
                 {
                     var (upgradeGO, upgradeBtn, upgradeLbl) = UIFactory.RoundedButtonWithLabel(
                         "UpgradeShippingButton",
-                        "Upgrade Shipping",
+                        "<b><i>Upgrade Shipping</i></b>",
                         managementDetailPanel.transform,
-                        new Color32(34, 130, 246, 255),
-                        200,
-                        50,
-                        18,
-                        Color.white
-                    );
+                        new Color32(0, 123, 255, 255),
+                        240, 70, 22, Color.white);
+                    upgradeLbl.text = "<i><color=#FFFFFF>Upgrade Shipping</color></i>";
                     ButtonUtils.ClearListeners(upgradeBtn);
                     ButtonUtils.AddListener(upgradeBtn, () =>
                     {
@@ -509,20 +406,26 @@ namespace Empire
                         if (currentCash < cost)
                         {
                             MelonLogger.Warning($"[MyApp] Not enough cash for upgrade. Required: {cost} Current: {currentCash}");
-                            UIFactory.Text("UpgradeErrorText", $"Not enough cash for upgrade (cost: {cost}).", managementDetailPanel.transform, 18);
+                            UIFactory.Text("UpgradeErrorText", "<color=#FF0000>Not enough cash (cost: " + cost + ").</color>", managementDetailPanel.transform, 18);
+                            return;
+                        }
+                        if (selectedBuyer._DealerData.Reputation < nextTier.UnlockRep)
+                        {
+                            MelonLogger.Warning($"[MyApp] Not enough reputation. Required: {nextTier.UnlockRep} Current: {selectedBuyer._DealerData.Reputation}");
+                            UIFactory.Text("UpgradeErrorText", "<color=#FF0000>Not enough reputation (required: " + nextTier.UnlockRep + ").</color>", managementDetailPanel.transform, 18);
                             return;
                         }
                         bool upgraded = selectedBuyer.UpgradeShipping();
                         if (upgraded)
                         {
                             ConsoleHelper.RunCashCommand(-cost);
-                            MelonLogger.Msg($"[MyApp] Shipping upgraded to tier {selectedBuyer._DealerData.ShippingTier}. Cost deducted: {cost}");
+                            MelonLogger.Msg($"[MyApp] Shipping upgraded to tier {selectedBuyer._DealerData.ShippingTier}. Cost: {cost}");
                             UpdateBuyerDetails("Shipping");
                         }
                         else
                         {
-                            MelonLogger.Msg("[MyApp] UpgradeShipping() returned false. Maximum tier unlocked.");
-                            UIFactory.Text("UpgradeErrorText", "Maximum shipping tier reached.", managementDetailPanel.transform, 18);
+                            MelonLogger.Msg("[MyApp] UpgradeShipping() returned false.");
+                            UIFactory.Text("UpgradeErrorText", "<color=#FF0000>Maximum tier reached.</color>", managementDetailPanel.transform, 18);
                         }
                     });
                 }
@@ -530,9 +433,12 @@ namespace Empire
             else
             {
                 content = "No content available.";
-                MelonLogger.Msg("[MyApp] Unknown tab requested in UpdateBuyerDetails.");
+                MelonLogger.Msg("[MyApp] Unknown tab requested.");
                 UIFactory.Text("DefaultDetailText", content, managementDetailPanel.transform, 18);
             }
+            // Update management tab label if applicable.
+            if (managementTabLabel != null)
+                managementTabLabel.text = tab;
         }
 
         private System.Collections.IEnumerator WaitForBuyerAndInitialize()
@@ -627,32 +533,17 @@ namespace Empire
             quests = new List<QuestData>();
             //Extra Logging
             MelonLogger.Msg(Contacts.Buyers);
-            foreach (var buyer in Contacts.Buyers)
-            {
-                MelonLogger.Msg($"Buyer Key: {buyer.Key}, Dealer Name: {buyer.Value.DealerName}");
-            }
-            if (Contacts.Buyers == null)
-            {
-                MelonLogger.Error("❌ Contacts.Buyers is null. Ensure it is initialized before calling LoadQuests.");
-                return;
-            }
-            if (Contacts.Buyers.Count == 0)
-            {
-                MelonLogger.Warning("⚠️ Contacts.Buyers.Count is empty. No buyers are available.");
-                return;
-            }
-
-
             foreach (var buyer in Contacts.Buyers.Values)
             {
-                if (buyer == null)
+                // New: Only process buyer if its dealDays contains current day.
+                string currentDay = S1API.GameTime.TimeManager.CurrentDay.ToString();
+                if (buyer.DealDays == null || !buyer.DealDays.Contains(currentDay))
                 {
-                    MelonLogger.Warning("⚠️ Buyer is null. Skipping...");
+                    MelonLogger.Msg($"[MyApp] Skipping buyer: {buyer.DealerName} as current day {currentDay} is not in their dealDays.");
                     continue;
                 }
-
-                MelonLogger.Msg($"Processing buyer: {buyer.DealerName}");
-                // Check if the dealer exists in the Buyers dictionary
+                MelonLogger.Msg($"[MyApp] Processing buyer: {buyer.DealerName} for current day {currentDay}");
+                // ...existing code...
                 var dealerSaveData = BlackmarketBuyer.GetDealerSaveData(buyer.DealerName);
                 if (dealerSaveData == null)
                 {
@@ -667,7 +558,7 @@ namespace Empire
                 var shipping = buyer.Shippings[dealerSaveData.ShippingTier];
                 // Log dealer information
                 MelonLogger.Msg($"✅ Processing dealer: {buyer.DealerName}");
-                MelonLogger.Msg($"   Unlocked Drugs: {string.Join(", ", dealerSaveData.UnlockedDrugs)}");
+                //MelonLogger.Msg($"   Unlocked Drugs: {string.Join(", ", dealerSaveData.UnlockedDrugs)}");
                 MelonLogger.Msg($"   MinDeliveryAmount: {shipping.MinAmount}, MaxDeliveryAmount: {shipping.MaxAmount}");
 
                 //drugTypes are unique dealerSaveData.UnlockedDrugs.Type 
@@ -757,95 +648,131 @@ namespace Empire
             var qualityMult = 0f;
             //choose a random quality from the randomDrug.Qualities list
             var randomQuality = randomDrug.Qualities[RandomUtils.RangeInt(0, randomDrug.Qualities.Count)];
-            if (randomQuality != null)
+            var qualityKey = randomQuality.Type.Trim();
+            if (JSONDeserializer.QualitiesDollarMult.ContainsKey(qualityKey))
             {
-                quality = randomQuality.Type;
-                qualityMult = randomQuality.DollarMult;
-                aggregateDollarMultMin = 1 + randomQuality.DollarMult;
-                aggregateDollarMultMax = aggregateDollarMultMin;
-
+                quality = qualityKey;
+                qualityMult = JSONDeserializer.QualitiesDollarMult[qualityKey] + randomQuality.DollarMult;
             }
+            else
+            {
+                MelonLogger.Warning($"⚠️ No dollar multiplier found for quality {qualityKey}.");
+            }
+            aggregateDollarMultMin = 1 + qualityMult;
+            aggregateDollarMultMax = 1 + qualityMult;
+
             var tempMult11 = 1f;//min
 
             var tempMult21 = 1f;//max
 
 
             //Iterate through randomDrug.Effects and check if the effect is necessary or optional. Also multiply aggregate dollar and rep multipliers with base dollar+sum of effects dollar mult. Same for rep.
-            var randomNum1 = UnityEngine.Random.Range(0.1f, 0.3f);//$ Effect Mult Random
+            var randomNum1 = UnityEngine.Random.Range(0.25f, 0.50f);//$ Effect Mult Random
             foreach (var effect in randomDrug.Effects)
             {
-                //If the effect is necessary, add it to the necessaryEffects list and multiply the aggregate dollar and rep multipliers with the effect's dollar and rep multipliers
-                //If the effect is optional, add it to the optionalEffects list and multiply the aggregate dollar and rep multipliers with the effect's dollar and rep multipliers
-                //If the effect is not necessary or optional, skip it
                 if (effect.Probability > 1f && effect.Probability <= 2f && UnityEngine.Random.Range(0f, 1f) < effect.Probability - 1f)
                 {
                     if (effect.Name != "Random")
                     {
-                        necessaryEffects.Add(effect.Name);
-                        necessaryEffectMult.Add(effect.DollarMult * randomNum1);
-                        tempMult11 += effect.DollarMult * randomNum1;
-                        tempMult21 += effect.DollarMult * randomNum1;
+                        // Standardize effect name
+                        var effectKey = effect.Name.Trim().ToLowerInvariant();
+                        necessaryEffects.Add(effectKey);
+                        float effectDollarMult = effect.DollarMult;
+                        if (JSONDeserializer.EffectsDollarMult.ContainsKey(effectKey))
+                        {
+                            effectDollarMult += JSONDeserializer.EffectsDollarMult[effectKey];
+                        }
+                        else
+                        {
+                            MelonLogger.Warning($"⚠️ No dollar multiplier found for effect {effectKey}.");
+                        }
+                        necessaryEffectMult.Add(effectDollarMult * randomNum1);
+                        tempMult11 += effectDollarMult * randomNum1;
+                        tempMult21 += effectDollarMult * randomNum1;
                     }
                     else
                     {
-                        // choose a random effect from Contacts.dealerData.EffectsName that is not in the necessaryEffects list or optionalEffects list
                         var randomEffect = Contacts.dealerData.EffectsName
-                            .Where(name => !necessaryEffects.Contains(name) && !optionalEffects.Contains(name))
+                            .Where(name => !necessaryEffects.Contains(name.Trim().ToLowerInvariant()) && !optionalEffects.Contains(name.Trim().ToLowerInvariant()))
                             .OrderBy(_ => UnityEngine.Random.value)
                             .FirstOrDefault();
                         if (randomEffect != null)
                         {
-                            necessaryEffects.Add(randomEffect);
-                            // Random Hardcoded to Take from List - TODO - use based on take_from_list
-                            if (!JSONDeserializer.EffectsDollarMult.ContainsKey(randomEffect))
+                            var formattedRandomEffect = randomEffect.Trim().ToLowerInvariant();
+                            necessaryEffects.Add(formattedRandomEffect);
+                            if (!JSONDeserializer.EffectsDollarMult.ContainsKey(formattedRandomEffect))
                             {
-                                MelonLogger.Warning($"⚠️ No dollar multiplier found for effect {randomEffect}.");
+                                MelonLogger.Warning($"⚠️ No dollar multiplier found for effect {formattedRandomEffect}.");
                             }
                             else
                             {
-                                var EffectDollarMult = JSONDeserializer.EffectsDollarMult[randomEffect];
+                                var EffectDollarMult = effect.DollarMult;
+                                if (JSONDeserializer.QualitiesDollarMult.ContainsKey(formattedRandomEffect))
+                                {
+                                    EffectDollarMult += JSONDeserializer.QualitiesDollarMult[formattedRandomEffect];
+                                }
+                                else
+                                {
+                                    MelonLogger.Warning($"⚠️ No dollar multiplier found for effect {formattedRandomEffect}.");
+                                }
                                 necessaryEffectMult.Add(EffectDollarMult * randomNum1);
                                 tempMult11 += EffectDollarMult * randomNum1;
                                 tempMult21 += EffectDollarMult * randomNum1;
                             }
-
                         }
                     }
-
                 }
                 else if (effect.Probability > 0f && effect.Probability <= 1f && UnityEngine.Random.Range(0f, 1f) < effect.Probability)
                 {
                     if (effect.Name != "Random")
                     {
-                        optionalEffects.Add(effect.Name);
-                        optionalEffectMult.Add(effect.DollarMult * randomNum1);
-                        tempMult21 += effect.DollarMult * randomNum1;
+                        var effectKey = effect.Name.Trim().ToLowerInvariant();
+                        optionalEffects.Add(effectKey);
+                        float effectDollarMult = effect.DollarMult;
+                        if (JSONDeserializer.EffectsDollarMult.ContainsKey(effectKey))
+                        {
+                            effectDollarMult += JSONDeserializer.EffectsDollarMult[effectKey];
+                        }
+                        else
+                        {
+                            MelonLogger.Warning($"⚠️ No dollar multiplier found for effect {effectKey}.");
+                        }
+                        optionalEffectMult.Add(effectDollarMult * randomNum1);
+                        tempMult21 += effectDollarMult * randomNum1;
                     }
                     else
                     {
                         var randomEffect = Contacts.dealerData.EffectsName
-                            .Where(name => !necessaryEffects.Contains(name) && !optionalEffects.Contains(name))
+                            .Where(name => !necessaryEffects.Contains(name.Trim().ToLowerInvariant()) && !optionalEffects.Contains(name.Trim().ToLowerInvariant()))
                             .OrderBy(_ => UnityEngine.Random.value)
                             .FirstOrDefault();
                         if (randomEffect != null)
                         {
-                            optionalEffects.Add(randomEffect);
-                            // Random Hardcoded to Take from List - TODO - use based on take_from_list
-                            if (JSONDeserializer.EffectsDollarMult.ContainsKey(randomEffect))
+                            var formattedRandomEffect = randomEffect.Trim().ToLowerInvariant();
+                            optionalEffects.Add(formattedRandomEffect);
+                            if (JSONDeserializer.EffectsDollarMult.ContainsKey(formattedRandomEffect))
                             {
-                                var EffectDollarMult = JSONDeserializer.EffectsDollarMult[randomEffect];
+                                var EffectDollarMult = effect.DollarMult;
+                                if (JSONDeserializer.QualitiesDollarMult.ContainsKey(formattedRandomEffect))
+                                {
+                                    EffectDollarMult += JSONDeserializer.QualitiesDollarMult[formattedRandomEffect];
+                                }
+                                else
+                                {
+                                    MelonLogger.Warning($"⚠️ No dollar multiplier found for effect {formattedRandomEffect}.");
+                                }
                                 optionalEffectMult.Add(EffectDollarMult * randomNum1);
                                 tempMult21 += EffectDollarMult * randomNum1;
                             }
                             else
                             {
-                                MelonLogger.Warning($"⚠️ No dollar multiplier found for effect {randomEffect}.");
+                                MelonLogger.Warning($"⚠️ No dollar multiplier found for effect {formattedRandomEffect}.");
                             }
                         }
                     }
                 }
             }
-
+            MelonLogger.Msg($"aggregateDollarMultMin: {aggregateDollarMultMin} tempMult11: {tempMult11} tempMult21: {tempMult21} dealTimesMult: {dealTimesMult}");
             aggregateDollarMultMin *= tempMult11;
             aggregateDollarMultMax *= tempMult21;
 
@@ -867,23 +794,23 @@ namespace Empire
 
             var randomNum2 = UnityEngine.Random.Range(0.5f, 1.5f);//Rep Random
             var randomNum3 = UnityEngine.Random.Range(0.5f, 1.5f);//XP Random
-            var randomNum4 = UnityEngine.Random.Range(0.5f, 0.75f);//$ Base Random
+            var randomNum4 = UnityEngine.Random.Range(0.5f, 1.5f);//$ Base Random
             MelonLogger.Msg($"RandomNum1: {randomNum1}, RandomNum2: {randomNum2}, RandomNum3: {randomNum3}, RandomNum4: {randomNum4}");
             //If dealTimesMult>1 subtract 1 else multiply by randomNum1
-            if (dealTimesMult > 1)
+            /*if (dealTimesMult > 1)
             {
                 dealTimesMult = Math.Min(dealTimesMult - 1, dealTimesMult * randomNum1);
             }
             else
             {
                 dealTimesMult *= randomNum1;
-            }
+            }*/
             aggregateDollarMultMin *= dealTimesMult;
             aggregateDollarMultMax *= dealTimesMult;
             var quest = new QuestData
             {
                 Title = $"{buyer.DealerName} wants {drugType} delivered.",
-                Task = $"Deliver {amount}x {quality} {drugType}" + (effectDesc.Length > 0 ? $" with [{effectDesc}]" : ""),
+                Task = $"Deliver {amount}x {quality} {drugType}",
                 ProductID = drugType,
                 AmountRequired = (uint)amount,
                 TargetObjectName = buyer.DealerName,
@@ -981,6 +908,28 @@ namespace Empire
                     QuestDelivery.CompletedQuestKeys?.Contains($"{quest.ProductID}_{quest.AmountRequired}") == true);
             }
         }
+        private void PopulateBuyerList(Transform container)
+        {
+            ClearChildren(container);
+            foreach (var buyer in Contacts.Buyers.Values)
+            {
+                if (!buyer.IsInitialized)
+                    continue;
+                var row = UIFactory.CreateQuestRow(buyer.DealerName, container, out var iconPanel, out var textPanel);
+                // Set dealer icon (using a default if missing)
+                UIFactory.SetIcon(
+                    ImageUtils.LoadImage(Path.Combine(MelonEnvironment.ModsDirectory, "Empire", buyer.DealerImage ?? "EmpireIcon_quest.png")),
+                    iconPanel.transform
+                );
+                ButtonUtils.AddListener(row.GetComponent<Button>(), () =>
+                {
+                    selectedBuyer = buyer;
+                    // Use current tab in top bar (or default to "Reputation")
+                    UpdateBuyerDetails(managementTabLabel != null ? managementTabLabel.text : "Reputation");
+                });
+                UIFactory.CreateTextBlock(textPanel.transform, buyer.DealerName, "", false);
+            }
+        }
         private void OnSelectQuest(QuestData quest)
         {
             var Buyer = Contacts.GetBuyer(quest.DealerName);
@@ -1039,8 +988,7 @@ namespace Empire
             }
             var Buyer = Contacts.GetBuyer(quest.DealerName);
             Buyer.SendCustomMessage("DealStart", quest.ProductID, (int)quest.AmountRequired, quest.Quality, quest.NecessaryEffects, quest.OptionalEffects);
-            MelonLogger.Msg($"✅ Deal started: ");
-
+            MelonLogger.Msg("✅ Deal started:");
             deliveryStatus.text = "📦 Delivery started!";
             ButtonUtils.Disable(acceptButton, acceptLabel, "In Progress");
             Buyer = Contacts.GetBuyer(quest.DealerName);
@@ -1068,11 +1016,8 @@ namespace Empire
                 delivery.Data.NecessaryEffectMult = quest.NecessaryEffectMult;
                 delivery.Data.OptionalEffectMult = quest.OptionalEffectMult;
                 QuestDelivery.Active = delivery;
-
                 if (Buyer is BlackmarketBuyer buyer)
-                {
                     buyer.SendCustomMessage("Accept", quest.ProductID, (int)quest.AmountRequired, quest.Quality, quest.NecessaryEffects, quest.OptionalEffects);
-                }
             }
             else
             {
@@ -1080,10 +1025,9 @@ namespace Empire
                 return;
             }
             MelonLogger.Msg($"✅ Quest accepted: {quest.Title}");
-            // Remove quest from the UI and underlying list
+            // Remove quest from list: remove quest then refresh the entire quest list container.
             if (questListContainer != null)
             {
-                ClearChild(questListContainer, quest.Index);
                 quests.Remove(quest);
                 RefreshQuestList();
             }
