@@ -14,60 +14,19 @@ using S1API.Console;
 using S1API.GameTime;
 using S1API.Internal.Utils;
 using S1API.PhoneApp;
-//using S1API.Quests.Constants;
+using S1API.Quests.Constants;
 using Random = UnityEngine.Random;
 using System.IO;
 using MelonLoader.Utils;
 
+using Properties = Il2CppScheduleOne.Properties;
+using MelonLoader.TinyJSON;
+
+//using Properties = ScheduleOne.Properties;
+
+
 namespace Empire
 {
-
-    // This is temporary mock method to test the logic. Will be replaced with the actual method to get the complete list of strings.
-    // A method that returns a list of strings randomly selected from the complete list of strings 
-    //TODO
-    public static class RandomEffectSelector
-    {
-        //Create default values for completeList and count
-        public static List<string> GetRandomEffects(List<string> completeList = null, int count = 100)
-        {
-            // If completeList is null, initialize it with a default list of strings
-            if (completeList == null)
-            {
-                completeList = new List<string>
-                {
-"Euphoric",
-"Foggy",
-"Paranoia",
-"Munchies",
-"Calming",
-"Refreshing",
-"Disorienting",
-"Energizing",
-"Focused",
-"Glowing",
-"Lethal",
-"Toxic",
-"Thought-Provoking",
-"Spicy",
-"Smelly",
-"Explosive",
-"Seizure-Inducing",
-"Sneaky",
-"Sedating",
-"Jennerising"
-                };
-            }
-
-
-            count = Math.Min(count, completeList.Count);
-
-            //return a random selection of strings from completeList with count elements
-            return completeList.OrderBy(x => Guid.NewGuid()).Take(count).ToList();
-
-        }
-    }
-
-
     public class QuestDelivery : Quest
     {
         [SaveableField("DeliveryData")]
@@ -137,7 +96,6 @@ namespace Empire
             MelonLogger.Msg("Quest OnLoaded called.");
             base.OnLoaded();
             MelonCoroutines.Start(WaitForBuyerAndLoad());
-
 
             TimeManager.OnDayPass += ExpireCountdown;
             MelonLogger.Msg($"Quest OnLoaded() done.");
@@ -224,6 +182,13 @@ namespace Empire
                 return;
             }
             MelonLogger.Msg($"Expecting ProductID: {Data.ProductID}, RequiredAmount: {Data.RequiredAmount}");
+            // If buyer.CurfewDeal is true and TimeManager.IsNight is false, return and Log
+            if (buyer.CurfewDeal && !TimeManager.IsNight)
+            {
+                MelonLogger.Msg("❌ Curfew deal is true but it is not night. Cannot deliver.");
+                buyer.SendCustomMessage("Deliveries only after Curfew.", Data.ProductID, (int)Data.RequiredAmount, Data.Quality, Data.NecessaryEffects, Data.OptionalEffects);
+                return;
+            }
 
             foreach (var slot in deliveryDrop.Storage.Slots)
             {
@@ -253,35 +218,80 @@ namespace Empire
                     return;
                 }
                 var productDef = ProductManager.DiscoveredProducts.FirstOrDefault(p => p.ID == item?.Definition.ID);
-                //Temporary list to hold the effects and test with dummy values
-                //TODO
-                List<string> productEffects = RandomEffectSelector.GetRandomEffects(Data.NecessaryEffects);
+                var productType = GetProductType(productDef);
+               
                 //Check isProductInstance AND if productEffects contains ALL of the necessary effects
                 //ADD non-dummy check for quality and effects
                 //TODO
-                if (GetProductType(productDef) != Data.ProductID)
+                if (productType != Data.ProductID)
                 {
-                    MelonLogger.Error($"❌ Product type mismatch: {GetProductType(productDef)} != {Data.ProductID}");
+                    MelonLogger.Error($"❌ Product type mismatch: {productType} != {Data.ProductID}");
                     buyer.SendCustomMessage("This is not the drug type I ordered.");
                     continue;
                 }
-                if (isProductInstance && Data.NecessaryEffects.All(effect => productEffects.Contains(effect)))
+
+                List<Properties.Property> props = new();
+                if (productDef is WeedDefinition weed)
+                    props = weed.GetProperties();
+                else if (productDef is MethDefinition meth)
+                    props = meth.GetProperties();
+                else if (productDef is CocaineDefinition coke)
+                    props = coke.GetProperties();
+
+                MelonLogger.Msg($"count : {props.Count}");
+                var properties = new List<string>();
+                if (props.Count > 0)
+                {
+                    for (int i = 0; i < props.Count; i++)
+                    {
+                        var prop = props[i];
+                        properties.Add(prop.name);
+                    }
+                }
+                //Melonlogger properties
+                MelonLogger.Msg($"Properties: {string.Join(", ", properties)}");
+                // Melonlogger the missing effects - TODO
+                if (!Data.NecessaryEffects.All(effect => properties.Contains(effect)))
+                {
+                    MelonLogger.Error($"❌ Effect type mismatch");
+                    buyer.SendCustomMessage("All the required necessary effects are not present.");
+                    continue;
+                }
+                var quality = item?.Quality ?? 0;
+                MelonLogger.Msg($"Quality: {quality}");
+                // convert the quality enum to a lower trim quality string
+                string qualityString = quality.ToString().ToLower().Trim();
+                int qualityNumber = GetQualityNumber(qualityString);
+                // Remove Heavenly Meth Quality Bypass - TODO - UPDATABLE 
+                if (productType == "meth" && qualityNumber == 4)
+                {
+                    MelonLogger.Msg("Upgrading Premium Meth to Heavenly Meth.");
+                    qualityNumber = 5;
+                }
+                // Check if the quality is within the required range after converting quality enum to string.trim.lower
+                if (qualityNumber < GetQualityNumber(Data.Quality))
+                {
+                    MelonLogger.Error($"❌ Quality mismatch: {quality} < {GetQualityNumber(Data.Quality)} or {quality} > {GetQualityNumber(Data.Quality)}");
+                    buyer.SendCustomMessage("The quality of the product is worse than what I ordered.");
+                    continue;
+                }
+                if (isProductInstance )
                 {
                     uint total = (uint)(quantity * PackageAmount(packaging));
                     if (total <= Data.RequiredAmount)
                     {
                         slot.AddQuantity(-quantity);
-                        UpdateReward(total, item, productDef);
+                        UpdateReward(total, productDef, properties);
                         Data.RequiredAmount -= total;
                         MelonLogger.Msg($"✅ Delivered {total}x {slotProductID} to the stash. Remaining: {Data.RequiredAmount}. Reward now: {Data.Reward}");
                     }
                     else
                     {
                         //FLOOR of the negative of the division to get the number of packages to remove
-                        int toRemove = (int)Math.Ceiling((double)(Data.RequiredAmount / PackageAmount(packaging)));
+                        int toRemove = (int)Math.Ceiling((float)Data.RequiredAmount / PackageAmount(packaging));
                         toRemove = Math.Min(toRemove, slot.Quantity);
                         slot.AddQuantity(-toRemove);
-                        UpdateReward(Data.RequiredAmount, item, productDef);
+                        UpdateReward(Data.RequiredAmount, productDef, properties);
                         Data.RequiredAmount = 0;
                         MelonLogger.Msg($"✅ Delivered {total}x {slotProductID} to the stash. Remaining: {Data.RequiredAmount}. Reward now: {Data.Reward}");
                         break;
@@ -327,9 +337,37 @@ namespace Empire
                 return null;
             }
         }
+        //A method that checks type of a product quality. return quality number. Takes arg as Data.quality string and returns Contacts.QualitiesDollarMult index where the key is the quality string.
+        //TODO - UPDATABLE
+        private int GetQualityNumber(string quality)
+        {
+            // Check if the quality is null or empty
+            if (string.IsNullOrEmpty(quality))
+            {
+                MelonLogger.Error("❌ Quality is null or empty.");
+                return -1;
+            }
+            // Check if the quality exists in the dictionary
+            if (!JSONDeserializer.QualitiesDollarMult.ContainsKey(quality.ToLower().Trim()))
+            {
+                MelonLogger.Error($"❌ Quality not found: {quality}");
+                return -1;
+            }
+            //Iterate the dictionary and return index where the key is the quality string
+            for (int i = 0; i < JSONDeserializer.QualitiesDollarMult.Count; i++)
+            {
+                if (JSONDeserializer.QualitiesDollarMult.ElementAt(i).Key == quality.ToLower().Trim())
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        
         //Update Dummy with real effect and quality calculation
         //TODO
-        private void UpdateReward(uint total, ProductInstance? item, ProductDefinition? productDef)
+        private void UpdateReward(uint total, ProductDefinition? productDef, List<string> properties)
         {
             // Check if productDef is null or not a ProductDefinition
             if (productDef == null)
@@ -337,11 +375,29 @@ namespace Empire
                 MelonLogger.Error("❌ Product definition is null or not a ProductDefinition. Reward calculation skipped.");
                 return;
             }
+            var qualityMult = Data.QualityMult;
+            // add to qualityMult the value of JSONDeserializer.QualitiesDollarMult where the key is Data.Quality
+            if (JSONDeserializer.QualitiesDollarMult.TryGetValue(Data.Quality.ToLower().Trim(), out float qualityMultiplier))
+            {
+                qualityMult += qualityMultiplier;
+            }
+            else
+            {
+                MelonLogger.Error($"❌ Quality multiplier not found for {Data.Quality}.");
+            }
+            var requiredQuality = GetQualityNumber(Data.Quality);
             // Sum of all in Data.NecessaryEffectMult
             float EffectsSum = Data.NecessaryEffectMult.Sum();
-            //  optional effects - TODO
-            Data.Reward += (int)(total * productDef.Price * (1 + Data.QualityMult) * Data.DealTimeMult * (1 + EffectsSum));
-            MelonLogger.Msg($"   Reward updated: {Data.Reward} with Price: {productDef.Price}, Quality: {Data.QualityMult} and EffectsSum: {EffectsSum} and DealTimeMult: {Data.DealTimeMult}.");
+            //  Add Data.OptionalEffectMult[index] to EffectsSum if key is present in properties for Data.OptionalEffects[index]
+            for (int i = 0; i < Data.OptionalEffects.Count; i++)
+            {
+                if (properties.Contains(Data.OptionalEffects[i]))
+                {
+                    EffectsSum += Data.OptionalEffectMult[i];
+                }
+            }
+            Data.Reward += (int)(total * productDef.Price * (1 + qualityMult) * Data.DealTimeMult * (1 + EffectsSum));
+            MelonLogger.Msg($"   Reward updated: {Data.Reward} with Price: {productDef.Price}, Quality: {qualityMult} and EffectsSum: {EffectsSum} and DealTimeMult: {Data.DealTimeMult}.");
         }
 
 
@@ -349,7 +405,7 @@ namespace Empire
         //Call with QuestState to be set as string - UPDATABLE
         private System.Collections.IEnumerator DelayedReward(string source)
         {
-            yield return new WaitForSeconds(RandomUtils.RangeInt(60, 120));
+            yield return new WaitForSeconds(RandomUtils.RangeInt(30, 60));
             GiveReward(source);
         }
 
@@ -358,6 +414,7 @@ namespace Empire
             TimeManager.OnDayPass -= ExpireCountdown;
 
             ConsoleHelper.RunCashCommand(Data.Reward);
+            ConsoleHelperTemp.GiveXp(Data.XpReward);
             MelonLogger.Msg($"   Rewarded : ${Data.Reward} to {Data.DealerName} and {Data.RepReward} with {Data.RepMult} in rep.");
             Data.RepReward += (int)(Data.Reward * Data.RepMult);
             buyer.GiveReputation((int)Data.RepReward);
@@ -385,6 +442,7 @@ namespace Empire
                 return;
             }
             QuestActive = false;
+            Active = null;
             rewardEntry?.Complete();
             Complete();
             // Trigger the event with no payload

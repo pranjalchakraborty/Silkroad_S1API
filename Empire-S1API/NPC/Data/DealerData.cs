@@ -9,6 +9,7 @@ namespace Empire
         public string? Image { get; set; }
         public List<UnlockRequirement> UnlockRequirements { get; set; }
         public List<string> DealDays { get; set; }
+        public bool CurfewDeal { get; set; }
         public List<List<float>> Deals { get; set; }
         public float RepLogBase { get; set; }
         public List<Drug> Drugs { get; set; }

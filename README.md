@@ -52,7 +52,7 @@ Welcome to the NPC Custom Buyers & Dealers Expansion Mod! This mod allows player
 
 ### NPCs & Progression
 
-* **Reputation System:** NPC reputation starts at `1` and can increase indefinitely. Higher reputation unlocks more benefits.
+* **Reputation System:** NPC reputation is minimum at `1` and can increase indefinitely. Higher reputation unlocks more benefits.
 * **NPC Unlocks:** New NPCs can be set to unlock once the player reaches specific reputation milestones with other, prerequisite NPCs.
 
 ### Quests
@@ -82,11 +82,11 @@ NPCs can have preferences for certain product effects, which can be necessary or
 Successful deliveries yield various rewards, calculated as follows:
 
 * **Money Reward:**
-    `money = base_dollar + (total_price_of_delivered_products * (1 + sum_of_all_effects_dollar_mult) * (1 + quality_dollar_mult) * dealTimesMult)`
+    `money = (base_dollar*random4) + (total_price_of_delivered_products * (1 + sum_of_all_effects_(dollar_mult*random1)) * (1 + quality_dollar_mult) * dealTimesMult)`
 * **Reputation Reward:**
-    `rep = base_rep + (money_reward * rep_mult)`
+    `rep = base_rep*random2 + (money_reward * rep_mult*random2)`
 * **XP Reward:**
-    `xp = base_xp + (money_reward * xp_mult)`
+    `xp = base_xp*random3 + (money_reward * xp_mult*random3)`
     * **Note:** XP rewards are currently unsupported by `s1api` and will not be granted in-game until API support is added.
 
 Fields like `base_dollar`, `base_rep`, `base_xp`, and the various `_mult` values are configurable per NPC in their JSON definition.
@@ -130,8 +130,10 @@ To prevent issues when updating to a newer version of this mod:
 
 This mod uses JSON (JavaScript Object Notation) files to define all aspects of NPCs, their quests, and progression. You can create your own NPCs or modify existing ones by editing these JSON files.
 
-* **Manual Editing:** Use any text editor (like Notepad++, VS Code, etc.).
+* **Manual Editing:** Use any text editor (like Notepad++, VS Code, etc.) to open the JSON and edit manually or with AI help.
 * **JSON Editor Tool:** A dedicated JSON Editor tool is provided with this mod to help you easily merge, view, and edit NPC JSON configurations.
+
+**NOTE:** Using Notepad++ to check the JSON is recommended at least once, or in combination with using the tool. Some fields at the top are used in code but not NPC specific and not shown in JSON Editor currently.
 
 ### Key JSON Concepts & Fields
 
@@ -175,6 +177,10 @@ Below are some of the crucial fields and structures you'll encounter in the NPC 
     * `base_dollar`, `base_rep`, `base_xp`: Base reward amounts for any successful deal with this NPC.
     * `price_mult`, `rep_mult`, `xp_mult`: Multipliers used in the detailed reward calculations.
 
+// after calculating log with replogbase, 6 is minimum required to get to 1 multiplier, ie. 5 is subtracted but result cannot be -ve
+
+> **Note:**  Currently all dollar_mult is taken from list at the top of the json and added with dollar_mult from quality/effects fields
+
 > **Note:** If you wish to load dealers from all JSON files in the Empire folder and its subfolders, this may be later supported as an optional advanced feature. For advanced organization, optional idea - not yet implemented - restructure your empire JSONs into separate folders, with each folder containing NPC-specific JSON files and icons.
 
 ### Important JSON Rules & Assumptions
@@ -217,8 +223,8 @@ This mod is an ongoing project with many plans for expansion and refinement!
 * **Retroactive Compatibility:** For new JSON fields added in updates, ensure default values are created and fields are nullable to support older save files and NPC configurations.
 * **Content Expansion:** Continuously work on:
     * Creating new default NPCs.
-    * Balancing existing NPC economies and progression.
-    * Adding gamification elements.
+    * Balancing and Gamifying existing NPC economies and progression.
+    * Adding game elements.
     * Introducing more product and effect variety through JSON configurations.
 
 ### Planned In-Game UI Enhancements (Part of this Mod)
@@ -233,7 +239,7 @@ This mod is an ongoing project with many plans for expansion and refinement!
 * **UI Bug Fixes:** Address issues like the "cancel current delivery" button behavior after quest completion/refresh.
 * **General UI Improvements:** Enhance the overall user interface for better clarity and ease of use.
 
-### Future Concepts & Possibilities (Optional/Ideas)
+### Future Concepts & Possibilities (Optional/Ideas/Pending Implementations)
 
 * **New NPC Archetypes:**
     * NPCs like "Bicky Robby." - JSON field Support
@@ -263,6 +269,12 @@ This mod is an ongoing project with many plans for expansion and refinement!
     * Optionally, players may receive a bonus for turning in a quest earlier than the deadline.
 * **Quality Handling:**
     * Until the game releases "heavenly meth," the "premium" quality will be treated as equivalent to "heavenly" for meth orders (this is handled in code as well).
+	
+// Optional QOL - possibly restructure json quality and effects from 2 list to 1 dictionary format
+// Optional - Add probability field in quality and switch on that instead of random equal weightage - OR make a global field+local field hybrid
+// Optional - X button on each quest to dismiss it without any penalty
+// Optional - Create separate file on Code and JSON fields info in git accesible by link
+// Optional - Add scrollable to right side detail panel 
 
 ## For Developers & Content Creators
 
@@ -285,9 +297,6 @@ This mod is an ongoing project with many plans for expansion and refinement!
     * NPC responses should reflect the product type, quality, and necessary effects requested.
     * When updating to new versions, change placeholder/dummy product effects and qualities to real effects from `s1api` once supported, and implement rewards based on effects and quality.
 
----
-
-We hope you enjoy the NPC Custom Buyers & Dealers Expansion Mod! Your feedback and contributions are welcome.
 
 ## Checklist to Release
 
@@ -306,17 +315,46 @@ We hope you enjoy the NPC Custom Buyers & Dealers Expansion Mod! Your feedback a
 - [ ] Note: Until game releases heavenly meth, premium = heavenly for meth (in code too)
 - [x] Basic Testing
 - [ ] Play game
-- [ ] Version update to s1api 1.7 when stable released
-- [ ] Change placeholder dummy product effects and quality with real effects from s1api once supported; implement rewards based on effects and quality; check and reward product type
-- [ ] NPC responses on product [type], quality, necessary effects
-- [ ] Continue if necessary effect or quality not satisfied
-- [ ] Update EffectSum with optional effect multiplier present
-- [ ] If product type is meth and quality required is heavenly, give a pass
-- [ ] Pay for ordered quality and up to max quality in list
+- [x] Version update to s1api 1.7 when stable released
+- [x] Change placeholder dummy product effects and quality with real effects from s1api once supported; implement rewards based on effects and quality; check and reward product type
+- [x] NPC responses on product [type], quality, necessary effects
+- [x] Continue if necessary effect or quality not satisfied
+- [x] Update EffectSum with optional effect multiplier present
+- [x] If product type is meth and quality required is heavenly, give a pass
+- [x] Pay for ordered quality and up to max quality in list
 - [x] There are 3 random ranges in which rewards, rep and xp will be scaled.
 - [x] Round up UI stuff to most significant digits 
+- [x] Add UI under rep to show deal dates
+- [x] Check enum with string before quest generation
+- [x] Blackmarketbuyer UI method needs lowercase and trim
+- [x] Fix the after quest complete, quest can be cancelled bug
+- [x] Rep Unlock Design
+- [x] Update JSONEditor with dealDates
+- [x] Update Json and code with curfewDeal:true
+- [ ] Update JSON Editor for curfewDeal
+- [x] change random effects multiplier to static scaler 
+- [x] add random base price multiplier to price multiplier
+- [x] Give XP thru temp method
 
-// Optional QOL - Implement take_from_list and possibly restructure json from 2 list to 1 dictionary format
-// All rewards are currently in testing - so affected by random number ranges
-// In rewards, base_dollar is affected by one random number, (1 + sum_of_all_effects_dollar_mult) by another random number
-// base_rep and rep_mult by another random number and base_xp and xp_mult by another random number
+
+💕Credits:
+Much gratitude and many many thanks to:
+❤️ @Akermi Sensei for teaching S1API usage through his git repos and for the initial project structure.
+❤️ S1API for providing the foundation for the mod, and it's creators @KaBooMa @Akermi @Max @ChloeNow  for making such a valuable and user-friendly modding resource.
+❤️ @Freshairkaboom for helping with the UI.
+❤️ @iiTzSamurai for App icon and delivery icons.
+❤️ Tyler for giving us Schedule 1.
+❤️ Breaking Bad for the NPC inspirations.
+❤️ Me for sticking through and making my first full game mod.
+❤️ AI
+ 
+---
+
+We hope you enjoy the NPC Custom Buyers & Dealers Expansion Mod! Your feedback and contributions are welcome.
+
+// Add image resizing for all icon loading, 127 x 127
+// Optional - Upgrades on unlocking NPCs
+// Optional - NPC relations affect other NPC relations
+// Convert Quest Data effects to dictionary
+// add random and static values to load from json
+// Update Readme

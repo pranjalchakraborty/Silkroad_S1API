@@ -30,6 +30,7 @@ namespace Empire
         public string DealerName { get; private set; }
         public string? DealerImage { get; private set; }
         public List<string> DealDays { get; set; }
+        public bool CurfewDeal { get; set; } = false;
         static Sprite? npcSprite => ImageUtils.LoadImage(
             string.IsNullOrEmpty(dealer?.Image)
                 ? Path.Combine(MelonEnvironment.ModsDirectory, "Empire", "EmpireIcon_quest.png")
@@ -69,6 +70,7 @@ namespace Empire
             Deals = dealer.Deals ?? new List<List<float>>();
             DealDays = dealer.DealDays ?? new List<string>();
             RepLogBase = dealer.RepLogBase;
+            CurfewDeal = dealer.CurfewDeal;
             if (_DealerData != null)
             {
                 MelonLogger.Msg($"⚠️ Dealer {DealerName} already exists in BuyerSaveData dictionary.");
@@ -170,6 +172,7 @@ namespace Empire
         // New method to show unlocked and upcoming drug unlocks in a detailed string
         public string GetDrugUnlockInfo()
         {
+            
             System.Text.StringBuilder info = new System.Text.StringBuilder();
             info.AppendLine($"<b>Dealer: {DealerName}</b> (Reputation: <color=#FFFFFF>{_DealerData.Reputation}</color>)");
             //info.AppendLine("<u>Drug Unlocks</u>:");
@@ -203,9 +206,9 @@ namespace Empire
                     foreach (var effect in drug.Effects)
                     {
                         float effectiveEffect = effect.DollarMult;
-                        if (JSONDeserializer.EffectsDollarMult.ContainsKey(effect.Name))
+                        if (JSONDeserializer.EffectsDollarMult.ContainsKey((effect.Name).ToLower().Trim()))
                         {
-                            effectiveEffect += JSONDeserializer.EffectsDollarMult[effect.Name];
+                            effectiveEffect += JSONDeserializer.EffectsDollarMult[(effect.Name).ToLower().Trim()];
                         }
                         string effectStatus = effect.UnlockRep <= _DealerData.Reputation 
                             ? "<color=#00FF00>Unlocked</color>" 
@@ -277,6 +280,12 @@ namespace Empire
             else
             {
                 formatted = formatted.Replace("{optionalEffects}", "none");
+            }
+            //UPDATABELE - May change
+            // If messageType==accept, add another line to formatted = "Remember that we only accept packages after curfew"
+            if (messageType == "accept")
+            {
+                formatted += "\nRemember that we only accept packages under cover of night.";
             }
             if (returnMessage)
             {

@@ -27,6 +27,7 @@ namespace Empire
 
         private List<QuestData> quests;
         private RectTransform questListContainer;
+        private RectTransform buyerListContainer; // <-- Add this line
         private Text
             questTitle,
             questTask,
@@ -109,15 +110,6 @@ namespace Empire
 
             // Use vertical layout with padding and spacing like Tax & Wash
             UIFactory.VerticalLayoutOnGO(rightPanel, spacing: 14, padding: new RectOffset(24, 50, 15, 70));
-
-            // Header
-            //questTitle = UIFactory.Text("Title", "Select a quest", rightPanel.transform, 24, TextAnchor.MiddleLeft, FontStyle.Bold);
-
-            // Styled task/reward rows (Label + Value style)
-            //questTask = UIFactory.Text("Task", "Task: --", rightPanel.transform, 18, TextAnchor.MiddleLeft, FontStyle.Normal);
-            //questReward = UIFactory.Text("Reward", "Reward: --", rightPanel.transform, 18, TextAnchor.MiddleLeft, FontStyle.Normal);
-            //deliveryStatus = UIFactory.Text("Delivery", "", rightPanel.transform, 16);
-
             questTitle = UIFactory.Text("Title", "", rightPanel.transform, 24, TextAnchor.MiddleLeft, FontStyle.Bold);
             questTask = UIFactory.Text("Task", "", rightPanel.transform, 18, TextAnchor.MiddleLeft, FontStyle.Normal);
             questReward = UIFactory.Text("Reward", "", rightPanel.transform, 18, TextAnchor.MiddleLeft, FontStyle.Normal);
@@ -129,22 +121,26 @@ namespace Empire
             UIFactory.SetLayoutGroupPadding(topButtonRow.GetComponent<HorizontalLayoutGroup>(), 0, 0, 0, 0);
 
             // Accept Button (separate row)
-            var (acceptGO, acceptBtn, acceptLbl) = UIFactory.RoundedButtonWithLabel("AcceptBtn", "No quest selected", rightPanel.transform, new Color32(32, 0x82, 0xF6, 0xff), 460f, 60f, 22, Color.black);
-
+            var acceptTuple = UIFactory.RoundedButtonWithLabel("AcceptBtn", "No quest selected", rightPanel.transform, new Color32(32, 0x82, 0xF6, 0xff), 460f, 60f, 22, Color.black);
+            GameObject acceptGO = acceptTuple.Item1;
+            Button acceptBtn = acceptTuple.Item2;
+            Text acceptLbl = acceptTuple.Item3;
             acceptButton = acceptBtn;
             acceptLabel = acceptLbl;
             ButtonUtils.Disable(acceptBtn, acceptLabel, "No quest selected");
 
             // Cancel Button
-            var (cancelGO, cancelBtn, cancelLbl) = UIFactory.RoundedButtonWithLabel("CancelBtn", "Cancel current delivery", rightPanel.transform, new Color32(32, 0x82, 0xF6, 0xff), 460f, 60f, 22, Color.black);
+            var cancelTuple = UIFactory.RoundedButtonWithLabel("CancelBtn", "Cancel current delivery", rightPanel.transform, new Color32(32, 0x82, 0xF6, 0xff), 460f, 60f, 22, Color.black);
+            GameObject cancelGO = cancelTuple.Item1;
+            Button cancelBtn = cancelTuple.Item2;
+            Text cancelLbl = cancelTuple.Item3;
             cancelButton = cancelBtn;
             cancelLabel = cancelLbl;
             if (!QuestDelivery.QuestActive)
                 ButtonUtils.Disable(cancelButton, cancelLabel, "No quest active");
 
             //Manage button
-            var (manageGO, manageBtn, ManageLbl) =
-                UIFactory.RoundedButtonWithLabel
+            var manageTuple = UIFactory.RoundedButtonWithLabel
                 (
                     "ManageBtn",
                     "Manage",
@@ -155,7 +151,9 @@ namespace Empire
                     16,  // Font size
                     Color.white
                 );
-
+            GameObject manageGO = manageTuple.Item1;
+            Button manageBtn = manageTuple.Item2;
+            Text ManageLbl = manageTuple.Item3;
             manageButton = manageBtn;
             manageLabel = ManageLbl;
 
@@ -170,17 +168,19 @@ namespace Empire
             manageRect.sizeDelta = new Vector2(50, 25);
 
             // Refresh Button
-            var (refreshGO, refreshBtn, refreshLbl) =
-                UIFactory.RoundedButtonWithLabel(
-                    "RefreshBtn",
-                    "Refresh orders",
-                    bg.transform,
-                    new Color(0.2f, 0.2f, 0.2f, 1f),
-                    300,
-                    90,
-                    22,
-                    Color.white
-                );
+            var refreshTuple = UIFactory.RoundedButtonWithLabel(
+                "RefreshBtn",
+                "Refresh orders",
+                bg.transform,
+                new Color(0.2f, 0.2f, 0.2f, 1f),
+                300,
+                90,
+                22,
+                Color.white
+            );
+            GameObject refreshGO = refreshTuple.Item1;
+            Button refreshBtn = refreshTuple.Item2;
+            Text refreshLbl = refreshTuple.Item3;
             refreshButton = refreshBtn;
             refreshLabel = refreshLbl;
 
@@ -215,15 +215,24 @@ namespace Empire
             UIFactory.HorizontalLayoutOnGO(topBar, spacing: 20, padLeft: 20, padRight: 20, padTop: 10, padBottom: 10, alignment: TextAnchor.MiddleLeft);
 
             // Add Reputation, Product, and Shipping buttons to the top bar
-            var (repGO, repBtn, repLbl) = UIFactory.RoundedButtonWithLabel("RepButton", "Reputation", topBar.transform, new Color(0.2f, 0.2f, 0.2f, 1f), 120, 40, 16, Color.white);
+            var repTuple = UIFactory.RoundedButtonWithLabel("RepButton", "Reputation", topBar.transform, new Color(0.2f, 0.2f, 0.2f, 1f), 120, 40, 16, Color.white);
+            GameObject repGO = repTuple.Item1;
+            Button repBtn = repTuple.Item2;
+            Text repLbl = repTuple.Item3;
             ButtonUtils.ClearListeners(repBtn);
             ButtonUtils.AddListener(repBtn, () => UpdateBuyerDetails("Reputation"));
 
-            var (prodGO, prodBtn, prodLbl) = UIFactory.RoundedButtonWithLabel("ProdButton", "Product", topBar.transform, new Color(0.2f, 0.2f, 0.2f, 1f), 120, 40, 16, Color.white);
+            var prodTuple = UIFactory.RoundedButtonWithLabel("ProdButton", "Product", topBar.transform, new Color(0.2f, 0.2f, 0.2f, 1f), 120, 40, 16, Color.white);
+            GameObject prodGO = prodTuple.Item1;
+            Button prodBtn = prodTuple.Item2;
+            Text prodLbl = prodTuple.Item3;
             ButtonUtils.ClearListeners(prodBtn);
             ButtonUtils.AddListener(prodBtn, () => UpdateBuyerDetails("Product"));
 
-            var (shipGO, shipBtn, shipLbl) = UIFactory.RoundedButtonWithLabel("ShipButton", "Shipping", topBar.transform, new Color(0.2f, 0.2f, 0.2f, 1f), 120, 40, 16, Color.white);
+            var shipTuple = UIFactory.RoundedButtonWithLabel("ShipButton", "Shipping", topBar.transform, new Color(0.2f, 0.2f, 0.2f, 1f), 120, 40, 16, Color.white);
+            GameObject shipGO = shipTuple.Item1;
+            Button shipBtn = shipTuple.Item2;
+            Text shipLbl = shipTuple.Item3;
             ButtonUtils.ClearListeners(shipBtn);
             ButtonUtils.AddListener(shipBtn, () => UpdateBuyerDetails("Shipping"));
 
@@ -235,7 +244,10 @@ namespace Empire
             managementTabLabel = UIFactory.Text("ManagementTabLabel", "Reputation", topBar.transform, 20, TextAnchor.MiddleCenter, FontStyle.Bold);
 
             // Create Close button at the far right in top bar
-            var (closeGO, closeBtn, closeLbl) = UIFactory.RoundedButtonWithLabel("CloseButton", "X", topBar.transform, new Color32(235, 53, 56, 255), 50, 40, 16, Color.white);
+            var closeTuple = UIFactory.RoundedButtonWithLabel("CloseButton", "X", topBar.transform, new Color32(235, 53, 56, 255), 50, 40, 16, Color.white);
+            GameObject closeGO = closeTuple.Item1;
+            Button closeBtn = closeTuple.Item2;
+            Text closeLbl = closeTuple.Item3;
             ButtonUtils.AddListener(closeBtn, () => Object.Destroy(managementPanel));
             closeGO.GetComponent<RectTransform>().SetAsLastSibling();
 
@@ -254,14 +266,14 @@ namespace Empire
             leftRect.anchorMax = new Vector2(0.4f, 1);
             leftRect.offsetMin = Vector2.zero;
             leftRect.offsetMax = Vector2.zero;
-            questListContainer = UIFactory.ScrollableVerticalList("BuyerListScroll", leftPanel.transform, out _);
-            UIFactory.FitContentHeight(questListContainer);
-            PopulateBuyerList(questListContainer.transform);
+            buyerListContainer = UIFactory.ScrollableVerticalList("BuyerListScroll", leftPanel.transform, out _); // <-- Use buyerListContainer
+            UIFactory.FitContentHeight(buyerListContainer);
+            PopulateBuyerList(buyerListContainer.transform); // <-- Use buyerListContainer
 
             // Auto-select first buyer if any exists (to initialize selectedBuyer)
-            if (questListContainer.childCount > 0)
+            if (buyerListContainer.childCount > 0)
             {
-                var firstButton = questListContainer.GetChild(0).GetComponent<Button>();
+                var firstButton = buyerListContainer.GetChild(0).GetComponent<Button>();
                 firstButton?.onClick.Invoke();
             }
 
@@ -282,15 +294,24 @@ namespace Empire
             var buttonContainer = UIFactory.Panel("MgmtButtons", parent, Color.clear);
             UIFactory.HorizontalLayoutOnGO(buttonContainer, spacing: 10);
             // Create Reputation button:
-            var (repGO, repBtn, repLbl) = UIFactory.RoundedButtonWithLabel("RepButton", "Reputation", buttonContainer.transform, new Color(0.2f, 0.2f, 0.2f, 1f), 100, 40, 16, Color.white);
+            var repTuple = UIFactory.RoundedButtonWithLabel("RepButton", "Reputation", buttonContainer.transform, new Color(0.2f, 0.2f, 0.2f, 1f), 100, 40, 16, Color.white);
+            GameObject repGO = repTuple.Item1;
+            Button repBtn = repTuple.Item2;
+            Text repLbl = repTuple.Item3;
             ButtonUtils.ClearListeners(repBtn);
             ButtonUtils.AddListener(repBtn, () => UpdateBuyerDetails("Reputation"));
             // Create Product button:
-            var (prodGO, prodBtn, prodLbl) = UIFactory.RoundedButtonWithLabel("ProdButton", "Product", buttonContainer.transform, new Color(0.2f, 0.2f, 0.2f, 1f), 100, 40, 16, Color.white);
+            var prodTuple = UIFactory.RoundedButtonWithLabel("ProdButton", "Product", buttonContainer.transform, new Color(0.2f, 0.2f, 0.2f, 1f), 100, 40, 16, Color.white);
+            GameObject prodGO = prodTuple.Item1;
+            Button prodBtn = prodTuple.Item2;
+            Text prodLbl = prodTuple.Item3;
             ButtonUtils.ClearListeners(prodBtn);
             ButtonUtils.AddListener(prodBtn, () => UpdateBuyerDetails("Product"));
             // Create Shipping button:
-            var (shipGO, shipBtn, shipLbl) = UIFactory.RoundedButtonWithLabel("ShipButton", "Shipping", buttonContainer.transform, new Color(0.2f, 0.2f, 0.2f, 1f), 100, 40, 16, Color.white);
+            var shipTuple = UIFactory.RoundedButtonWithLabel("ShipButton", "Shipping", buttonContainer.transform, new Color(0.2f, 0.2f, 0.2f, 1f), 100, 40, 16, Color.white);
+            GameObject shipGO = shipTuple.Item1;
+            Button shipBtn = shipTuple.Item2;
+            Text shipLbl = shipTuple.Item3;
             ButtonUtils.ClearListeners(shipBtn);
             ButtonUtils.AddListener(shipBtn, () => UpdateBuyerDetails("Shipping"));
         }
@@ -389,12 +410,15 @@ namespace Empire
                 // Existing shipping upgrade code remains unchanged.
                 if (selectedBuyer.Shippings != null && currentTier + 1 < selectedBuyer.Shippings.Count)
                 {
-                    var (upgradeGO, upgradeBtn, upgradeLbl) = UIFactory.RoundedButtonWithLabel(
+                    var upgradeTuple = UIFactory.RoundedButtonWithLabel(
                         "UpgradeShippingButton",
                         "<b><i>Upgrade Shipping</i></b>",
                         managementDetailPanel.transform,
                         new Color32(0, 123, 255, 255),
                         240, 70, 22, Color.white);
+                    GameObject upgradeGO = upgradeTuple.Item1;
+                    Button upgradeBtn = upgradeTuple.Item2;
+                    Text upgradeLbl = upgradeTuple.Item3;
                     upgradeLbl.text = "<i><color=#FFFFFF>Upgrade Shipping</color></i>";
                     ButtonUtils.ClearListeners(upgradeBtn);
                     ButtonUtils.AddListener(upgradeBtn, () =>
@@ -652,7 +676,7 @@ namespace Empire
             if (JSONDeserializer.QualitiesDollarMult.ContainsKey(qualityKey))
             {
                 quality = qualityKey;
-                qualityMult = JSONDeserializer.QualitiesDollarMult[qualityKey] + randomQuality.DollarMult;
+                qualityMult = randomQuality.DollarMult;
             }
             else
             {
@@ -667,7 +691,7 @@ namespace Empire
 
 
             //Iterate through randomDrug.Effects and check if the effect is necessary or optional. Also multiply aggregate dollar and rep multipliers with base dollar+sum of effects dollar mult. Same for rep.
-            var randomNum1 = UnityEngine.Random.Range(0.25f, 0.50f);//$ Effect Mult Random
+            var randomNum1 = 0.3f;//$ Effect Mult Random - JSON - TODO
             foreach (var effect in randomDrug.Effects)
             {
                 if (effect.Probability > 1f && effect.Probability <= 2f && UnityEngine.Random.Range(0f, 1f) < effect.Probability - 1f)
@@ -791,7 +815,7 @@ namespace Empire
             //Roll a random index for buyer.DealTimes
 
             //roll a random number to scale various values
-
+            // JSON - TODO
             var randomNum2 = UnityEngine.Random.Range(0.5f, 1.5f);//Rep Random
             var randomNum3 = UnityEngine.Random.Range(0.5f, 1.5f);//XP Random
             var randomNum4 = UnityEngine.Random.Range(0.5f, 1.5f);//$ Base Random
@@ -825,7 +849,7 @@ namespace Empire
                 DollarMultiplierMax = (float)Math.Round(aggregateDollarMultMax, 2),
 
                 DealTime = dealTime,
-                DealTimeMult = dealTimesMult,
+                DealTimeMult = dealTimesMult * randomNum4,
                 Penalties = new List<int> { RoundToHalfMSD((int)(buyer.Deals[randomIndex][2] * shipping.DealModifier[2] * randomNum1)), RoundToHalfMSD((int)(buyer.Deals[randomIndex][3] * shipping.DealModifier[3] * randomNum2)) },
 
                 Quality = quality,
@@ -940,9 +964,8 @@ namespace Empire
     $"<b><color=#FFD700>Rewards:</color></b> <color=#00FF00>${quest.BaseDollar} / {quest.BaseDollar / quest.AmountRequired} per piece</color> + <i>Price x</i> (<color=#00FFFF>{quest.DollarMultiplierMin}</color> - <color=#00FFFF>{quest.DollarMultiplierMax}</color>)\n" +
     $"<b><color=#FFD700>Reputation:</color></b> <color=#00FF00>{quest.BaseRep}</color> + Rewards x <color=#00FFFF>{Math.Round(quest.RepMult, 4)}</color>\n" +
     $"<b><color=#FFD700>XP:</color></b> <color=#00FF00>{quest.BaseXp}</color> + Rewards x <color=#00FFFF>{Math.Round(quest.XpMult, 4)}</color>\n\n" +
-    $"<b><color=#FF6347>Deal Expiry:</color></b> <color=#FFA500>{quest.DealTime}</color> Day(s)\n" +
-    $"<b><color=#FF6347>Failure Penalties:</color></b> <color=#FF0000>${quest.Penalties[0]}</color> + <color=#FF4500>{quest.Penalties[1]} Rep</color>\n\n" +
-    $"<b><color=#87CEEB>Current Reputation:</color></b> <color=#FFFFFF>{Buyer._DealerData.Reputation}</color>\n";
+    $"<b><color=#FF6347>Deal Expiry:</color></b> <color=#FFA500>{quest.DealTime} min</color>\n" +
+    $"<b><color=#FF6347>Failure Penalties:</color></b> <color=#FF0000>${quest.Penalties[0]}</color> + <color=#FF4500>{quest.Penalties[1]} Rep</color>";
 
             deliveryStatus.text = "";
             if (!QuestDelivery.QuestActive)
