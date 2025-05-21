@@ -124,11 +124,6 @@ namespace Empire
             {
                 _DealerData.Reputation = 1;
             }
-            //if reputation > 100 make it 100 - TODO - Once Global Reputation is implemented, make this NPC specific relationship
-            /*if (_DealerData.Reputation > 100)
-            {
-                _DealerData.Reputation = 100;
-            }*/
             MelonLogger.Msg($"✅ {DealerName}'s reputation increased by {amount}. New Reputation: {_DealerData.Reputation}");
         }
         //A method to check if the new reputation unlocks any new drug, quality or effects for the dealer 

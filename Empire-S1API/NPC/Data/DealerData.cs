@@ -110,6 +110,7 @@ namespace Empire
         [JsonProperty("qualitiesDollarMult")]
         public List<float> QualitiesDollarMult { get; set; }
         [JsonProperty("dealers")]
+        public List<float> RandomNumberRanges { get; set; }
         public List<Dealer> Dealers { get; set; }
     }
 }

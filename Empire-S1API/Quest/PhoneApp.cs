@@ -55,7 +55,6 @@ namespace Empire
         private BlackmarketBuyer selectedBuyer;
         private GameObject managementDetailPanel;
 
-        //Bypass method to set quest image dynamically from dealer icon - not used - maybe TODO maybe NOT
         public static string QuestImage;
         protected override void OnCreated()
         {
@@ -635,10 +634,10 @@ namespace Empire
             {
                 double logResult = Math.Log((double)buyer._DealerData.Reputation, (double)buyer.RepLogBase);
                 // Clamp logResult so that it is at worst 0 - and offset by 4 - UPDATABLE
-                if (logResult < 5)
+                if (logResult < 4)
                     logResult = 0;
                 else
-                    logResult = logResult - 5;
+                    logResult = logResult - 4;
                 minAmount = (int)(minAmount * (1 + logResult));
                 maxAmount = (int)(maxAmount * (1 + logResult));
             }
@@ -691,7 +690,7 @@ namespace Empire
 
 
             //Iterate through randomDrug.Effects and check if the effect is necessary or optional. Also multiply aggregate dollar and rep multipliers with base dollar+sum of effects dollar mult. Same for rep.
-            var randomNum1 = 0.3f;//$ Effect Mult Random - JSON - TODO
+            var randomNum1 = UnityEngine.Random.Range(JSONDeserializer.RandomNumberRanges[0], JSONDeserializer.RandomNumberRanges[1]);
             foreach (var effect in randomDrug.Effects)
             {
                 if (effect.Probability > 1f && effect.Probability <= 2f && UnityEngine.Random.Range(0f, 1f) < effect.Probability - 1f)
@@ -812,29 +811,17 @@ namespace Empire
             var TimeLimit = 3;
             var TimeLimitMult = 1f;
             var Penalties = new List<int> { 0, 0 };
-            //Roll a random index for buyer.DealTimes
 
-            //roll a random number to scale various values
-            // JSON - TODO
-            var randomNum2 = UnityEngine.Random.Range(0.5f, 1.5f);//Rep Random
-            var randomNum3 = UnityEngine.Random.Range(0.5f, 1.5f);//XP Random
-            var randomNum4 = UnityEngine.Random.Range(0.5f, 1.5f);//$ Base Random
+            var randomNum2 = UnityEngine.Random.Range(JSONDeserializer.RandomNumberRanges[2], JSONDeserializer.RandomNumberRanges[3]);//Rep Random
+            var randomNum3 = UnityEngine.Random.Range(JSONDeserializer.RandomNumberRanges[4], JSONDeserializer.RandomNumberRanges[5]);//XP Random
+            var randomNum4 = UnityEngine.Random.Range(JSONDeserializer.RandomNumberRanges[6], JSONDeserializer.RandomNumberRanges[7]);//$ Base Random
             MelonLogger.Msg($"RandomNum1: {randomNum1}, RandomNum2: {randomNum2}, RandomNum3: {randomNum3}, RandomNum4: {randomNum4}");
-            //If dealTimesMult>1 subtract 1 else multiply by randomNum1
-            /*if (dealTimesMult > 1)
-            {
-                dealTimesMult = Math.Min(dealTimesMult - 1, dealTimesMult * randomNum1);
-            }
-            else
-            {
-                dealTimesMult *= randomNum1;
-            }*/
             aggregateDollarMultMin *= dealTimesMult;
             aggregateDollarMultMax *= dealTimesMult;
             var quest = new QuestData
             {
                 Title = $"{buyer.DealerName} wants {drugType} delivered.",
-                Task = $"Deliver {amount}x {quality} {drugType}",
+                Task = $"Deliver {amount}x {quality} {drugType} with effects: {effectDesc}",
                 ProductID = drugType,
                 AmountRequired = (uint)amount,
                 TargetObjectName = buyer.DealerName,

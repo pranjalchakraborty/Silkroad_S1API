@@ -59,7 +59,7 @@ namespace Empire
 
         private static System.Collections.IEnumerator UpdateCoroutine()
         {
-            // Wait until IsInitialized is true - Change to Wait Logic as others - TODO
+            // Wait until IsInitialized is true - TODO
             while (!IsInitialized)
             {
                 yield return null;
@@ -130,6 +130,7 @@ namespace Empire
         //two public dictionary to store the EffectsName and EffectsDollarMult; and QualitiesName and QualitiesDollarMult Lists
         public static Dictionary<string, float> EffectsDollarMult { get; set; } = new Dictionary<string, float>();
         public static Dictionary<string, float> QualitiesDollarMult { get; set; } = new Dictionary<string, float>();
+        public static List<float> RandomNumberRanges { get; set; } = new List<float>();
         public static void Initialize()
         {
             // Load dealer data
@@ -170,9 +171,10 @@ namespace Empire
             QualitiesDollarMult = (dealerData?.QualityTypes ?? new List<string>())
                 .Select((name, index) => new { name = name.Trim().ToLowerInvariant(), index })
                 .ToDictionary(x => x.name, x => dealerData?.QualitiesDollarMult?[x.index] ?? 0f);
-                //Log both in Melonlogger
+            //Log both in Melonlogger
             MelonLogger.Msg($"Effects Dollar Mult: {string.Join(", ", EffectsDollarMult.Select(x => $"{x.Key}: {x.Value}"))}");
             MelonLogger.Msg($"Qualities Dollar Mult: {string.Join(", ", QualitiesDollarMult.Select(x => $"{x.Key}: {x.Value}"))}");
+            RandomNumberRanges = dealerData?.RandomNumberRanges ?? new List<float>();
         }
     }
 }

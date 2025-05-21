@@ -96,6 +96,7 @@
         "meth",
         "cocaine"
     ],
+    "randomNumberRanges":[0.3,0.3,0.5,1.5,0.5,1.5,0.5,1.5],
     "dealers": [
         {
             "name": "Combo Costco",
@@ -138,14 +139,9 @@
                     "xp_mult": 0.001,
                     "qualities": [
                         {
-                            "type": "trash",
-                            "dollar_mult": 0.0,
-                            "unlockRep": 0
-                        },
-                        {
                             "type": "poor",
                             "dollar_mult": 0.0,
-                            "unlockRep": 15
+                            "unlockRep": 0
                         },
                         {
                             "type": "standard",
@@ -290,14 +286,9 @@
                     "xp_mult": 0.005,
                     "qualities": [
                         {
-                            "type": "trash",
-                            "dollar_mult": 0.0,
-                            "unlockRep": 0
-                        },
-                        {
                             "type": "poor",
                             "dollar_mult": 0.0,
-                            "unlockRep": 18
+                            "unlockRep": 0
                         },
                         {
                             "type": "standard",
@@ -442,14 +433,9 @@
                     "xp_mult": 0.005,
                     "qualities": [
                         {
-                            "type": "trash",
-                            "dollar_mult": 0.0,
-                            "unlockRep": 0
-                        },
-                        {
                             "type": "poor",
                             "dollar_mult": 0.0,
-                            "unlockRep": 20
+                            "unlockRep": 0
                         },
                         {
                             "type": "standard",

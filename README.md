@@ -21,6 +21,7 @@ Welcome to the NPC Custom Buyers & Dealers Expansion Mod! This mod allows player
     * [Overview](#overview)
     * [Key JSON Concepts & Fields](#key-json-concepts--fields)
     * [Important JSON Rules & Assumptions](#important-json-rules--assumptions)
+    * [Extra JSON Schema Fields](#extra-json-schema-fields)
 5.  [JSON Editor Tool](#json-editor-tool)
 6.  [Current Development Status](#current-development-status)
     * [Pending Core Features](#pending-core-features)
@@ -82,7 +83,7 @@ NPCs can have preferences for certain product effects, which can be necessary or
 Successful deliveries yield various rewards, calculated as follows:
 
 * **Money Reward:**
-    `money = (base_dollar*random4) + (total_price_of_delivered_products * (1 + sum_of_all_effects_(dollar_mult*random1)) * (1 + quality_dollar_mult) * dealTimesMult)`
+    `money = (base_dollar*random4) + (total_price_of_delivered_products * (1 + sum_of_all_effects_(dollar_mult*random1)) * (1 + quality_dollar_mult) * dealTimesMult * random4)`
 * **Reputation Reward:**
     `rep = base_rep*random2 + (money_reward * rep_mult*random2)`
 * **XP Reward:**
@@ -154,7 +155,6 @@ Below are some of the crucial fields and structures you'll encounter in the NPC 
 * **`products` Array:** Defines the drugs an NPC deals with. Each product entry includes:
     * `drugType`: Name of the drug (must match `s1api` strings).
     * `qualities` Array: Lists qualities for this drug.
-        * **Must be sorted from worst to best.**
         * Each quality has an `unlockRep`.
         * `qualityName` (must match `s1api` strings).
         * `dollar_mult` (for reward calculation).
@@ -177,9 +177,9 @@ Below are some of the crucial fields and structures you'll encounter in the NPC 
     * `base_dollar`, `base_rep`, `base_xp`: Base reward amounts for any successful deal with this NPC.
     * `price_mult`, `rep_mult`, `xp_mult`: Multipliers used in the detailed reward calculations.
 
-// after calculating log with replogbase, 6 is minimum required to get to 1 multiplier, ie. 5 is subtracted but result cannot be -ve
+> **Note:** After calculating the logarithm using `repLogBase`, a minimum value of 5 is required to achieve a 2× multiplier. The computed result will never be negative.
 
-> **Note:**  Currently all dollar_mult is taken from list at the top of the json and added with dollar_mult from quality/effects fields
+> **Note:** Currently, all `dollar_mult` values are taken from the list at the top of the JSON and added to the `dollar_mult` from quality/effects fields.
 
 > **Note:** If you wish to load dealers from all JSON files in the Empire folder and its subfolders, this may be later supported as an optional advanced feature. For advanced organization, optional idea - not yet implemented - restructure your empire JSONs into separate folders, with each folder containing NPC-specific JSON files and icons.
 
@@ -190,6 +190,21 @@ Below are some of the crucial fields and structures you'll encounter in the NPC 
 * **`deals` and `dealsModifier` Size:** Both the `deals[index]` array and the `dealsModifier` array within a `shippingTier` must have 4 elements.
 
 > **Note:** The current code requires both a first and last name for each NPC. This limitation will be removed in a future update when supported by the underlying API.
+
+## Extra JSON Schema Fields
+
+* **Version:**  
+  - `s1api`: Specifies the required version of s1api (e.g., "1.5.0").  
+  - `empire`: Indicates the current version of the empire mod (e.g., "0.1").
+* **Effects:**  
+  - `effectsName`: An array of available effect names such as "AntiGravity", "Athletic", "Balding", …, "Random".  
+  - `effectsDollarMult`: A list of multipliers corresponding to each effect.
+* **Quality & Products:**  
+  - `qualityTypes`: Lists the available quality types (e.g., "trash", "poor", "standard", etc.).  
+  - `qualitiesDollarMult`: An array of multipliers for each quality type.  
+  - `productTypes`: An array listing all available product/drug types (e.g., "weed", "meth", "cocaine").
+* **Additional Fields:**  
+  - `randomNumberRanges`: Contains miscellaneous random multipliers used in deal calculations.
 
 ## JSON Editor Tool
 
@@ -203,7 +218,7 @@ To aid in the creation and management of complex NPC configurations, this mod in
 
 ### Pending Core Features
 
-* **Deal XP Rewards:** Implementation of XP rewards for completing deals is pending support from the `s1api`.
+
 
 ### Current Gameplay Notes & Limitations
 
@@ -229,14 +244,6 @@ This mod is an ongoing project with many plans for expansion and refinement!
 
 ### Planned In-Game UI Enhancements (Part of this Mod)
 
-* **NPC Information Panel:** An in-game UI panel to display:
-    * NPC relations.
-    * Unlock progress for products, qualities, shipping tiers, and effects.
-* **Shipping Tier Upgrades:**
-    * Display costs for unlocking new shipping tiers.
-    * Allow players to press a button to deduct the fee and upgrade their shipping tier with an NPC.
-    * A dedicated Shipping Upgrade Button UI is planned for easier upgrades.
-* **UI Bug Fixes:** Address issues like the "cancel current delivery" button behavior after quest completion/refresh.
 * **General UI Improvements:** Enhance the overall user interface for better clarity and ease of use.
 
 ### Future Concepts & Possibilities (Optional/Ideas/Pending Implementations)
@@ -263,18 +270,12 @@ This mod is an ongoing project with many plans for expansion and refinement!
 * **New Mechanics:**
     * A "Gift" button/system to improve relations with NPCs.
     * "Police Heat Level" associated with quests, potentially modifying rewards or risks.
-* **Order Amount Scaling:**
-    * Optionally, the logarithmic scaling for order amounts (`repLogBase`) could be offset, softcoded, or the equation changed for more flexibility.
 * **Quest Rewards:**
     * Optionally, players may receive a bonus for turning in a quest earlier than the deadline.
 * **Quality Handling:**
     * Until the game releases "heavenly meth," the "premium" quality will be treated as equivalent to "heavenly" for meth orders (this is handled in code as well).
-	
-// Optional QOL - possibly restructure json quality and effects from 2 list to 1 dictionary format
-// Optional - Add probability field in quality and switch on that instead of random equal weightage - OR make a global field+local field hybrid
-// Optional - X button on each quest to dismiss it without any penalty
-// Optional - Create separate file on Code and JSON fields info in git accesible by link
-// Optional - Add scrollable to right side detail panel 
+// NPC rewards at high rep - laundering, increase max health/energy, gift items, vehicles, grow plants	
+
 
 ## For Developers & Content Creators
 
@@ -290,56 +291,31 @@ This mod is an ongoing project with many plans for expansion and refinement!
     * Save and load functionality with custom NPCs.
     * Attempting to drop non-quest items(type, quality, effects, non product) in the delivery zone.
     * Quest cancellation logic and penalties.
-    * Ensure that if a product type is meth and the required quality is "heavenly," the system treats "premium" as acceptable.
-    * When calculating rewards, pay for the ordered quality and up to the maximum quality in the list.
-    * If a necessary effect or quality is not satisfied, the quest should continue rather than fail immediately.
-    * Update the effect sum with any optional effect multipliers present.
-    * NPC responses should reflect the product type, quality, and necessary effects requested.
-    * When updating to new versions, change placeholder/dummy product effects and qualities to real effects from `s1api` once supported, and implement rewards based on effects and quality.
+	
+## Pending/Optional Tasks
 
+- **Optional QOL:** Restructure JSON quality and effects from two lists into a single dictionary format.
+- **Convert Quest Data:** Migrate effects data to a dictionary.
+- **Optional Enhancement:** Add a probability field in quality (or adopt a hybrid global/local approach) instead of equal weightage.
+- **Optional Feature:** Provide an X button on each quest to allow dismissal without penalty.
+- **Documentation:** Create a separate file with code and JSON fields info accessible by Git.
+- **UI Improvement:** Add scrollable functionality to the right-side detail panel.
+- **Image Resizing:** Implement automatic resizing for all icon loading (e.g., to 127×127 pixels).
+- **Optional Enhancement:** Integrate NPC relationships that influence other NPCs.
+- **Data Restructuring:** Consolidate JSON fields into a common_data section.
+- **High Reputation Rewards:** Consider adding high-reputation rewards such as laundering benefits, increased maximum health/energy, gift items, vehicles, or even plant growth.
 
 ## Checklist to Release
 
-- [x] Fix quest removal logic bug (index)
-- [x] Fix -inf amount bug due to log
-- [x] Show reputation of dealers below rewards (temporary fix)
-- [x] UI Bug Fixes: Address issues like the "cancel current delivery" button behavior after quest completion/refresh
-- [x] Rep log offset: hardcode (5=0, 6=1)
-- [x] Real NPC restructure
-- [x] NPC balancing
-- [x] Mix up base rewards and penalties and multipliers with roll from 50% to 150%
-- [x] Optional: Give order of any quality
-- [x] Round to 4 decimal places in UI
-- [x] Reduce base reward and deal multiple
-- [x] Only 1 quest per dealer
-- [ ] Note: Until game releases heavenly meth, premium = heavenly for meth (in code too)
-- [x] Basic Testing
 - [ ] Play game
-- [x] Version update to s1api 1.7 when stable released
-- [x] Change placeholder dummy product effects and quality with real effects from s1api once supported; implement rewards based on effects and quality; check and reward product type
-- [x] NPC responses on product [type], quality, necessary effects
-- [x] Continue if necessary effect or quality not satisfied
-- [x] Update EffectSum with optional effect multiplier present
-- [x] If product type is meth and quality required is heavenly, give a pass
-- [x] Pay for ordered quality and up to max quality in list
-- [x] There are 3 random ranges in which rewards, rep and xp will be scaled.
-- [x] Round up UI stuff to most significant digits 
-- [x] Add UI under rep to show deal dates
-- [x] Check enum with string before quest generation
-- [x] Blackmarketbuyer UI method needs lowercase and trim
-- [x] Fix the after quest complete, quest can be cancelled bug
-- [x] Rep Unlock Design
-- [x] Update JSONEditor with dealDates
-- [x] Update Json and code with curfewDeal:true
-- [ ] Update JSON Editor for curfewDeal
-- [x] change random effects multiplier to static scaler 
-- [x] add random base price multiplier to price multiplier
-- [x] Give XP thru temp method
+- [x] give quest info in journal
+- [x] Update Readme
+- [x] add random and static values to load from json
 
 
 💕Credits:
 Much gratitude and many many thanks to:
-❤️ @Akermi Sensei for teaching S1API usage through his git repos and for the initial project structure.
+❤️ @Akermi for teaching S1API usage through his git repos and for the initial project structure.
 ❤️ S1API for providing the foundation for the mod, and it's creators @KaBooMa @Akermi @Max @ChloeNow  for making such a valuable and user-friendly modding resource.
 ❤️ @Freshairkaboom for helping with the UI.
 ❤️ @iiTzSamurai for App icon and delivery icons.
@@ -352,9 +328,8 @@ Much gratitude and many many thanks to:
 
 We hope you enjoy the NPC Custom Buyers & Dealers Expansion Mod! Your feedback and contributions are welcome.
 
-// Add image resizing for all icon loading, 127 x 127
-// Optional - Upgrades on unlocking NPCs
-// Optional - NPC relations affect other NPC relations
-// Convert Quest Data effects to dictionary
-// add random and static values to load from json
-// Update Readme
+
+
+
+
+

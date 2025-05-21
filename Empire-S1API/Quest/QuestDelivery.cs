@@ -18,11 +18,12 @@ using S1API.Quests.Constants;
 using Random = UnityEngine.Random;
 using System.IO;
 using MelonLoader.Utils;
-
+#if (Il2Cpp)
 using Properties = Il2CppScheduleOne.Properties;
-using MelonLoader.TinyJSON;
+#elif (Mono)
+using Properties = ScheduleOne.Properties;
+#endif
 
-//using Properties = ScheduleOne.Properties;
 
 
 namespace Empire
@@ -87,7 +88,6 @@ namespace Empire
             get
             {
                 //Use static image setting from PhoneApp Accept Quest
-                //TODO - Do I even want dealer image for this or the standard image - Optional
                 return ImageUtils.LoadImage(Data.QuestImage ?? Path.Combine(MelonEnvironment.ModsDirectory, "Empire", "EmpireIcon_quest.png"));
             }
         }
@@ -220,9 +220,7 @@ namespace Empire
                 var productDef = ProductManager.DiscoveredProducts.FirstOrDefault(p => p.ID == item?.Definition.ID);
                 var productType = GetProductType(productDef);
                
-                //Check isProductInstance AND if productEffects contains ALL of the necessary effects
-                //ADD non-dummy check for quality and effects
-                //TODO
+
                 if (productType != Data.ProductID)
                 {
                     MelonLogger.Error($"❌ Product type mismatch: {productType} != {Data.ProductID}");
@@ -245,13 +243,15 @@ namespace Empire
                     for (int i = 0; i < props.Count; i++)
                     {
                         var prop = props[i];
-                        properties.Add(prop.name);
+                        properties.Add(prop.name.Trim().ToLower());
                     }
                 }
-                //Melonlogger properties
-                MelonLogger.Msg($"Properties: {string.Join(", ", properties)}");
-                // Melonlogger the missing effects - TODO
-                if (!Data.NecessaryEffects.All(effect => properties.Contains(effect)))
+                MelonLogger.Msg($"Item Properties: {string.Join(", ", properties)}");
+                // Melonlogger the Data.NecessaryEffects and OptionalEffects
+                MelonLogger.Msg($"NecessaryEffects: {string.Join(", ", Data.NecessaryEffects)}");
+                MelonLogger.Msg($"OptionalEffects: {string.Join(", ", Data.OptionalEffects)}");
+                
+                if (!Data.NecessaryEffects.All(effect => properties.Contains(effect.Trim().ToLower())))
                 {
                     MelonLogger.Error($"❌ Effect type mismatch");
                     buyer.SendCustomMessage("All the required necessary effects are not present.");
@@ -364,9 +364,6 @@ namespace Empire
             return -1;
         }
 
-        
-        //Update Dummy with real effect and quality calculation
-        //TODO
         private void UpdateReward(uint total, ProductDefinition? productDef, List<string> properties)
         {
             // Check if productDef is null or not a ProductDefinition
@@ -418,8 +415,7 @@ namespace Empire
             MelonLogger.Msg($"   Rewarded : ${Data.Reward} to {Data.DealerName} and {Data.RepReward} with {Data.RepMult} in rep.");
             Data.RepReward += (int)(Data.Reward * Data.RepMult);
             buyer.GiveReputation((int)Data.RepReward);
-            //Calculate and give XP - TODO
-            MelonLogger.Msg($"   Rewarded : ${Data.Reward} and Rep {Data.RepReward} to {Data.DealerName}");
+            MelonLogger.Msg($"   Rewarded : ${Data.Reward} and Rep {Data.RepReward} and Xp {Data.XpReward} from {Data.DealerName}");
 
             if (source == "Expired")
             {
