@@ -7,15 +7,36 @@ namespace Empire
     {
         public string Name { get; set; }
         public string? Image { get; set; }
+        public int Tier { get; set; }
         public List<UnlockRequirement> UnlockRequirements { get; set; }
-        
+        public List<string> DealDays { get; set; }
+        public bool CurfewDeal { get; set; }
         public List<List<float>> Deals { get; set; }
+        public int RefreshCost { get; set; }
+        [JsonProperty("reward")]
+        public DealerReward Reward { get; set; }
         public float RepLogBase { get; set; }
         public List<Drug> Drugs { get; set; }
 
         [JsonProperty("shipping")]
         public List<Shipping> Shippings { get; set; }
         public Dialogue Dialogue { get; set; }
+        [JsonProperty("debt")]
+        public Debt Debt { get; set; } = new Debt();
+        [JsonProperty("gift")]
+        public Gift Gift { get; set; }
+    }
+
+    public class DealerReward
+    {
+        [JsonProperty("unlockRep")]
+        public int unlockRep { get; set; }
+        [JsonProperty("rep_cost")]
+        public int RepCost { get; set; }
+        [JsonProperty("type")]
+        public string Type { get; set; }
+        [JsonProperty("args")]
+        public List<string> Args { get; set; }
     }
 
     public class UnlockRequirement
@@ -83,7 +104,7 @@ namespace Empire
         [JsonProperty("maxAmount")]
         public int MaxAmount { get; set; }
         [JsonProperty("dealModifier")]
-        public List<float> DealModifier { get; set; } 
+        public List<float> DealModifier { get; set; }
     }
 
     public class Dialogue
@@ -100,11 +121,39 @@ namespace Empire
 
     public class DealerData
     {
-        
+        [JsonProperty("effectsName")]
         public List<string> EffectsName { get; set; }
+        [JsonProperty("effectsDollarMult")]
         public List<float> EffectsDollarMult { get; set; }
-        public List<string> QualitiesName { get; set; }
+        [JsonProperty("qualityTypes")]
+        public List<string> QualityTypes { get; set; }
+        [JsonProperty("qualitiesDollarMult")]
         public List<float> QualitiesDollarMult { get; set; }
+        [JsonProperty("randomNumberRanges")]
+        public List<float> RandomNumberRanges { get; set; }
+        [JsonProperty("dealers")]
         public List<Dealer> Dealers { get; set; }
+    }
+
+    public class Debt
+    {
+        [JsonProperty("total_debt")]
+        public float TotalDebt { get; set; } = 0f;
+        [JsonProperty("interest_rate")]
+        public float InterestRate { get; set; } = 0f;
+        [JsonProperty("day_multiple")]
+        public float DayMultiple { get; set; } = 0f;
+        [JsonProperty("day_exponent")]
+        public float DayExponent { get; set; } = 0f;
+        [JsonProperty("product_bonus")]
+        public float ProductBonus { get; set; } = 0f;
+    }
+
+    public class Gift
+    {
+        [JsonProperty("cost")]
+        public int Cost { get; set; }
+        [JsonProperty("rep")]
+        public int Rep { get; set; }
     }
 }

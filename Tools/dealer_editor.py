@@ -185,13 +185,13 @@ class DealerEditorApp:
         
         self.name_entry = self._create_label_entry_pair(basic_info_frame, "Name (str):", 0)
         self.image_entry = self._create_label_entry_pair(basic_info_frame, "Image (str):", 1)
-        self.tier_entry = self._create_label_entry_pair(basic_info_frame, "Tier (int):", 2) # New tier field
+        self.tier_entry = self._create_label_entry_pair(basic_info_frame, "Tier (int):", 2) 
         
         unlock_req_outer_label = ttk.Label(basic_info_frame, text="Unlock Requirements (JSON objects, one per line):")
-        unlock_req_outer_label.grid(row=3, column=0, padx=5, pady=2, sticky="nw") # Adjusted row
+        unlock_req_outer_label.grid(row=3, column=0, padx=5, pady=2, sticky="nw") 
         
         unlock_req_text_frame = ttk.Frame(basic_info_frame) 
-        unlock_req_text_frame.grid(row=3, column=1, padx=5, pady=2, sticky="ew") # Adjusted row
+        unlock_req_text_frame.grid(row=3, column=1, padx=5, pady=2, sticky="ew") 
         unlock_req_text_frame.columnconfigure(0, weight=1) 
 
         self.unlock_requirements_text = tk.Text(unlock_req_text_frame, height=4, width=30, wrap=tk.WORD)
@@ -200,7 +200,15 @@ class DealerEditorApp:
         unlock_req_scrollbar.grid(row=0, column=1, sticky="ns")
         self.unlock_requirements_text.configure(yscrollcommand=unlock_req_scrollbar.set)
         
-        self.rep_log_base_entry = self._create_label_entry_pair(basic_info_frame, "Rep Log Base (int):", 4) # Adjusted row
+        self.rep_log_base_entry = self._create_label_entry_pair(basic_info_frame, "Rep Log Base (int):", 4) 
+        self.deal_days_entry = self._create_label_entry_pair(basic_info_frame, "Deal Days (str, comma-sep):", 5) 
+        
+        # --- Curfew Deal (Boolean) ---
+        ttk.Label(basic_info_frame, text="Curfew Deal:").grid(row=6, column=0, padx=5, pady=2, sticky="w")
+        self.curfew_deal_var = tk.StringVar()
+        self.curfew_deal_combobox = ttk.Combobox(basic_info_frame, textvariable=self.curfew_deal_var, values=["True", "False"], state="readonly")
+        self.curfew_deal_combobox.grid(row=6, column=1, padx=5, pady=2, sticky="ew")
+        self.curfew_deal_combobox.set("False") # Default value
 
         deals_frame = ttk.LabelFrame(parent_frame, text="Deals (Each line: int, float, int, int)", padding=(10,5))
         deals_frame.grid(row=current_row, column=0, padx=5, pady=5, sticky="nsew"); current_row +=1
@@ -780,7 +788,9 @@ class DealerEditorApp:
     # --- CRUD Operations for Dealers and Sub-Items ---
     def add_dealer(self):
         new_dealer = {
-            "name": "New Dealer", "image": "", "tier": 0, "unlockRequirements": [], "deals": [], # Added tier
+            "name": "New Dealer", "image": "", "tier": 0, 
+            "unlockRequirements": [], "deals": [], "dealDays": [], 
+            "curfewDeal": False, # Added curfewDeal
             "repLogBase": 10, 
             "drugs": [], "shipping": [],
             "dialogue": {key: [] for key in ["intro", "dealStart", "accept", "incomplete", "expire", "fail", "success", "reward"]}
@@ -830,11 +840,13 @@ class DealerEditorApp:
 
             self.clear_entry(self.name_entry); self.name_entry.insert(0, dealer.get("name", ""))
             self.clear_entry(self.image_entry); self.image_entry.insert(0, dealer.get("image", ""))
-            self.clear_entry(self.tier_entry); self.tier_entry.insert(0, str(dealer.get("tier", 0))) # Load tier
+            self.clear_entry(self.tier_entry); self.tier_entry.insert(0, str(dealer.get("tier", 0))) 
             
             self.text_from_list_of_json_objects(self.unlock_requirements_text, dealer.get("unlockRequirements", []))
             
             self.clear_entry(self.rep_log_base_entry); self.rep_log_base_entry.insert(0, str(dealer.get("repLogBase", 10))) 
+            self.clear_entry(self.deal_days_entry); self.deal_days_entry.insert(0, self.string_from_list(dealer.get("dealDays", []))) 
+            self.curfew_deal_combobox.set("True" if dealer.get("curfewDeal", False) else "False") # Load curfewDeal
 
             self.text_from_deals(self.deals_text, dealer.get("deals", []))
 
@@ -872,7 +884,7 @@ class DealerEditorApp:
 
             dealer["name"] = self.name_entry.get()
             dealer["image"] = self.image_entry.get()
-            dealer["tier"] = self.safe_int(self.tier_entry.get(), 0) # Save tier
+            dealer["tier"] = self.safe_int(self.tier_entry.get(), 0) 
             
             parsed_unlock_reqs = self.list_of_json_objects_from_text(self.unlock_requirements_text)
             if parsed_unlock_reqs is None: 
@@ -881,6 +893,8 @@ class DealerEditorApp:
             dealer["unlockRequirements"] = parsed_unlock_reqs
             
             dealer["repLogBase"] = self.safe_int(self.rep_log_base_entry.get(), 10) 
+            dealer["dealDays"] = self.list_from_string(self.deal_days_entry.get(), str) 
+            dealer["curfewDeal"] = self.curfew_deal_var.get() == "True" # Save curfewDeal
 
             parsed_deals = self.deals_from_text(self.deals_text)
             if parsed_deals is None: 
@@ -911,9 +925,10 @@ class DealerEditorApp:
             if show_success: messagebox.showerror("Save Error", f"An error occurred while saving dealer: {e}\n{traceback.format_exc()}"); return False
 
     def clear_dealer_details(self):
-        self.clear_entry(self.name_entry); self.clear_entry(self.image_entry); self.clear_entry(self.tier_entry) # Clear tier
+        self.clear_entry(self.name_entry); self.clear_entry(self.image_entry); self.clear_entry(self.tier_entry) 
         self.clear_text(self.unlock_requirements_text) 
-        self.clear_entry(self.rep_log_base_entry)
+        self.clear_entry(self.rep_log_base_entry); self.clear_entry(self.deal_days_entry) 
+        self.curfew_deal_combobox.set("False") # Clear curfewDeal
         self.clear_text(self.deals_text)
 
         self.clear_listbox(self.drugs_list); self.clear_drug_details() 
