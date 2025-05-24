@@ -6,6 +6,9 @@ using MelonLoader;
 using MelonLoader.Utils;
 using Newtonsoft.Json;
 using S1API.Logging;
+using S1API.Entities.NPCs;
+using UnityEngine;
+using S1API.GameTime;
 
 namespace Empire
 {
@@ -14,7 +17,6 @@ namespace Empire
         public static Dictionary<string, BlackmarketBuyer> Buyers { get; set; } = new Dictionary<string, BlackmarketBuyer>();
         public static bool IsInitialized { get; set; } = false;
         public static bool IsUnlocked { get; set; } = false;
-        public static DealerData dealerData { get; set; } = JSONDeserializer.dealerData;
         //public static BlackmarketBuyer saveBuyer { get; set; }
         public static Dealer standardDealer { get; set; } = new Dealer { Name = "Blackmarket Buyer", Image = "EmpireIcon_quest.png" };
 
@@ -31,7 +33,7 @@ namespace Empire
                 MelonLogger.Error("❌ dealerName is null or empty.");
                 return null;
             }
-            var dealer = dealerData.Dealers.FirstOrDefault(d => d.Name == dealerName);
+            var dealer = JSONDeserializer.dealerData.Dealers.FirstOrDefault(d => d.Name == dealerName);
             if (dealer == null)
             {
                 MelonLogger.Error($"❌ Dealer not found: {dealerName}");
@@ -42,80 +44,98 @@ namespace Empire
         public static Dealer GetDealerDataByIndex(int index)
         {
             // If index out of range, return standard dealer
-            if (index < 0 || index >= dealerData.Dealers.Count)
+            if (index < 0 || index >= JSONDeserializer.dealerData.Dealers.Count)
             {
                 MelonLogger.Error($"❌ Index {index} is out of range for dealers.");
                 return standardDealer;
             }
-            return dealerData.Dealers.ElementAtOrDefault(index);
+            return JSONDeserializer.dealerData.Dealers.ElementAtOrDefault(index);
         }
+        
         public static void Update()
         {
+
             BlackmarketBuyer testBuyer = new BlackmarketBuyer();
-            //MelonLogger.Msg($"Testing Effects Dictionary: {JSONDeserializer.EffectsDollarMult["Munchies"]}");
-            //MelonLogger.Msg($"Testing Qualities Dictionary: {JSONDeserializer.QualitiesDollarMult["poor"]}");
+
+            MelonLogger.Msg("Testing 100");
             MelonLoader.MelonCoroutines.Start(UpdateCoroutine());
         }
+        
 
         private static System.Collections.IEnumerator UpdateCoroutine()
         {
-            // Wait until IsInitialized is true - TODO
             while (!IsInitialized)
             {
                 yield return null;
             }
             try
             {
+                // Melonlogger Test
+                MelonLogger.Msg("Testing 101}");
                 foreach (var buyer in Buyers.Values)
                 {
-                    
+
                     bool canUnlock = buyer.UnlockRequirements == null ||
                                      !buyer.UnlockRequirements.Any() ||
                                      buyer.UnlockRequirements.All(req =>
                                          GetBuyer(req.Name)?._DealerData.Reputation >= req.MinRep);
 
                     ////Log the buyer name and unlock status
-                     MelonLogger.Msg($"Buyer: {buyer.DealerName}, Unlock Status: {canUnlock}");
-                     //If cannot unlock, log the requirements and the current reputation
-                        if (!canUnlock)
+                    MelonLogger.Msg($"Buyer: {buyer.DealerName}, Unlock Status: {canUnlock}");
+                    //If cannot unlock, log the requirements and the current reputation
+                    if (!canUnlock)
+                    {
+                        foreach (var req in buyer.UnlockRequirements)
                         {
-                            foreach (var req in buyer.UnlockRequirements)
+                            var unlockBuyer = GetBuyer(req.Name);
+                            if (unlockBuyer != null)
                             {
-                                var unlockBuyer = GetBuyer(req.Name);
-                                if (unlockBuyer != null)
-                                {
-                                    MelonLogger.Msg($"Unlock Requirement: {req.Name}, Current Reputation: {unlockBuyer._DealerData.Reputation}, Required Reputation: {req.MinRep}");
-                                }
-                                else
-                                {
-                                    MelonLogger.Msg($"Unlock Requirement: {req.Name} not found.");
-                                }
+                                MelonLogger.Msg($"Unlock Requirement: {req.Name}, Current Reputation: {unlockBuyer._DealerData.Reputation}, Required Reputation: {req.MinRep}");
+                            }
+                            else
+                            {
+                                MelonLogger.Msg($"Unlock Requirement: {req.Name} not found.");
                             }
                         }
-                       
+                    }
+
                     if (canUnlock)
                     {
                         if (!buyer.IsInitialized)
                         {
                             buyer.IsInitialized = true;
-                            if (buyer._DealerData.Reputation==0){
+                            if (buyer._DealerData.Reputation == 0) // First time Intro
+                            {
                                 buyer.SendCustomMessage("Intro");
                             }
+                            // Run only once per mod load per buyer 
+                            if (!IsUnlocked)
+                            {
+                                if (buyer.Debt != null && buyer.Debt.TotalDebt > 0 && buyer._DealerData.DebtRemaining > 0)
+                                {
+                                    buyer.DebtManager = new DebtManager(buyer);
+                                    MelonLogger.Msg($"❌ Dealer {buyer.DealerName} is locked due to debt: {buyer.Debt.TotalDebt}");
+                                }
+
+                            }
+                            MelonLogger.Msg($"✅ Initialized dealer: {buyer.DealerName}");
                         }
-                        else
-                        {
-                            buyer.UnlockDrug();
-                        }
-                        
-                        MelonLogger.Msg($"✅ Initialized dealer: {buyer.DealerName}");
+                        buyer.UnlockDrug();
                     }
                     else
                     {
                         MelonLogger.Msg($"⚠️ Dealer {buyer.DealerName} is locked (unlock requirements not met)");
                     }
+
+                    MelonLogger.Msg($"✅ Contacts.Buyers now contains {Buyers.Count} buyers.");
+                    // Run only once per mod load
+                    if (!IsUnlocked)
+                    {
+                        GeneralSetup.UncCalls();
+                    }
+                    IsUnlocked = true;
                 }
-                IsUnlocked = true;
-                MelonLogger.Msg($"✅ Contacts.Buyers now contains {Buyers.Count} buyers.");
+
             }
             catch (Exception ex)
             {
@@ -123,6 +143,8 @@ namespace Empire
             }
         }
     }
+
+
 
     public static class JSONDeserializer
     {
@@ -133,6 +155,7 @@ namespace Empire
         public static List<float> RandomNumberRanges { get; set; } = new List<float>();
         public static void Initialize()
         {
+
             // Load dealer data
             string jsonPath = Path.Combine(MelonEnvironment.ModsDirectory, "Empire", "empire.json");
             if (!File.Exists(jsonPath))
@@ -148,7 +171,20 @@ namespace Empire
                 {
                     MelonLogger.Msg("Loading dealer data from empire.json...");
                     string jsonContent = File.ReadAllText(jsonPath);
-                    dealerData = JsonConvert.DeserializeObject<DealerData>(jsonContent);
+                    MelonLogger.Msg($"JSON Content read. Deserializing");
+                    try{
+                        // Deserialize the JSON content into DealerData object
+                        dealerData = JsonConvert.DeserializeObject<DealerData>(jsonContent);
+                    }
+                    catch (JsonReaderException ex)
+                    {
+                        MelonLogger.Error($"❌ Failed to parse empire.json: {ex.Message}");
+                    }
+                    catch (Exception ex)
+                    {
+                        MelonLogger.Error($"❌ Unexpected error during initialization: {ex}");
+                    }
+                    MelonLogger.Msg($"JSON Content deserialized");
                 }
 
                 if (dealerData?.Dealers == null || dealerData.Dealers.Count == 0)

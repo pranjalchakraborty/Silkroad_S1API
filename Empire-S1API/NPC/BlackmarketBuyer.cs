@@ -15,7 +15,7 @@ namespace Empire
 {
     public class BlackmarketBuyer : NPC
     {
-        public static int dealerDataIndex=0;
+        public static int dealerDataIndex = 0;
         //public int Index { get; set; } = dealerDataIndex;
         public static Dealer dealer = Contacts.GetDealerDataByIndex(dealerDataIndex);
         public bool IsInitialized { get; set; } = false;
@@ -29,8 +29,16 @@ namespace Empire
         public List<List<float>> Deals { get; set; } = new List<List<float>>(); // List of Deals
         public string DealerName { get; private set; }
         public string? DealerImage { get; private set; }
+        public int Tier { get; set; }
         public List<string> DealDays { get; set; }
+        public DebtManager DebtManager { get; set; } // Initialize DebtManager object
         public bool CurfewDeal { get; set; } = false;
+        public int RefreshCost { get; set; }
+        public Debt Debt { get; set; } = new Debt(); // Initialize Debt object
+        public Gift Gift { get;  set; }
+        public DealerReward Reward { get; set; }
+
+        public RewardManager RewardManager { get; set; } // Initialize RewardManager object
         static Sprite? npcSprite => ImageUtils.LoadImage(
             string.IsNullOrEmpty(dealer?.Image)
                 ? Path.Combine(MelonEnvironment.ModsDirectory, "Empire", "EmpireIcon_quest.png")
@@ -47,22 +55,22 @@ namespace Empire
             DealerImage = Path.Combine(MelonEnvironment.ModsDirectory, "Empire", dealer.Image);
             MelonLogger.Msg($"BlackmarketBuyer () Constructor created with Name {DealerName} and Index {dealerDataIndex}.");
             // If dealerDataIndex is more than count in Contacts.DealerData, return
-            if (dealerDataIndex >= Contacts.dealerData.Dealers.Count)
+            if (dealerDataIndex >= JSONDeserializer.dealerData.Dealers.Count)
             {
                 //Needs more NPC than JSON file to progress - poor design - TODO - fix this
                 Contacts.IsInitialized = true;
                 MelonLogger.Msg($"⚠️ Out of range for dealerDataIndex: {dealerDataIndex}.");
                 return;
-                
+
             }
             //DebugUtils.LogObjectJson(dealer,$"{DealerName}");
 
             if (dealer == null)
                 throw new ArgumentNullException(nameof(dealer));
-            
+
             Contacts.Buyers[DealerName] = this;
-            //MelonLogger.Msg($"BlackmarketBuyer {DealerName} created with Index {dealerDataIndex}.");
-            // Initialize the dealer data
+
+            // Initialize dealer data
             Dialogues = dealer.Dialogue;
             UnlockRequirements = dealer.UnlockRequirements ?? new List<UnlockRequirement>();
             Drugs = dealer.Drugs ?? new List<Drug>();
@@ -71,26 +79,38 @@ namespace Empire
             DealDays = dealer.DealDays ?? new List<string>();
             RepLogBase = dealer.RepLogBase;
             CurfewDeal = dealer.CurfewDeal;
+            Tier = dealer.Tier;
+            Debt = dealer.Debt ?? new Debt();
+            RefreshCost = dealer.RefreshCost;
+            Gift = dealer.Gift;
+            Reward = dealer.Reward ?? new DealerReward(); // Initialize Reward with a new DealerReward if null
+            // NEW: Initialize RewardManager using the updated dealer reward field.
+            RewardManager = new RewardManager(this);
             if (_DealerData != null)
             {
                 MelonLogger.Msg($"⚠️ Dealer {DealerName} already exists in BuyerSaveData dictionary.");
             }
             else
             {
-                _DealerData = new DealerSaveData{};
+                _DealerData = new DealerSaveData { };
             }
             //MelonLogger.Msg($"BlackmarketBuyer {DealerName} unlocking drugs");
             MelonLogger.Msg($"✅ Dealer updated to Buyers: {DealerName}");
-            
+
         }
 
         protected override void OnLoaded()
         {
             MelonLogger.Msg($"BlackmarketBuyer {DealerName} ONloaded.");
             base.OnLoaded();
-            if (dealerDataIndex < Contacts.dealerData.Dealers.Count)
+            if (dealerDataIndex < JSONDeserializer.dealerData.Dealers.Count)
             {
                 UnlockDrug(); // Check if the dealer has any unlocked drugs based on reputation
+                MelonLogger.Msg($"✅ Dealer {DealerName} unlocked drugs.");
+                if (_DealerData.DebtRemaining == 0)
+                {
+                    _DealerData.DebtRemaining = dealer.Debt.TotalDebt; // Set the initial debt amount 
+                }
             }
             else
             {
@@ -167,14 +187,14 @@ namespace Empire
         // New method to show unlocked and upcoming drug unlocks in a detailed string
         public string GetDrugUnlockInfo()
         {
-            
+
             System.Text.StringBuilder info = new System.Text.StringBuilder();
             info.AppendLine($"<b>Dealer: {DealerName}</b> (Reputation: <color=#FFFFFF>{_DealerData.Reputation}</color>)");
             //info.AppendLine("<u>Drug Unlocks</u>:");
             foreach (var drug in Drugs)
             {
-                string drugStatus = drug.UnlockRep <= _DealerData.Reputation 
-                    ? "<color=#00FF00>Unlocked</color>" 
+                string drugStatus = drug.UnlockRep <= _DealerData.Reputation
+                    ? "<color=#00FF00>Unlocked</color>"
                     : $"<color=#FF4500>Locked (Unlock at: {drug.UnlockRep})</color>";
                 info.AppendLine($"<b>• {drug.Type}</b> - {drugStatus}");
                 // Qualities
@@ -188,8 +208,8 @@ namespace Empire
                         {
                             effectiveQuality += JSONDeserializer.QualitiesDollarMult[quality.Type];
                         }
-                        string qualityStatus = quality.UnlockRep <= _DealerData.Reputation 
-                            ? "<color=#00FF00>Unlocked</color>" 
+                        string qualityStatus = quality.UnlockRep <= _DealerData.Reputation
+                            ? "<color=#00FF00>Unlocked</color>"
                             : $"<color=#FF4500>Locked (Unlock at: {quality.UnlockRep})</color>";
                         info.AppendLine($"    - {quality.Type} (x<color=#00FFFF>{effectiveQuality:F2}</color>) : {qualityStatus}");
                     }
@@ -205,8 +225,8 @@ namespace Empire
                         {
                             effectiveEffect += JSONDeserializer.EffectsDollarMult[(effect.Name).ToLower().Trim()];
                         }
-                        string effectStatus = effect.UnlockRep <= _DealerData.Reputation 
-                            ? "<color=#00FF00>Unlocked</color>" 
+                        string effectStatus = effect.UnlockRep <= _DealerData.Reputation
+                            ? "<color=#00FF00>Unlocked</color>"
                             : $"<color=#FF4500>Locked (Unlock at: {effect.UnlockRep})</color>";
                         info.AppendLine($"    - {effect.Name} (Prob <color=#FFA500>{effect.Probability:F2}</color>, x<color=#00FFFF>{effectiveEffect:F2}</color>) : {effectStatus}");
                     }

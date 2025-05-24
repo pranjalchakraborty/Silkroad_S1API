@@ -16,7 +16,14 @@
         <Platforms>AnyCPU</Platforms>
         <RootNamespace>Empire</RootNamespace>
     </PropertyGroup>
-
+	
+	<PropertyGroup Condition="'$(Configuration)' == 'Il2Cpp'">
+		<DefineConstants>Il2Cpp</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)' == 'Mono'">
+		<DefineConstants>Mono</DefineConstants>
+	</PropertyGroup>
+	
     <!-- IL2CPP Specific Deps -->
     <ItemGroup Condition="'$(Configuration)' == 'Il2Cpp'">
         <Reference Include="Il2CppInterop.Runtime">

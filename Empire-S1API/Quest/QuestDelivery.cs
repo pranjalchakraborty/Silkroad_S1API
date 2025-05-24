@@ -96,7 +96,7 @@ namespace Empire
             MelonLogger.Msg("Quest OnLoaded called.");
             base.OnLoaded();
             MelonCoroutines.Start(WaitForBuyerAndLoad());
-
+            
             TimeManager.OnDayPass += ExpireCountdown;
             MelonLogger.Msg($"Quest OnLoaded() done.");
         }
@@ -118,15 +118,18 @@ namespace Empire
                 yield break;
             }
             buyer = Contacts.GetBuyer(Data.DealerName);
+            ConsoleHelperTemp.SetLawIntensity(2*buyer.Tier);// TODO - Expose Deal Heat thru JSON
         }
 
 
         protected override void OnCreated()
         {
-            MelonLogger.Msg("OnCreated called.");
+            MelonLogger.Msg("Quest OnCreated called.");
             base.OnCreated();
-            MelonLogger.Msg($"OnCreated() done.");
+            MelonLogger.Msg($"QuestOnCreated() done.");
+            
             buyer = Contacts.GetBuyer(Data.DealerName);
+            ConsoleHelperTemp.SetLawIntensity(2*buyer.Tier);// TODO - Expose Deal Heat thru JSON
             QuestActive = true;
             Active = this;
             TimeManager.OnDayPass += ExpireCountdown;
@@ -219,7 +222,7 @@ namespace Empire
                 }
                 var productDef = ProductManager.DiscoveredProducts.FirstOrDefault(p => p.ID == item?.Definition.ID);
                 var productType = GetProductType(productDef);
-               
+
 
                 if (productType != Data.ProductID)
                 {
@@ -250,7 +253,7 @@ namespace Empire
                 // Melonlogger the Data.NecessaryEffects and OptionalEffects
                 MelonLogger.Msg($"NecessaryEffects: {string.Join(", ", Data.NecessaryEffects)}");
                 MelonLogger.Msg($"OptionalEffects: {string.Join(", ", Data.OptionalEffects)}");
-                
+
                 if (!Data.NecessaryEffects.All(effect => properties.Contains(effect.Trim().ToLower())))
                 {
                     MelonLogger.Error($"❌ Effect type mismatch");
@@ -262,12 +265,6 @@ namespace Empire
                 // convert the quality enum to a lower trim quality string
                 string qualityString = quality.ToString().ToLower().Trim();
                 int qualityNumber = GetQualityNumber(qualityString);
-                // Remove Heavenly Meth Quality Bypass - TODO - UPDATABLE 
-                if (productType == "meth" && qualityNumber == 4)
-                {
-                    MelonLogger.Msg("Upgrading Premium Meth to Heavenly Meth.");
-                    qualityNumber = 5;
-                }
                 // Check if the quality is within the required range after converting quality enum to string.trim.lower
                 if (qualityNumber < GetQualityNumber(Data.Quality))
                 {
@@ -275,7 +272,7 @@ namespace Empire
                     buyer.SendCustomMessage("The quality of the product is worse than what I ordered.");
                     continue;
                 }
-                if (isProductInstance )
+                if (isProductInstance)
                 {
                     uint total = (uint)(quantity * PackageAmount(packaging));
                     if (total <= Data.RequiredAmount)
@@ -403,18 +400,41 @@ namespace Empire
         private System.Collections.IEnumerator DelayedReward(string source)
         {
             yield return new WaitForSeconds(RandomUtils.RangeInt(30, 60));
+            Data.RepReward += (int)(Data.Reward * Data.RepMult);
+            Data.XpReward += (int)(Data.Reward * Data.XpMult);
             GiveReward(source);
         }
 
         private void GiveReward(string source)
         {
             TimeManager.OnDayPass -= ExpireCountdown;
-
-            ConsoleHelper.RunCashCommand(Data.Reward);
             ConsoleHelperTemp.GiveXp(Data.XpReward);
-            MelonLogger.Msg($"   Rewarded : ${Data.Reward} to {Data.DealerName} and {Data.RepReward} with {Data.RepMult} in rep.");
-            Data.RepReward += (int)(Data.Reward * Data.RepMult);
             buyer.GiveReputation((int)Data.RepReward);
+            // Pay the reward or debt
+            if (buyer._DealerData.DebtRemaining > 0)
+            {
+                // If debt remaining < reward, set it to 0 and pay the rest
+                if (buyer._DealerData.DebtRemaining <= buyer.Debt.ProductBonus * Data.Reward)
+                {
+                    Data.Reward -= (int)(buyer._DealerData.DebtRemaining / buyer.Debt.ProductBonus);
+                    buyer._DealerData.DebtRemaining = 0;
+                    buyer.SendCustomMessage("Congrats! You Paid off the debt.");
+                    MelonLogger.Msg($"   Paid off debt to {buyer.DealerName}");
+                    Money.ChangeCashBalance(Data.Reward);
+                }
+                else
+                {
+                    MelonLogger.Msg($"   Paid off debt: ${Data.Reward} to {buyer.DealerName}");
+                    buyer._DealerData.DebtRemaining -= buyer.Debt.ProductBonus * Data.Reward;
+                    buyer._DealerData.DebtPaidThisWeek += buyer.Debt.ProductBonus * Data.Reward;
+                }
+                buyer.DebtManager.SendWeekDebtMessage();
+            }
+            else
+            {
+                Money.ChangeCashBalance(Data.Reward);
+            }
+
             MelonLogger.Msg($"   Rewarded : ${Data.Reward} and Rep {Data.RepReward} and Xp {Data.XpReward} from {Data.DealerName}");
 
             if (source == "Expired")
@@ -431,16 +451,19 @@ namespace Empire
                 buyer.IncreaseCompletedDeals(1);
                 buyer.UnlockDrug();
                 Contacts.Update();
+                Complete();
+                QuestActive = false;
+                Active = null;
+
             }
             else
             {
                 MelonLogger.Error($"❌ Unknown source: {source}.");
                 return;
             }
-            QuestActive = false;
-            Active = null;
+            MyApp.Instance.OnQuestComplete();
+            ConsoleHelperTemp.SetLawIntensity(1);
             rewardEntry?.Complete();
-            Complete();
             // Trigger the event with no payload
             OnQuestCompleted?.Invoke();
         }

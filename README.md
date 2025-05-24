@@ -249,15 +249,15 @@ This mod is an ongoing project with many plans for expansion and refinement!
 ### Future Concepts & Possibilities (Optional/Ideas/Pending Implementations)
 
 * **New NPC Archetypes:**
-    * NPCs like "Bicky Robby." - JSON field Support
-    * Cartel-affiliated NPCs with unique questlines or mechanics (e.g., forced quests, debt payoff).
     * A static "Blackmarket Buyer" NPC who buys any products the player has discovered.
+    * Money laundering specialists offering financial services.
+* **Advanced Delivery Systems:**
+    * Instant delivery deals with configurable wanted levels (constant or refreshing).
+* **Enhanced NPC Interactions:**
+    * Customizable NPC introductions and interaction types through JSON.
 * **Quest Generation Enhancements:**
-    * Variable quest generation frequency (e.g., not always one per NPC, but a maximum of one per product type).
-    * Free daily quest refreshes.
-    * Variable cooldowns or "days of order" for quest regeneration.
+    * Variable quest generation frequency.
     * NPCs ordering from a list of "Product Manager Discovered Products" or "Favorited Products." - Json support
-	* Scale refresh cost with unlocked NPCs
 * **Deeper NPC Immersion:**
     * Unlock criteria based on player rank, wealth, or total deals completed.
     * Custom NPC avatars and appearances.
@@ -267,14 +267,8 @@ This mod is an ongoing project with many plans for expansion and refinement!
     * Dialogue-driven missions and storylines.
 * **API Dependent Features:**
     * Replace hardcoded prices with base prices from product definitions once `s1api` supports this.
-* **New Mechanics:**
-    * A "Gift" button/system to improve relations with NPCs.
-    * "Police Heat Level" associated with quests, potentially modifying rewards or risks.
 * **Quest Rewards:**
     * Optionally, players may receive a bonus for turning in a quest earlier than the deadline.
-* **Quality Handling:**
-    * Until the game releases "heavenly meth," the "premium" quality will be treated as equivalent to "heavenly" for meth orders (this is handled in code as well).
-// NPC rewards at high rep - laundering, increase max health/energy, gift items, vehicles, grow plants	
 
 
 ## For Developers & Content Creators
@@ -296,22 +290,25 @@ This mod is an ongoing project with many plans for expansion and refinement!
 
 - **Optional QOL:** Restructure JSON quality and effects from two lists into a single dictionary format.
 - **Convert Quest Data:** Migrate effects data to a dictionary.
-- **Optional Enhancement:** Add a probability field in quality (or adopt a hybrid global/local approach) instead of equal weightage.
+- **Optional Enhancement:** Add a probability field in quality (or adopt a hybrid global/local approach) instead of equal weightage in quest generation.
 - **Optional Feature:** Provide an X button on each quest to allow dismissal without penalty.
 - **Documentation:** Create a separate file with code and JSON fields info accessible by Git.
 - **UI Improvement:** Add scrollable functionality to the right-side detail panel.
 - **Image Resizing:** Implement automatic resizing for all icon loading (e.g., to 127×127 pixels).
-- **Optional Enhancement:** Integrate NPC relationships that influence other NPCs.
-- **Data Restructuring:** Consolidate JSON fields into a common_data section.
-- **High Reputation Rewards:** Consider adding high-reputation rewards such as laundering benefits, increased maximum health/energy, gift items, vehicles, or even plant growth.
+- **Optional Enhancement:** Integrate NPC relationships field that influence other NPCs.
+- **Data Restructuring:** Consolidate loose JSON fields into a common_data section.
+- **JSON Restructuring:** Split into one static data JSON and separate JSONs for each NPC.
+- **JSON Exposure:** Enable customization of debt and curfew dialogues through JSON.
+- **Deal Heat:** Expose heat levels of deals through JSON with configurable reward multipliers.
+- **Quest System:** Convert and expose quest systems (like Uncle Nelson's questline) through JSON.
 
 ## Checklist to Release
 
 - [ ] Play game
-- [x] give quest info in journal
+- [x] give quest info properly in journal
 - [x] Update Readme
 - [x] add random and static values to load from json
-
+- [x] Heat of deals set to 2* npc tier
 
 💕Credits:
 Much gratitude and many many thanks to:
@@ -327,6 +324,22 @@ Much gratitude and many many thanks to:
 ---
 
 We hope you enjoy the NPC Custom Buyers & Dealers Expansion Mod! Your feedback and contributions are welcome.
+
+
+
+// Unc Nelson Questline
+// Unc Nelson Phone Msg - convert to Call
+// Special mechanic for each dealer groups like Debt for Cartel - Police Help for Uncle Nelson - Gus Gang, Prison help for Uncle Nelson - Welker Gang, Break Out Unc with Heisenberg Gang, Legal Help - Saul
+"pay_once":{"amount":,"msg":"This money will be put to good use"}
+// Bool Variables for Debt Payoff/Pay Once - Special mechanics by mechanic type and NPC name
+
+// JSON values balance - Gifts and Rewards
+// Bool flag for Debt payoffs
+
+// Update JSONEditor
+
+/// New Tab in modal to show debt info/payoff or to payoff one time
+
 
 
 
