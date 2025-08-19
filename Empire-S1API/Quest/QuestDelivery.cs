@@ -18,11 +18,11 @@ using S1API.Quests.Constants;
 using Random = UnityEngine.Random;
 using System.IO;
 using MelonLoader.Utils;
-#if (Il2Cpp)
-using Properties = Il2CppScheduleOne.Properties;
-#elif (Mono)
-using Properties = ScheduleOne.Properties;
-#endif
+//#if (Il2Cpp)
+//using Properties = Il2CppScheduleOne.Properties;
+//#elif (Mono)
+//using Properties = ScheduleOne.Properties;
+//#endif
 
 
 
@@ -220,7 +220,7 @@ namespace Empire
                     MelonLogger.Error("❌ NecessaryEffects is null");
                     return;
                 }
-                var productDef = ProductManager.DiscoveredProducts.FirstOrDefault(p => p.ID == item?.Definition.ID);
+                S1API.Products.ProductDefinition productDef = ProductManager.DiscoveredProducts.FirstOrDefault(p => p.ID == item?.Definition.ID);
                 var productType = GetProductType(productDef);
 
 
@@ -231,7 +231,7 @@ namespace Empire
                     continue;
                 }
 
-                List<Properties.Property> props = new();
+                var props = productDef.Properties;
                 if (productDef is WeedDefinition weed)
                     props = weed.GetProperties();
                 else if (productDef is MethDefinition meth)
