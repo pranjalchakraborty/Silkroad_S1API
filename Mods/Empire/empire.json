@@ -139,6 +139,14 @@
                 "Thursday",
                 "Friday"
             ],
+            "reward": {
+                "rep_cost": 100,
+                "unlockRep": 100,
+                "type": "console",
+                "args": [
+                    "cleartrash"
+                ]
+            },
             "curfewDeal": false,
             "drugs": [
                 {
@@ -289,6 +297,14 @@
                 "Thursday",
                 "Friday"
             ],
+            "reward": {
+                "rep_cost": 100,
+                "unlockRep": 100,
+                "type": "console",
+                "args": [
+                    "cleartrash"
+                ]
+            },
             "curfewDeal": false,
             "drugs": [
                 {
@@ -439,6 +455,14 @@
                 "Thursday",
                 "Friday"
             ],
+            "reward": {
+                "rep_cost": 100,
+                "unlockRep": 100,
+                "type": "console",
+                "args": [
+                    "cleartrash"
+                ]
+            },
             "curfewDeal": false,
             "drugs": [
                 {
@@ -610,6 +634,15 @@
                 "Thursday",
                 "Friday"
             ],
+            "reward": {
+                "rep_cost": 100,
+                "unlockRep": 100,
+                "type": "console",
+                "args": [
+                    "setquality",
+                    "heavenly"
+                ]
+            },
             "curfewDeal": true,
             "drugs": [
                 {
@@ -868,6 +901,14 @@
                 "Friday",
                 "Saturday"
             ],
+            "reward": {
+                "rep_cost": 100,
+                "unlockRep": 100,
+                "type": "console",
+                "args": [
+                    "cleartrash"
+                ]
+            },
             "curfewDeal": true,
             "drugs": [
                 {
@@ -1095,6 +1136,14 @@
                 "Thursday",
                 "Friday"
             ],
+            "reward": {
+                "rep_cost": 100,
+                "unlockRep": 100,
+                "type": "console",
+                "args": [
+                    "cleartrash"
+                ]
+            },
             "curfewDeal": true,
             "drugs": [
                 {
@@ -1328,6 +1377,14 @@
                 "day_multiple": 10,
                 "day_exponent": 2,
                 "product_bonus": 2
+            },
+            "reward": {
+                "rep_cost": 100,
+                "unlockRep": 100,
+                "type": "console",
+                "args": [
+                    "cleartrash"
+                ]
             },
             "curfewDeal": false,
             "drugs": [
@@ -1571,6 +1628,14 @@
                 "day_multiple": 10,
                 "day_exponent": 2,
                 "product_bonus": 2
+            },
+            "reward": {
+                "rep_cost": 100,
+                "unlockRep": 100,
+                "type": "console",
+                "args": [
+                    "cleartrash"
+                ]
             },
             "curfewDeal": true,
             "drugs": [
@@ -1837,6 +1902,14 @@
                 "Monday",
                 "Wednesday"
             ],
+            "reward": {
+                "rep_cost": 100,
+                "unlockRep": 100,
+                "type": "console",
+                "args": [
+                    "cleartrash"
+                ]
+            },
             "curfewDeal": true,
             "drugs": [
                 {
@@ -2118,6 +2191,14 @@
                 "day_exponent": 2,
                 "product_bonus": 2
             },
+            "reward": {
+                "rep_cost": 100,
+                "unlockRep": 100,
+                "type": "console",
+                "args": [
+                    "cleartrash"
+                ]
+            },
             "curfewDeal": true,
             "drugs": [
                 {
@@ -2352,6 +2433,14 @@
                 "day_multiple": 10,
                 "day_exponent": 2,
                 "product_bonus": 2
+            },
+            "reward": {
+                "rep_cost": 100,
+                "unlockRep": 100,
+                "type": "console",
+                "args": [
+                    "cleartrash"
+                ]
             },
             "curfewDeal": true,
             "drugs": [
@@ -2595,6 +2684,14 @@
                 "day_multiple": 10,
                 "day_exponent": 2,
                 "product_bonus": 2
+            },
+            "reward": {
+                "rep_cost": 100,
+                "unlockRep": 100,
+                "type": "console",
+                "args": [
+                    "cleartrash"
+                ]
             },
             "curfewDeal": true,
             "drugs": [
@@ -2878,6 +2975,14 @@
                 "Tuesday",
                 "Saturday"
             ],
+            "reward": {
+                "rep_cost": 100,
+                "unlockRep": 100,
+                "type": "console",
+                "args": [
+                    "cleartrash"
+                ]
+            },
             "curfewDeal": true,
             "drugs": [
                 {
@@ -3087,6 +3192,14 @@
                 "Thursday",
                 "Sunday"
             ],
+            "reward": {
+                "rep_cost": 100,
+                "unlockRep": 100,
+                "type": "console",
+                "args": [
+                    "cleartrash"
+                ]
+            },
             "curfewDeal": true,
             "drugs": [
                 {
@@ -3266,6 +3379,14 @@
                 "Thursday",
                 "Saturday"
             ],
+            "reward": {
+                "rep_cost": 100,
+                "unlockRep": 100,
+                "type": "console",
+                "args": [
+                    "cleartrash"
+                ]
+            },
             "curfewDeal": true,
             "drugs": [
                 {
@@ -3479,6 +3600,14 @@
             "dealDays": [
                 "Friday"
             ],
+            "reward": {
+                "rep_cost": 100,
+                "unlockRep": 100,
+                "type": "console",
+                "args": [
+                    "cleartrash"
+                ]
+            },
             "curfewDeal": true,
             "drugs": [
                 {
