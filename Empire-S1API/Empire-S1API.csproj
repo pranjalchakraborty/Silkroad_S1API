@@ -130,9 +130,9 @@
 	
 	<!-- Automated local deployment -->
 	<Target Name="PostBuildIl2Cpp" AfterTargets="Build" Condition=" '$(AutomateLocalDeployment)' == 'true' and '$(Configuration)' == 'Il2Cpp' ">
-		<Copy SourceFiles=".\bin\Il2Cpp\net6.0\Empire-S1API.dll" DestinationFiles="$(LocalIl2CppDeploymentPath)\Mods\Empire.dll" />
+		<Copy SourceFiles=".\bin\Il2Cpp\.netstandard2.1\Empire-S1API.dll" DestinationFiles="$(LocalIl2CppDeploymentPath)\Mods\Empire.dll" />
 		<Copy SourceFiles=".\References\empire.json" DestinationFiles="$(LocalIl2CppDeploymentPath)\Mods\Empire\empire.json" />
-		<Copy SourceFiles=".\bin\Il2Cpp\net6.0\Empire-S1API.dll" DestinationFiles="..\Mods\Empire.dll" />
+		<Copy SourceFiles=".\bin\Il2Cpp\.netstandard2.1\Empire-S1API.dll" DestinationFiles="..\Mods\Empire.dll" />
 		<Copy SourceFiles=".\References\empire.json" DestinationFiles="..\Mods\Empire\empire.json" />
 	</Target>
 </Project>

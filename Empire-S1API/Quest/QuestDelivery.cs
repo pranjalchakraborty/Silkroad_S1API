@@ -231,7 +231,7 @@ namespace Empire
                     continue;
                 }
 
-                var props = productDef.Properties;
+        var props = productDef.Properties; 
                 if (productDef is WeedDefinition weed)
                     props = weed.GetProperties();
                 else if (productDef is MethDefinition meth)
