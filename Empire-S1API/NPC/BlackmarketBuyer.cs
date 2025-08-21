@@ -253,7 +253,7 @@ namespace Empire
         }
 
         //Send the message to the player using the phone app or return the message string only if returnMessage is true
-        public string SendCustomMessage(string messageType, string product = "", int amount = 0, string quality = "", List<string>? necessaryEffects = null, List<string> optionalEffects = null, bool returnMessage = false)
+        public string SendCustomMessage(string messageType, string product = "", int amount = 0, string quality = "", List<string>? necessaryEffects = null, List<string> optionalEffects = null,int dollar=0, bool returnMessage = false)
         {
 
             List<string> messages = Dialogues.GetType().GetProperty(messageType)?.GetValue(Dialogues) as List<string>;
@@ -277,7 +277,8 @@ namespace Empire
             string formatted = line
                 .Replace("{product}", $"<color=#34AD33>{product}</color>")
                 .Replace("{amount}", $"<color=#FF0004>{amount}x</color>")
-                .Replace("{quality}", $"<color=#FF0004>{quality}</color>");
+                .Replace("{quality}", $"<color=#FF0004>{quality}</color>")
+                .Replace("{dollar}", $"<color=#FF0004>{dollar}</color>");
             if (necessaryEffects != null && necessaryEffects.Count > 0)
             {
                 string effects = string.Join(", ", necessaryEffects.Select(e => $"<color=#FF0004>{e}</color>"));

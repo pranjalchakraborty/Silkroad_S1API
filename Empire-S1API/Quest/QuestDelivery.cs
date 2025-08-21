@@ -298,7 +298,7 @@ namespace Empire
             if (Data.RequiredAmount <= 0)
             {
                 //MelonLogger.Msg("Test2");
-                buyer.SendCustomMessage("Success", Data.ProductID, (int)Data.RequiredAmount, Data.Quality, Data.NecessaryEffects, Data.OptionalEffects);
+                buyer.SendCustomMessage("Success", Data.ProductID, (int)Data.RequiredAmount, Data.Quality, Data.NecessaryEffects, Data.OptionalEffects,Data.Reward);
                 MelonLogger.Msg("❌ No required amount to deliver. Quest done.");
                 deliveryDrop.Storage.OnClosed -= CheckDelivery;
                 deliveryEntry.Complete();
@@ -447,7 +447,7 @@ namespace Empire
             }
             else if (source == "Completed")
             {
-                buyer.SendCustomMessage("Reward", Data.ProductID, (int)Data.RequiredAmount, Data.Quality, Data.NecessaryEffects, Data.OptionalEffects);
+                buyer.SendCustomMessage("Reward", Data.ProductID, (int)Data.RequiredAmount, Data.Quality, Data.NecessaryEffects, Data.OptionalEffects,Data.Reward);
                 buyer.IncreaseCompletedDeals(1);
                 buyer.UnlockDrug();
                 Contacts.Update();

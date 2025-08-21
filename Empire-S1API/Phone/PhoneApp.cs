@@ -996,7 +996,7 @@ namespace Empire
         private void OnSelectQuest(QuestData quest)
         {
             var Buyer = Contacts.GetBuyer(quest.DealerName);
-            var dialogue = Buyer.SendCustomMessage("DealStart", quest.ProductID, (int)quest.AmountRequired, quest.Quality, quest.NecessaryEffects, quest.OptionalEffects, true);
+            var dialogue = Buyer.SendCustomMessage("DealStart", quest.ProductID, (int)quest.AmountRequired, quest.Quality, quest.NecessaryEffects, quest.OptionalEffects, 0,true);
             questTitle.text = quest.Title;
             questTask.text = $"{dialogue}";
             questReward.text =

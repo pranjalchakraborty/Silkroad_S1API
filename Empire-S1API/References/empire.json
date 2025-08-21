@@ -1,6 +1,6 @@
 {
     "version": {
-        "s1api": "1.5.0",
+        "s1api": "1.6.5",
         "empire": "0.1"
     },
     "effectsName": [
@@ -75,7 +75,7 @@
         1.0,
         0.54,
         0.42,
-        666
+        0
     ],
     "qualityTypes": [
         "trash",
@@ -259,9 +259,9 @@
                     "Finally. This'll move."
                 ],
                 "reward": [
-                    "Here's your cut, man. Keep it coming.",
-                    "Cash is here. Good business.",
-                    "Payment sent. Don't get sloppy."
+                    "Here's your cut of ${dollar}, man. Keep it coming.",
+                    "Cash is here.{dollar} Dollars. Good business.",
+                    "Payment of ${dollar} sent. Don't get sloppy."
                 ]
             }
         },
