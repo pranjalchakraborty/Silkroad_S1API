@@ -104,9 +104,11 @@ namespace Empire
                         if (!buyer.IsInitialized)
                         {
                             buyer.IsInitialized = true;
-                            if (buyer._DealerData.Reputation == 0) // First time Intro
+                            if (buyer._DealerData.IntroDone == false) // First time Intro
                             {
                                 buyer.SendCustomMessage("Intro");
+                                MelonLogger.Msg($"✅ Dealer {buyer.DealerName} intro sent.");
+                                buyer._DealerData.IntroDone = true; // Set IntroDone to true
                             }
                             // Run only once per mod load per buyer 
                             if (!IsUnlocked)

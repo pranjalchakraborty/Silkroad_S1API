@@ -18,11 +18,6 @@ using S1API.Quests.Constants;
 using Random = UnityEngine.Random;
 using System.IO;
 using MelonLoader.Utils;
-//#if (Il2Cpp)
-//using Properties = Il2CppScheduleOne.Properties;
-//#elif (Mono)
-//using Properties = ScheduleOne.Properties;
-//#endif
 
 
 

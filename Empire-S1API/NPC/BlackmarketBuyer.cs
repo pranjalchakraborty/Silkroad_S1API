@@ -25,7 +25,7 @@ namespace Empire
         private List<Drug> Drugs = new List<Drug>(); // Initialize Drugs list
         public List<Shipping> Shippings { get; set; } = new List<Shipping>(); // Initialize Shippings list
         private Dialogue Dialogues = new Dialogue();
-        public float RepLogBase { get; set; } = 0.1f; // Base value for reputation log
+        public float RepLogBase { get; set; } = 10f; // Base value for reputation log
         public List<List<float>> Deals { get; set; } = new List<List<float>>(); // List of Deals
         public string DealerName { get; private set; }
         public string? DealerImage { get; private set; }

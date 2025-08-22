@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Empire;
 using MelonLoader;
-using UnityEngine;
-using UnityEngine.UI;
-using S1API.UI;
+using MelonLoader.Utils;
 using S1API.Console;
 using S1API.GameTime;
-using Empire;
-using System.Linq;
-using MelonLoader.Utils;
-using System.IO;
 using S1API.Internal.Utils;
-using Object = UnityEngine.Object;
 using S1API.Money;
+using S1API.UI;
+using UnityEngine;
+using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace Empire
 {
@@ -296,34 +296,6 @@ namespace Empire
             managementDetailPanel = rightPanel; // store detail panel for updates
         }
 
-        private void AddManagementButtons(Transform parent)
-        {
-            // Create a horizontal container for the three buttons.
-            var buttonContainer = UIFactory.Panel("MgmtButtons", parent, Color.clear);
-            UIFactory.HorizontalLayoutOnGO(buttonContainer, spacing: 10);
-            // Create Reputation button:
-            var repTuple = UIFactory.RoundedButtonWithLabel("RepButton", "Reputation", buttonContainer.transform, new Color(0.2f, 0.2f, 0.2f, 1f), 100, 40, 16, Color.white);
-            GameObject repGO = repTuple.Item1;
-            Button repBtn = repTuple.Item2;
-            Text repLbl = repTuple.Item3;
-            ButtonUtils.ClearListeners(repBtn);
-            ButtonUtils.AddListener(repBtn, () => UpdateBuyerDetails("Reputation"));
-            // Create Product button:
-            var prodTuple = UIFactory.RoundedButtonWithLabel("ProdButton", "Product", buttonContainer.transform, new Color(0.2f, 0.2f, 0.2f, 1f), 100, 40, 16, Color.white);
-            GameObject prodGO = prodTuple.Item1;
-            Button prodBtn = prodTuple.Item2;
-            Text prodLbl = prodTuple.Item3;
-            ButtonUtils.ClearListeners(prodBtn);
-            ButtonUtils.AddListener(prodBtn, () => UpdateBuyerDetails("Product"));
-            // Create Shipping button:
-            var shipTuple = UIFactory.RoundedButtonWithLabel("ShipButton", "Shipping", buttonContainer.transform, new Color(0.2f, 0.2f, 0.2f, 1f), 100, 40, 16, Color.white);
-            GameObject shipGO = shipTuple.Item1;
-            Button shipBtn = shipTuple.Item2;
-            Text shipLbl = shipTuple.Item3;
-            ButtonUtils.ClearListeners(shipBtn);
-            ButtonUtils.AddListener(shipBtn, () => UpdateBuyerDetails("Shipping"));
-        }
-
         private void UpdateBuyerDetails(string tab)
         {
             // NEW: Guard against null managementDetailPanel.
@@ -464,11 +436,16 @@ namespace Empire
             }
             else if (tab == "Gifts")
             {
-                // NEW: Display Gift info and add button to redeem it.
-                content = $"<b>Special Gift:</b>\nCost: {selectedBuyer.Gift.Cost}, Reputation Gain: {selectedBuyer.Gift.Rep}";
-                UIFactory.Text("SpecialDetailText", content, managementDetailPanel.transform, 18);
+                // Clear detail panel
+                for (int i = managementDetailPanel.transform.childCount - 1; i >= 0; i--)
+                {
+                    Object.Destroy(managementDetailPanel.transform.GetChild(i).gameObject);
+                }
+
+                UIFactory.Text("SpecialDetailText", $"<b>Special Gift:</b>\nCost: {selectedBuyer.Gift.Cost}, Reputation Gain: {selectedBuyer.Gift.Rep}", managementDetailPanel.transform, 18);
+
                 var giftTuple = UIFactory.RoundedButtonWithLabel("GiftButton", "Give Gift", managementDetailPanel.transform, new Color32(0, 123, 255, 255), 240, 70, 22, Color.white);
-                ButtonUtils.ClearListeners(giftTuple.Item2);
+                ButtonUtils.ClearListeners(giftTuple.Item2); // Ensure no duplicate listeners
                 ButtonUtils.AddListener(giftTuple.Item2, () =>
                 {
                     int cost = selectedBuyer.Gift.Cost;
@@ -477,14 +454,30 @@ namespace Empire
                         UIFactory.Text("SpecialErrorText", "<color=#FF0000>Not enough cash for gift.</color>", managementDetailPanel.transform, 18);
                         return;
                     }
+
                     // Subtract cash and add reputation
                     ConsoleHelper.RunCashCommand(-cost);
                     selectedBuyer.GiveReputation(selectedBuyer.Gift.Rep);
                     UIFactory.Text("SpecialSuccessText", $"Gift given! Reputation increased by {selectedBuyer.Gift.Rep}.", managementDetailPanel.transform, 18);
+                    Contacts.Update();
+                    // Re-enable button for further interactions
+                    giftTuple.Item2.interactable = true;
+
                 });
+                
                 // NEW: Add reward section below Gift button.
-                var rewardManager = new RewardManager(selectedBuyer);
+                var rewardManager = selectedBuyer.RewardManager;
                 string rewardType = rewardManager.GetRewardType();
+                //append to rewardType, selectedBuyer.Reward.Args (all the args - strings in the Args string array) - null safe each step
+                if (selectedBuyer.Reward != null && selectedBuyer.Reward.Args != null && selectedBuyer.Reward.Args.Count > 0)
+                {
+                    rewardType += " - " + string.Join(" ", selectedBuyer.Reward.Args);
+                }
+                else
+                {
+                    rewardType = "No reward available";
+                }
+
                 UIFactory.Text("RewardTypeText", $"Reward Type: {rewardType}", managementDetailPanel.transform, 18);
                 var rewardButtonTuple = UIFactory.RoundedButtonWithLabel("RewardButton", "Claim Reward", managementDetailPanel.transform, new Color32(0, 123, 255, 255), 240, 70, 22, Color.white);
                 ButtonUtils.ClearListeners(rewardButtonTuple.Item2);
@@ -493,6 +486,16 @@ namespace Empire
                     if (!rewardManager.isRewardAvailable)
                     {
                         UIFactory.Text("RewardResultText", "<color=#FF0000>Reward not available today.</color>", managementDetailPanel.transform, 18);
+                        return;
+                    }
+                    if (selectedBuyer.Reward == null || selectedBuyer.Reward.Args == null || selectedBuyer.Reward.Args.Count == 0 || rewardType == "")
+                    {
+                        UIFactory.Text("RewardResultText", "<color=#FF0000>No reward available from this contact.</color>", managementDetailPanel.transform, 18);
+                        return;
+                    }
+                    if (selectedBuyer.Reward?.unlockRep > 0 && selectedBuyer._DealerData.Reputation < selectedBuyer.Reward.unlockRep)
+                    {
+                        UIFactory.Text("RewardResultText", "<color=#FF0000>Insufficient reputation to claim reward. Required: {selectedBuyer.Reward.unlockRep}, Current: {selectedBuyer._DealerData.Reputation</color>", managementDetailPanel.transform, 18);
                         return;
                     }
                     // For demonstration, assume a reward amount of 100.

@@ -124,13 +124,13 @@ namespace Empire
                 return;
             }
             // Check if unlockRep is less than buyer Rep
-            if (buyer.Reward?.unlockRep > 0 && buyer._DealerData.Reputation >= buyer.Reward.unlockRep)
+            if (buyer.Reward?.unlockRep > 0 && buyer._DealerData.Reputation < buyer.Reward.unlockRep)
             {
                 MelonLogger.Error($"Insufficient reputation to claim reward. Required: {buyer.Reward.unlockRep}, Current: {buyer._DealerData.Reputation}");
                 return;
             }
             // Deduct reputation cost from current reputation
-            buyer._DealerData.Reputation -= buyer.Reward.unlockRep;
+            buyer._DealerData.Reputation -= buyer.Reward.RepCost;
             // TODO - Switch to using s1api console once supported
             // TODO - Add support for other reward types
             if (rewardType.ToLower() == "console")
