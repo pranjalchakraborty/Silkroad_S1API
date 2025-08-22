@@ -459,9 +459,6 @@ namespace Empire
                     ConsoleHelper.RunCashCommand(-cost);
                     selectedBuyer.GiveReputation(selectedBuyer.Gift.Rep);
 
-                    // Clear previous messages
-                    ClearChildren(managementDetailPanel.transform);
-
                     // Display the success message
                     var successMessage = UIFactory.Text("SpecialSuccessText", $"Gift given! Reputation increased by {selectedBuyer.Gift.Rep}.", managementDetailPanel.transform, 18);
 
@@ -504,12 +501,12 @@ namespace Empire
                     }
                     if (selectedBuyer.Reward?.unlockRep > 0 && selectedBuyer._DealerData.Reputation < selectedBuyer.Reward.unlockRep)
                     {
-                        UIFactory.Text("RewardResultText", "<color=#FF0000>Insufficient reputation to claim reward. Required: {selectedBuyer.Reward.unlockRep}, Current: {selectedBuyer._DealerData.Reputation</color>", managementDetailPanel.transform, 18);
+                        UIFactory.Text("RewardResultText", $"<color=#FF0000>Insufficient reputation to claim reward. Required: {selectedBuyer.Reward.unlockRep}, Current: {selectedBuyer._DealerData.Reputation}</color>", managementDetailPanel.transform, 18);
                         return;
                     }
                     // For demonstration, assume a reward amount of 100.
                     rewardManager.GiveReward();
-                    UIFactory.Text("RewardResultText", "<color=#00FF00>Reward given successfully!</color>", managementDetailPanel.transform, 18);
+                    UIFactory.Text("RewardResultText", "<color=#00FF00>Reward will be given in 10 secs!</color>", managementDetailPanel.transform, 18);
                 });
             }
             // Update management tab label if applicable.
@@ -518,7 +515,7 @@ namespace Empire
         }
         private System.Collections.IEnumerator BlinkMessage(Text message)
         {
-            yield return new WaitForSeconds(2f); // Wait for 2 seconds
+            yield return new WaitForSeconds(1f); // Wait for 1 second
             if (message != null)
             {
                 Object.Destroy(message.gameObject); // Remove the message from the UI
