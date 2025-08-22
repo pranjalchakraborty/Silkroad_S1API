@@ -340,6 +340,9 @@ We hope you enjoy the NPC Custom Buyers & Dealers Expansion Mod! Your feedback a
 
 /// New Tab in modal to show debt info/payoff or to payoff one time
 
+/// Bugs Noted
+// There are slight graphical glitches in the avatar of the npcs that occurs when scrolling
+// New Unlocked NPCs send messages with empty model face
 
 
 

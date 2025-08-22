@@ -112,37 +112,47 @@ namespace Empire
         }
         public void GiveReward()
         {
-            string rewardType = buyer.Reward?.Type ?? "";
             if (!isRewardAvailable)
             {
                 MelonLogger.Error("Reward is not available right now.");
                 return;
             }
-            if (buyer.Reward == null || buyer.Reward.Args == null || buyer.Reward.Args.Count == 0 || rewardType == "")
+            if (buyer.Reward == null || buyer.Reward.Args == null || buyer.Reward.Args.Count == 0 || string.IsNullOrEmpty(buyer.Reward.Type))
             {
                 MelonLogger.Error("No reward available from this contact.");
                 return;
             }
-            // Check if unlockRep is less than buyer Rep
-            if (buyer.Reward?.unlockRep > 0 && buyer._DealerData.Reputation < buyer.Reward.unlockRep)
+            if (buyer.Reward.unlockRep > 0 && buyer._DealerData.Reputation < buyer.Reward.unlockRep)
             {
                 MelonLogger.Error($"Insufficient reputation to claim reward. Required: {buyer.Reward.unlockRep}, Current: {buyer._DealerData.Reputation}");
                 return;
             }
+
             // Deduct reputation cost from current reputation
             buyer._DealerData.Reputation -= buyer.Reward.RepCost;
-            // TODO - Switch to using s1api console once supported
-            // TODO - Add support for other reward types
-            if (rewardType.ToLower() == "console")
+
+            // Start coroutine to execute reward after 10 seconds
+            MelonCoroutines.Start(ExecuteRewardAfterDelay());
+        }
+
+        private System.Collections.IEnumerator ExecuteRewardAfterDelay()
+        {
+            MelonLogger.Msg("Reward execution will start in 10 seconds...");
+            yield return new WaitForSeconds(10); // Wait for 10 seconds
+
+            string rewardType = buyer.Reward.Type.ToLower();
+            if (rewardType == "console")
             {
                 if (buyer.Reward.Args != null && buyer.Reward.Args.Count > 0)
                 {
                     string command = string.Join(" ", buyer.Reward.Args);
-                    Console.SubmitCommand(command);
                     MelonLogger.Msg($"Executing console command: {command}");
+                    Console.SubmitCommand(command);
                 }
             }
+
             isRewardAvailable = false;
+            MelonLogger.Msg("Reward executed successfully.");
         }
     }
 

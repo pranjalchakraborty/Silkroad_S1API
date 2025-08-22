@@ -458,7 +458,16 @@ namespace Empire
                     // Subtract cash and add reputation
                     ConsoleHelper.RunCashCommand(-cost);
                     selectedBuyer.GiveReputation(selectedBuyer.Gift.Rep);
-                    UIFactory.Text("SpecialSuccessText", $"Gift given! Reputation increased by {selectedBuyer.Gift.Rep}.", managementDetailPanel.transform, 18);
+
+                    // Clear previous messages
+                    ClearChildren(managementDetailPanel.transform);
+
+                    // Display the success message
+                    var successMessage = UIFactory.Text("SpecialSuccessText", $"Gift given! Reputation increased by {selectedBuyer.Gift.Rep}.", managementDetailPanel.transform, 18);
+
+                    // Blink the message (optional)
+                    MelonCoroutines.Start(BlinkMessage(successMessage));
+
                     Contacts.Update();
                     // Re-enable button for further interactions
                     giftTuple.Item2.interactable = true;
@@ -471,7 +480,7 @@ namespace Empire
                 //append to rewardType, selectedBuyer.Reward.Args (all the args - strings in the Args string array) - null safe each step
                 if (selectedBuyer.Reward != null && selectedBuyer.Reward.Args != null && selectedBuyer.Reward.Args.Count > 0)
                 {
-                    rewardType += " - " + string.Join(" ", selectedBuyer.Reward.Args);
+                    rewardType += " - " + string.Join(" ", selectedBuyer.Reward.Args) + " - Reward will be given after 10 secs";
                 }
                 else
                 {
@@ -507,7 +516,14 @@ namespace Empire
             if (managementTabLabel != null)
                 managementTabLabel.text = tab;
         }
-
+        private System.Collections.IEnumerator BlinkMessage(Text message)
+        {
+            yield return new WaitForSeconds(2f); // Wait for 2 seconds
+            if (message != null)
+            {
+                Object.Destroy(message.gameObject); // Remove the message from the UI
+            }
+        }
         private System.Collections.IEnumerator WaitForBuyerAndInitialize()
         {
             float timeout = 5f;
