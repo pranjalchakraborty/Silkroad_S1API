@@ -55,7 +55,7 @@ namespace Empire
         public static void Update()
         {
 
-            BlackmarketBuyer testBuyer = new BlackmarketBuyer();
+            //BlackmarketBuyer testBuyer = new BlackmarketBuyer();
 
             MelonLogger.Msg("Testing 100");
             MelonLoader.MelonCoroutines.Start(UpdateCoroutine());
@@ -130,11 +130,6 @@ namespace Empire
                     }
 
                     MelonLogger.Msg($"✅ Contacts.Buyers now contains {Buyers.Count} buyers.");
-                    // Run only once per mod load
-                    if (!IsUnlocked)
-                    {
-                        GeneralSetup.UncCalls();
-                    }
                     IsUnlocked = true;
                 }
 

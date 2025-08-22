@@ -12,7 +12,7 @@ namespace Empire
 {
     public static class GeneralSetup
     {
-        public static EmpireSaveData EmpireSaveData { get; set; } = new EmpireSaveData();
+        public static EmpireSaveData EmpireSaveData { get; set; } 
         // Convert to call phone later - TODO
         // Basic intro to mod and debt mechanics
         public static void UncCalls()

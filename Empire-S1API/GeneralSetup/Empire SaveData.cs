@@ -1,15 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using S1API.Internal.Utils;
-using S1API.PhoneApp;
-using S1API.Entities;
-using UnityEngine;
 using Empire;
-using S1API.Saveables;
+using Il2CppScheduleOne.Economy;
+using Il2CppScheduleOne.Persistence.Datas;
 using MelonLoader;
 using MelonLoader.Utils;
-using System.IO;
+using S1API.Entities;
+using S1API.Internal.Utils;
+using S1API.PhoneApp;
+using S1API.Saveables;
+using UnityEngine;
 
 namespace Empire
 {
@@ -23,13 +25,24 @@ namespace Empire
 
         public EmpireSaveData() : base("EmpireSaveData", "Empire", "SaveData")
         {
-            // Initialize the save data here if needed
-            SaveData = new GlobalSaveData
-            {
-                // Initialize your save data properties here
-
-            };
+           
         }
+
+        protected override void OnLoaded()
+        {
+            base.OnLoaded();
+            GeneralSetup.EmpireSaveData = this;
+            MelonLogger.Msg("Empire Save Data Loaded");
+        }
+
+        protected override void OnCreated()
+        {
+            base.OnCreated();
+            GeneralSetup.EmpireSaveData = this;
+            MelonLogger.Msg("Empire Save Data Created");
+            GeneralSetup.UncCalls();//ToDO - shift to proper flow
+        }
+
 
     }
 }

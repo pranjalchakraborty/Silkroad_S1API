@@ -1,1 +1,2 @@
 pyinstaller --name DealerEditor --onefile --windowed dealer_editor.py
+pyinstaller --name SaveCleaner --onefile --windowed save_cleaner.py
