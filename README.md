@@ -32,6 +32,7 @@ Welcome to the NPC Custom Buyers & Dealers Expansion Mod! This mod allows player
     * [Future Concepts & Possibilities](#future-concepts--possibilities)
 8.  [For Developers & Content Creators](#for-developers--content-creators)
 9.  [Checklist to Release](#checklist-to-release)
+10. [Bugs](#bugs)
 
 ## Core Features
 
@@ -78,6 +79,8 @@ NPCs can have preferences for certain product effects, which can be necessary or
 
     * **Warning:** Be mindful when creating JSONs, as randomly chosen *necessary* effects might sometimes be impossible to achieve with the game's current mixing logic.
 
+    * **Comment:** Effect probability =1 means optional guaranteed and =2 means necessary guaranteed. 0-1 is probability to roll optional effect and 1-2 (subtract 1) is probability to roll necessary effect.
+
 ### Rewards
 
 Successful deliveries yield various rewards, calculated as follows:
@@ -89,6 +92,8 @@ Successful deliveries yield various rewards, calculated as follows:
 * **XP Reward:**
     `xp = base_xp*random3 + (money_reward * xp_mult*random3)`
     * **Note:** XP rewards are currently unsupported by `s1api` and will not be granted in-game until API support is added.
+
+    * **Comment:** randomnumberN are random numbers taken from randomNumberRanges array. The first 2 numbers is min and max range of 1st random number. The second 2 numbers is the min and max range of the 2nd random number. Like that.
 
 Fields like `base_dollar`, `base_rep`, `base_xp`, and the various `_mult` values are configurable per NPC in their JSON definition.
 
@@ -218,7 +223,7 @@ To aid in the creation and management of complex NPC configurations, this mod in
 
 ### Pending Core Features
 
-
+*No pending core features listed yet.*
 
 ### Current Gameplay Notes & Limitations
 
@@ -270,7 +275,6 @@ This mod is an ongoing project with many plans for expansion and refinement!
 * **Quest Rewards:**
     * Optionally, players may receive a bonus for turning in a quest earlier than the deadline.
 
-
 ## For Developers & Content Creators
 
 * **Source Code Comments:** Pay attention to:
@@ -285,7 +289,7 @@ This mod is an ongoing project with many plans for expansion and refinement!
     * Save and load functionality with custom NPCs.
     * Attempting to drop non-quest items(type, quality, effects, non product) in the delivery zone.
     * Quest cancellation logic and penalties.
-	
+
 ## Pending/Optional Tasks
 
 - **Optional QOL:** Restructure JSON quality and effects from two lists into a single dictionary format.
@@ -302,14 +306,28 @@ This mod is an ongoing project with many plans for expansion and refinement!
 - **Deal Heat:** Expose heat levels of deals through JSON with configurable reward multipliers.
 - **Quest System:** Convert and expose quest systems (like Uncle Nelson's questline) through JSON.
 
+    * **Comment:** Unc Nelson Questline
+    * **Comment:** Unc Nelson Phone Msg - convert to Call
+    * **Comment:** Special mechanic for each dealer groups like Debt for Cartel - Police Help for Uncle Nelson - Gus Gang, Prison help for Uncle Nelson - Welker Gang, Break Out Unc with Heisenberg Gang, Legal Help - Saul
+    * **Comment:** "pay_once":{"amount":,"msg":"This money will be put to good use"}
+    * **Comment:** Bool Variables for Debt Payoff/Pay Once - Special mechanics by mechanic type and NPC name
+
 ## Checklist to Release
 
 - [ ] Play game
-- [x] give quest info properly in journal
-- [x] Update Readme
-- [x] add random and static values to load from json
-- [x] Heat of deals set to 2* npc tier
+- [ ] Update Readme
+- [ ] JSON values balance - Gifts and Rewards
+- [ ] do cartel support once s1api updates
+- [ ] New Tab in modal to show debt info/payoff or to payoff one time
 
+## Bugs
+
+* There are slight graphical glitches in the avatar of the NPCs that occurs when scrolling.
+* Newly unlocked NPCs send messages with empty model face.
+
+We hope you enjoy the NPC Custom Buyers & Dealers Expansion Mod! Your feedback and contributions are welcome.
+
+---
 💕Credits:
 Much gratitude and many many thanks to:
 ❤️ @Akermi for teaching S1API usage through his git repos and for the initial project structure.
@@ -323,26 +341,7 @@ Much gratitude and many many thanks to:
  
 ---
 
-We hope you enjoy the NPC Custom Buyers & Dealers Expansion Mod! Your feedback and contributions are welcome.
 
-
-
-// Unc Nelson Questline
-// Unc Nelson Phone Msg - convert to Call
-// Special mechanic for each dealer groups like Debt for Cartel - Police Help for Uncle Nelson - Gus Gang, Prison help for Uncle Nelson - Welker Gang, Break Out Unc with Heisenberg Gang, Legal Help - Saul
-"pay_once":{"amount":,"msg":"This money will be put to good use"}
-// Bool Variables for Debt Payoff/Pay Once - Special mechanics by mechanic type and NPC name
-
-// JSON values balance - Gifts and Rewards
-// Bool flag for Debt payoffs
-
-// Update JSONEditor
-
-/// New Tab in modal to show debt info/payoff or to payoff one time
-
-/// Bugs Noted
-// There are slight graphical glitches in the avatar of the npcs that occurs when scrolling
-// New Unlocked NPCs send messages with empty model face
 
 
 
