@@ -19,9 +19,12 @@ namespace Empire
         //public int Index { get; set; } = dealerDataIndex;
         public static Dealer dealer = Contacts.GetDealerDataByIndex(dealerDataIndex);
         public bool IsInitialized { get; set; } = false;
+
         [SaveableField("DealerSaveData")]
         public DealerSaveData _DealerData;
+
         public List<UnlockRequirement> UnlockRequirements { get; set; } = new List<UnlockRequirement>();
+
         private List<Drug> Drugs = new List<Drug>(); // Initialize Drugs list
         public List<Shipping> Shippings { get; set; } = new List<Shipping>(); // Initialize Shippings list
         private Dialogue Dialogues = new Dialogue();
@@ -314,38 +317,6 @@ namespace Empire
             }
         }
 
-
-
-        //Possible Check to see if all dealers save data are initialized and send a message to the player
-        private System.Collections.IEnumerator WaitForDealerSaveDataAndSendStatus()
-        {
-            float timeout = 5f;
-            float waited = 0f;
-
-            MelonLogger.Msg($"⏳ WaitForDealerSaveDataAndSendStatus- Waiting for dealer {DealerName} to be initialized...");
-            // Check if all buyer.IsInitialised is false in Contacts.Buyers 
-            // If it is, wait until it is true or the timeout is reached
-            foreach (var buyer in Contacts.Buyers.Values)
-            {
-                if (!buyer.IsInitialized && waited < timeout)
-                {
-                    //MelonLogger.Msg($"⏳ Waiting for dealer {buyer.DealerName} to be initialized...");
-                    waited += Time.deltaTime;
-                    yield return null;
-                }
-            }
-
-            if (!IsInitialized)
-            {
-                // If the dealer data is still not initialized after the timeout, log a warning
-                MelonLogger.Warning($"⚠️ Dealer {DealerName} not initialized after timeout");
-                yield break;
-            }
-
-
-            MelonLogger.Msg($"✅ Dealer {DealerName} initialized with save data");
-
-        }
     }
 
 

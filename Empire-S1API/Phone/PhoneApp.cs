@@ -641,10 +641,15 @@ namespace Empire
                     MelonLogger.Warning($"⚠️ Dealer {buyer.DealerName} not found in Buyers dictionary.");
                     continue;
                 }
-                if (buyer.IsInitialized == false)
+                if (!buyer.IsInitialized)
                 {
                     MelonLogger.Warning($"⚠️ Dealer {buyer.DealerName} found in Buyers dictionary as not unlocked. Not progressing further");
                     continue;
+                }
+                if (dealerSaveData.ShippingTier < 0 || dealerSaveData.ShippingTier >= buyer.Shippings.Count)
+                {
+                    MelonLogger.Error($"[MyApp] Invalid ShippingTier {dealerSaveData.ShippingTier} for dealer {buyer.DealerName}. Shippings.Count={buyer.Shippings.Count}");
+                    return;
                 }
                 var shipping = buyer.Shippings[dealerSaveData.ShippingTier];
                 // Log dealer information
@@ -737,7 +742,13 @@ namespace Empire
             //Store the last quality. Also store dollar and rep multiplier
             //var lastQuality = randomDrug.Qualities.LastOrDefault();
             var qualityMult = 0f;
-            //choose a random quality from the randomDrug.Qualities list
+            // Log the qualities before selecting
+            MelonLogger.Msg($"[GenerateQuest] Dealer: {buyer.DealerName}, Drug: {randomDrug.Type}, Qualities.Count: {randomDrug.Qualities.Count}");
+            if (randomDrug.Qualities.Count == 0)
+            {
+                MelonLogger.Error($"[GenerateQuest] ERROR: No qualities unlocked for drug '{randomDrug.Type}' for dealer '{buyer.DealerName}'. Skipping quest generation.");
+                return;
+            }
             var randomQuality = randomDrug.Qualities[RandomUtils.RangeInt(0, randomDrug.Qualities.Count)];
             var qualityKey = randomQuality.Type.Trim();
             if (JSONDeserializer.QualitiesDollarMult.ContainsKey(qualityKey))

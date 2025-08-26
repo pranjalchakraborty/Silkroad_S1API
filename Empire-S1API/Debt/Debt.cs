@@ -25,7 +25,7 @@ namespace Empire
             {
                 TimeManager.OnWeekPass += DebtPayment; // Subscribe to the week passed event
             }
-            SendDebtMessage(); // Send the initial debt message
+            SendDebtMessage(0); // Send the initial debt message
         }
         // create a method that uses TimeManager.ElapsedDays which returns integer and finds the nearest highest int (including it) divisible by 7
         public static int GetNearestWeek(int days)
@@ -34,9 +34,23 @@ namespace Empire
             int weeks = (int)Math.Ceiling(days / 7.0);
             return weeks * 7;
         }
-        private void SendDebtMessage()
+        private void SendDebtMessage(int paymentAmount)
         {
             float debtPayable = buyer.Debt.DayMultiple * (float)Math.Pow(GetNearestWeek(TimeManager.ElapsedDays), buyer.Debt.DayExponent);
+            //If DebtRemaining<debtPayable, set debtPayable to DebtRemaining
+            if (debtPayable > buyer._DealerData.DebtRemaining)
+            {
+                debtPayable = buyer._DealerData.DebtRemaining;
+            }
+            if (paymentAmount > 0)
+            {
+                buyer.SendCustomMessage($"You have paid ${paymentAmount} towards your debt.");
+            }
+            if (buyer._DealerData.DebtRemaining <= 0)
+            {
+                buyer.SendCustomMessage("You have no debt remaining after this weekly payment. Congrats!");
+                return;
+            }
             buyer.SendCustomMessage($"You owe us ${buyer._DealerData.DebtRemaining}. We will take ${debtPayable} at the beginning of next week or equivalent in products with a bonus multiple of {buyer.Debt.ProductBonus}. If you don't pay, we will take your life.");
 
             // Send a message to the player about the debt status
@@ -44,15 +58,24 @@ namespace Empire
             MelonLogger.Msg($"Debt status for {buyer.DealerName}: {buyer._DealerData.DebtRemaining}");
         }
 
-        public void SendWeekDebtMessage()
+        public void SendDealDebtMessage()
         {
             // Send a message to the player about the debt status
             float debtPayable = buyer.Debt.DayMultiple * (float)Math.Pow(GetNearestWeek(TimeManager.ElapsedDays), buyer.Debt.DayExponent);
-            if (debtPayable < buyer._DealerData.DebtPaidThisWeek)
+            if (debtPayable > buyer._DealerData.DebtRemaining)
+            {
+                debtPayable = buyer._DealerData.DebtRemaining;
+            }
+            if (buyer._DealerData.DebtRemaining <= 0)
+            {
+                buyer.SendCustomMessage("You have no debt remaining after this deal. Congrats!");
+                return;
+            }
+            if (debtPayable > buyer._DealerData.DebtPaidThisWeek)
             {
                 buyer.SendCustomMessage($"You owe us ${buyer._DealerData.DebtRemaining}. You have paid ${buyer._DealerData.DebtPaidThisWeek} this week so far through products. We will take ${debtPayable - buyer._DealerData.DebtPaidThisWeek} at the beginning of next week or equivalent in products with a bonus multiple of {buyer.Debt.ProductBonus}. If you don't pay, we will take your life.");
             }
-            else if (debtPayable >= buyer._DealerData.DebtRemaining)
+            else
             {
                 buyer.SendCustomMessage($"You owe us ${buyer._DealerData.DebtRemaining}. You have paid ${buyer._DealerData.DebtPaidThisWeek} this week so far. Congrats! This is more than this week's quota. Rest of business this week will be in cash.");
             }
@@ -77,7 +100,7 @@ namespace Empire
             buyer._DealerData.DebtRemaining = buyer._DealerData.DebtRemaining * (1 + buyer.Debt.InterestRate); // Apply interest to the remaining debt
             buyer._DealerData.DebtPaidThisWeek = 0; // Reset the amount paid this week
             buyer.SendCustomMessage($"You have paid ${paymentAmount} towards your debt.");
-            SendDebtMessage(); // Send the updated debt message
+            SendDebtMessage((int)paymentAmount); // Send the updated debt message
         }
 
         private float CalculateWeeklyPayment()
@@ -95,6 +118,11 @@ namespace Empire
                 amountPayable = 0; // Ensure the payment is not negative
             }
             // Calculate the weekly payment based on the debt parameters
+            //Ensure the amount payable does not exceed the remaining debt
+            if (amountPayable > buyer._DealerData.DebtRemaining)
+            {
+                amountPayable = buyer._DealerData.DebtRemaining;
+            }
             return amountPayable;
         }
     }

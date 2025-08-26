@@ -190,7 +190,7 @@ Below are some of the crucial fields and structures you'll encounter in the NPC 
 
 ### Important JSON Rules & Assumptions
 
-* **Initial Unlock:** Each NPC must have at least one drug type + quality unlocked at `unlockRep: 1` and at least one `shippingTier` unlocked at `unlockRep: 1`. This ensures the player can start building reputation with them.
+* **Initial Unlock:** Each NPC must have at least one drug type + quality unlocked at `unlockRep: 0` and at least one `shippingTier` unlocked at `unlockRep: 0`. This ensures the player can start building reputation with them.
 * **String Matching:** `DrugType`, `EffectsName`, and `QualityName` strings in your JSON **must exactly match** the corresponding strings used by `s1api` and the base game. These are provided at the top of reference JSON files.
 * **`deals` and `dealsModifier` Size:** Both the `deals[index]` array and the `dealsModifier` array within a `shippingTier` must have 4 elements.
 

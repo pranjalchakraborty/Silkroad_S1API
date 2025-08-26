@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Empire;
-using Il2CppScheduleOne.Economy;
-using Il2CppScheduleOne.Persistence.Datas;
 using MelonLoader;
 using MelonLoader.Utils;
 using S1API.Entities;
@@ -25,13 +23,13 @@ namespace Empire
 
         public EmpireSaveData() : base("EmpireSaveData", "Empire", "SaveData")
         {
-           
+           SaveData= new GlobalSaveData();  
         }
 
         protected override void OnLoaded()
         {
             base.OnLoaded();
-            GeneralSetup.EmpireSaveData = this;
+            //GeneralSetup.EmpireSaveData = this;
             MelonLogger.Msg("Empire Save Data Loaded");
         }
 

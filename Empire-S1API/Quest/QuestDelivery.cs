@@ -413,7 +413,7 @@ namespace Empire
                 {
                     Data.Reward -= (int)(buyer._DealerData.DebtRemaining / buyer.Debt.ProductBonus);
                     buyer._DealerData.DebtRemaining = 0;
-                    buyer.SendCustomMessage("Congrats! You Paid off the debt.");
+                    //buyer.SendCustomMessage("Congrats! You Paid off the debt.");
                     MelonLogger.Msg($"   Paid off debt to {buyer.DealerName}");
                     Money.ChangeCashBalance(Data.Reward);
                 }
@@ -423,7 +423,7 @@ namespace Empire
                     buyer._DealerData.DebtRemaining -= buyer.Debt.ProductBonus * Data.Reward;
                     buyer._DealerData.DebtPaidThisWeek += buyer.Debt.ProductBonus * Data.Reward;
                 }
-                buyer.DebtManager.SendWeekDebtMessage();
+                buyer.DebtManager.SendDealDebtMessage();    
             }
             else
             {

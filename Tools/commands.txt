@@ -1,2 +1,4 @@
-pyinstaller --name EmpireEditor --windowed --onefile empire_editor.py
+pyinstaller --name EmpireEditor --windowed empire_editor.py
 pyinstaller --name SaveCleaner --windowed save_cleaner.py
+
+python -m nuitka --enable-plugin=tk-inter --standalone empire_editor.py

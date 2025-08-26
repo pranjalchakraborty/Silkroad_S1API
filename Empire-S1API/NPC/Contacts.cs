@@ -110,16 +110,15 @@ namespace Empire
                                 MelonLogger.Msg($"✅ Dealer {buyer.DealerName} intro sent.");
                                 buyer._DealerData.IntroDone = true; // Set IntroDone to true
                             }
-                            // Run only once per mod load per buyer 
-                            if (!IsUnlocked)
-                            {
+                            
+                            
                                 if (buyer.Debt != null && buyer.Debt.TotalDebt > 0 && buyer._DealerData.DebtRemaining > 0)
                                 {
                                     buyer.DebtManager = new DebtManager(buyer);
                                     MelonLogger.Msg($"❌ Dealer {buyer.DealerName} is locked due to debt: {buyer.Debt.TotalDebt}");
                                 }
 
-                            }
+                            
                             MelonLogger.Msg($"✅ Initialized dealer: {buyer.DealerName}");
                         }
                         buyer.UnlockDrug();
