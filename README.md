@@ -338,12 +338,9 @@ Much gratitude and many many thanks to:
 ❤️ Breaking Bad for the NPC inspirations.
 ❤️ Me for sticking through and making my first full game mod.
 ❤️ AI
- 
----
 
-
-
-
+// Easy way to change effects reward multiple - random number 1 ranges, reputation reward multiple - random number 2 ranges, xp reputation multiple - random number 3 ranges, total reward multiple - random number 4 ranges
+// random number ranges are given in order in randomNumberRanges array
 
 
 

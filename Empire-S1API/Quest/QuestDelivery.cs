@@ -60,8 +60,8 @@ namespace Empire
             //use syntax like += to add a new event handler to the DayPass event
             // Reduce the quest time by 1 day
             Data.DealTime -= 1;
-            // Check if the quest time has expired
-            if (Data.DealTime < 0)
+            // Check if the quest time has expired and rewardEntry is not active
+            if (Data.DealTime < 0 && rewardEntry.State!=QuestState.Active)
             {
                 // If the quest time has expired, fail the quest
                 Data.Reward = -Data.Penalties[0];
@@ -394,7 +394,7 @@ namespace Empire
         //Call with QuestState to be set as string - UPDATABLE
         private System.Collections.IEnumerator DelayedReward(string source)
         {
-            yield return new WaitForSeconds(RandomUtils.RangeInt(30, 60));
+            yield return new WaitForSeconds(RandomUtils.RangeInt(15, 30));
             Data.RepReward += (int)(Data.Reward * Data.RepMult);
             Data.XpReward += (int)(Data.Reward * Data.XpMult);
             GiveReward(source);

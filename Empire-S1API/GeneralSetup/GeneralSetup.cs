@@ -27,6 +27,16 @@ namespace Empire
                 NPC1.Get<UncleNelson>().SendTextMessage("I'll help you out however I can. Don't come looking for me though. Heh. I'll call from time to time. Take care son.");
             }
         }
+        public static void ResetPlayerStats()
+        {
+            MelonLogger.Msg("Resetting Player Stats.");
+            S1API.Console.ConsoleHelperTemp.SetPlayerJumpMultiplier(1f);
+            S1API.Console.ConsoleHelperTemp.SetPlayerMoveSpeedMultiplier(1f);
+            S1API.Console.ConsoleHelperTemp.SetPlayerHealth(100f);
+            S1API.Console.ConsoleHelperTemp.SetPlayerEnergyLevel(100f);
+            //S1API.Console.ConsoleHelperTemp.SetLawIntensity(1f);
+            MelonLogger.Msg("Player Stats Reset.");
+        }
     }
 
 }

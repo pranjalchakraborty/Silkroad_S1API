@@ -103,8 +103,8 @@
         1.5,
         0.5,
         1.5,
-        0.5,
-        1.5
+        0.25,
+        0.75
     ],
     "dealers": [
         {
@@ -129,22 +129,21 @@
             "refreshCost": 420,
             "gift": {
                 "cost": 1000,
-                "rep": 10
+                "rep": 20
             },
             "repLogBase": 2,
             "dealDays": [
                 "Monday",
                 "Tuesday",
                 "Wednesday",
-                "Thursday",
-                "Friday"
+                "Thursday"
             ],
             "reward": {
                 "rep_cost": 100,
                 "unlockRep": 100,
                 "type": "console",
                 "args": [
-                    "cleartrash"
+                    "give","cocaine","5"
                 ]
             },
             "curfewDeal": false,
@@ -287,11 +286,10 @@
             "refreshCost": 420,
             "gift": {
                 "cost": 1000,
-                "rep": 10
+                "rep": 20
             },
             "repLogBase": 2,
             "dealDays": [
-                "Monday",
                 "Tuesday",
                 "Wednesday",
                 "Thursday",
@@ -302,7 +300,9 @@
                 "unlockRep": 100,
                 "type": "console",
                 "args": [
-                    "cleartrash"
+                    "give",
+                    "meth",
+                    "10"
                 ]
             },
             "curfewDeal": false,
@@ -417,9 +417,9 @@
                     "Heh heh, nice. Party time."
                 ],
                 "reward": [
-                    "Here's the cash, man. Totally worth it.",
-                    "Payment beamed. Live long and prosper.",
-                    "Got the eddies. Rock on."
+                    "Here's the cash, man. You earned ${dollar}. Totally worth it.",
+                    "Payment beamed. {dollar} Dollars. Live long and prosper.",
+                    "Got the eddies. {dollar} incoming. Rock on."
                 ]
             }
         },
@@ -445,22 +445,21 @@
             "refreshCost": 420,
             "gift": {
                 "cost": 1000,
-                "rep": 10
+                "rep": 20
             },
             "repLogBase": 2,
             "dealDays": [
-                "Monday",
-                "Tuesday",
                 "Wednesday",
                 "Thursday",
-                "Friday"
+                "Friday",
+                "Saturday"
             ],
             "reward": {
                 "rep_cost": 100,
                 "unlockRep": 100,
                 "type": "console",
                 "args": [
-                    "cleartrash"
+                    "give","weed","20"
                 ]
             },
             "curfewDeal": false,
@@ -575,9 +574,9 @@
                     "Solid, man. Real solid."
                 ],
                 "reward": [
-                    "A'ight, here's the paper. Straight up.",
-                    "Payday, yo. Keep it tight.",
-                    "Money's there. Respect."
+                    "A'ight, here's the paper. ${dollar} straight up.",
+                    "Payday, yo. {dollar} in your pocket. Keep it tight.",
+                    "Money's there. {dollar}. Respect."
                 ]
             }
         },
@@ -625,8 +624,8 @@
             ],
             "refreshCost": 420,
             "gift": {
-                "cost": 1000,
-                "rep": 10
+                "cost": 3000,
+                "rep": 60
             },
             "repLogBase": 4,
             "dealDays": [
@@ -635,8 +634,8 @@
                 "Friday"
             ],
             "reward": {
-                "rep_cost": 100,
-                "unlockRep": 100,
+                "rep_cost": 300,
+                "unlockRep": 300,
                 "type": "console",
                 "args": [
                     "setquality",
@@ -859,9 +858,9 @@
                     "Hell yeah. This'll fly."
                 ],
                 "reward": [
-                    "Here's the skrilla, yo. Keep it real.",
-                    "Boom! Payment, bitch!",
-                    "Money's wired. Yeah, magnets!"
+                    "Here's the skrilla, yo. ${dollar} Keep it real.",
+                    "Boom! Payment, bitch! {dollar}",
+                    "Money's wired. Yeah, magnets! {dollar}"
                 ]
             }
         },
@@ -891,8 +890,8 @@
             ],
             "refreshCost": 420,
             "gift": {
-                "cost": 1000,
-                "rep": 10
+                "cost": 2000,
+                "rep": 40
             },
             "repLogBase": 3,
             "dealDays": [
@@ -902,11 +901,11 @@
                 "Saturday"
             ],
             "reward": {
-                "rep_cost": 100,
-                "unlockRep": 100,
+                "rep_cost": 200,
+                "unlockRep": 200,
                 "type": "console",
                 "args": [
-                    "cleartrash"
+                    "setlawintensity","1"
                 ]
             },
             "curfewDeal": true,
@@ -1094,9 +1093,9 @@
                     "Perfecto! Another satisfied customer... soon."
                 ],
                 "reward": [
-                    "Here's your cut, minus my fee, of course. Don't spend it all in one place!",
-                    "Payment sent! Remember who to call when you're in a jam!",
-                    "Cash money! Better call Saul!"
+                    "Here's your cut, minus my fee, of course. ${dollar} Don't spend it all in one place!",
+                    "Payment sent! {dollar} Remember who to call when you're in a jam!",
+                    "Cash money! Better call Saul! {dollar}"
                 ]
             }
         },
@@ -1126,22 +1125,22 @@
             ],
             "refreshCost": 420,
             "gift": {
-                "cost": 1000,
-                "rep": 10
+                "cost": 2000,
+                "rep": 40
             },
             "repLogBase": 3,
             "dealDays": [
                 "Tuesday",
                 "Wednesday",
                 "Thursday",
-                "Friday"
+                "Sunday"
             ],
             "reward": {
-                "rep_cost": 100,
-                "unlockRep": 100,
+                "rep_cost": 200,
+                "unlockRep": 200,
                 "type": "console",
                 "args": [
-                    "cleartrash"
+                    "save"
                 ]
             },
             "curfewDeal": true,
@@ -1329,9 +1328,9 @@
                     "Solid work."
                 ],
                 "reward": [
-                    "Here's the payment. Earned it.",
-                    "Funds transferred. Keep this level of competence.",
-                    "Your cut. No half measures."
+                    "Here's the payment. Earned it. {dollar}",
+                    "Funds transferred. Keep this level of competence. {dollar}",
+                    "Your cut. No half measures. {dollar}"
                 ]
             }
         },
@@ -1361,8 +1360,8 @@
             ],
             "refreshCost": 420,
             "gift": {
-                "cost": 1000,
-                "rep": 10
+                "cost": 2000,
+                "rep": 40
             },
             "repLogBase": 3,
             "dealDays": [
@@ -1379,11 +1378,12 @@
                 "product_bonus": 2
             },
             "reward": {
-                "rep_cost": 100,
-                "unlockRep": 100,
+                "rep_cost": 200,
+                "unlockRep": 200,
                 "type": "console",
                 "args": [
-                    "cleartrash"
+                    "spawnvehicle",
+                    "shitbox"
                 ]
             },
             "curfewDeal": false,
@@ -1571,9 +1571,9 @@
                     "Hmph. Adequate."
                 ],
                 "reward": [
-                    "Payment as agreed. Don't expect gratitude.",
-                    "The funds have been transferred. Ensure future deliveries are punctual.",
-                    "Here is your compensation. Remember who you work for."
+                    "Payment as agreed. Don't expect gratitude. {dollar}",
+                    "The funds have been transferred. Ensure future deliveries are punctual. {dollar}",
+                    "Here is your compensation. Remember who you work for. {dollar}"
                 ]
             }
         },
@@ -1613,8 +1613,8 @@
             ],
             "refreshCost": 420,
             "gift": {
-                "cost": 1000,
-                "rep": 10
+                "cost": 3000,
+                "rep": 60
             },
             "repLogBase": 4,
             "dealDays": [
@@ -1630,11 +1630,11 @@
                 "product_bonus": 2
             },
             "reward": {
-                "rep_cost": 100,
-                "unlockRep": 100,
+                "rep_cost": 300,
+                "unlockRep": 300,
                 "type": "console",
                 "args": [
-                    "cleartrash"
+                    "clearwanted"
                 ]
             },
             "curfewDeal": true,
@@ -1848,9 +1848,9 @@
                     "Heh heh. Good. REAL GOOD."
                 ],
                 "reward": [
-                    "Here's your money! Now GET OUT!",
-                    "Take it! Don't look at me!",
-                    "Yeah, yeah, payment. Scram!"
+                    "Here's your money! Now GET OUT! {dollar}",
+                    "Take it! Don't look at me! {dollar}",
+                    "Yeah, yeah, payment. Scram! {dollar}"
                 ]
             }
         },
@@ -1894,8 +1894,8 @@
             ],
             "refreshCost": 420,
             "gift": {
-                "cost": 1000,
-                "rep": 10
+                "cost": 4000,
+                "rep": 80
             },
             "repLogBase": 5,
             "dealDays": [
@@ -1903,11 +1903,11 @@
                 "Wednesday"
             ],
             "reward": {
-                "rep_cost": 100,
-                "unlockRep": 100,
+                "rep_cost": 400,
+                "unlockRep": 400,
                 "type": "console",
                 "args": [
-                    "cleartrash"
+                    "setmovespeed","2"
                 ]
             },
             "curfewDeal": true,
@@ -2142,9 +2142,9 @@
                     "Good. This meets expectations."
                 ],
                 "reward": [
-                    "Payment, as agreed. Maintain this level of quality.",
-                    "The transaction is complete. Efficiency is rewarded.",
-                    "Your compensation. Remember the importance of discretion."
+                    "Payment, as agreed. Maintain this level of quality. {dollar}",
+                    "The transaction is complete. Efficiency is rewarded. {dollar}",
+                    "Your compensation. Remember the importance of discretion. {dollar}"
                 ]
             }
         },
@@ -2174,8 +2174,8 @@
             ],
             "refreshCost": 420,
             "gift": {
-                "cost": 1000,
-                "rep": 10
+                "cost": 2000,
+                "rep": 40
             },
             "repLogBase": 3,
             "dealDays": [
@@ -2192,11 +2192,11 @@
                 "product_bonus": 2
             },
             "reward": {
-                "rep_cost": 100,
-                "unlockRep": 100,
+                "rep_cost": 200,
+                "unlockRep": 200,
                 "type": "console",
                 "args": [
-                    "cleartrash"
+                    "lowerwanted"
                 ]
             },
             "curfewDeal": true,
@@ -2385,9 +2385,9 @@
                     "*One calm ding*"
                 ],
                 "reward": [
-                    "*Points with bell* *Ding*",
-                    "*Bell tap towards money*",
-                    "*Ding* (Take it)"
+                    "*Points with bell* *Ding* ({dollar})",
+                    "*Bell tap towards money* ({dollar})",
+                    "*Ding* (Take it) ({dollar})"
                 ]
             }
         },
@@ -2417,8 +2417,8 @@
             ],
             "refreshCost": 420,
             "gift": {
-                "cost": 1000,
-                "rep": 10
+                "cost": 2000,
+                "rep": 40
             },
             "repLogBase": 3,
             "dealDays": [
@@ -2435,11 +2435,11 @@
                 "product_bonus": 2
             },
             "reward": {
-                "rep_cost": 100,
-                "unlockRep": 100,
+                "rep_cost": 200,
+                "unlockRep": 200,
                 "type": "console",
                 "args": [
-                    "cleartrash"
+                    "teleport","church"
                 ]
             },
             "curfewDeal": true,
@@ -2628,9 +2628,9 @@
                     "Bueno."
                 ],
                 "reward": [
-                    "*Slides money forward*",
-                    "*Points to money*",
-                    "..."
+                    "*Slides money forward* ({dollar})",
+                    "*Points to money* ({dollar})",
+                    "... ({dollar})"
                 ]
             }
         },
@@ -2670,8 +2670,8 @@
             ],
             "refreshCost": 420,
             "gift": {
-                "cost": 1000,
-                "rep": 10
+                "cost": 4000,
+                "rep": 80
             },
             "repLogBase": 5,
             "dealDays": [
@@ -2686,11 +2686,11 @@
                 "product_bonus": 2
             },
             "reward": {
-                "rep_cost": 100,
-                "unlockRep": 100,
+                "rep_cost": 400,
+                "unlockRep": 400,
                 "type": "console",
                 "args": [
-                    "cleartrash"
+                    "setjumpforce","2"
                 ]
             },
             "curfewDeal": true,
@@ -2925,9 +2925,9 @@
                     "Acceptable. Pour me a drink."
                 ],
                 "reward": [
-                    "Your payment. Now, enjoy the party... from a distance.",
-                    "Here. A token for your troubles. Now leave.",
-                    "Money. As promised. Do not presume this makes us friends."
+                    "Your payment. Now, enjoy the party... from a distance. {dollar}",
+                    "Here. A token for your troubles. Now leave. {dollar}",
+                    "Money. As promised. Do not presume this makes us friends. {dollar}"
                 ]
             }
         },
@@ -2967,8 +2967,8 @@
             ],
             "refreshCost": 420,
             "gift": {
-                "cost": 1000,
-                "rep": 10
+                "cost": 4000,
+                "rep": 80
             },
             "repLogBase": 5,
             "dealDays": [
@@ -2976,11 +2976,11 @@
                 "Saturday"
             ],
             "reward": {
-                "rep_cost": 100,
-                "unlockRep": 100,
+                "rep_cost": 400,
+                "unlockRep": 400,
                 "type": "console",
                 "args": [
-                    "cleartrash"
+                    "setstaminareserve","200"
                 ]
             },
             "curfewDeal": true,
@@ -3150,9 +3150,9 @@
                     "Finally. Just... get it loaded."
                 ],
                 "reward": [
-                    "The payment is processed. Just... be careful.",
-                    "Funds transferred. Ensure traceability is zero.",
-                    "Okay, money sent. Don't call me again unless necessary."
+                    "The payment is processed. Just... be careful. {dollar}",
+                    "Funds transferred. Ensure traceability is zero. {dollar}",
+                    "Okay, money sent. Don't call me again unless necessary. {dollar}"
                 ]
             }
         },
@@ -3182,8 +3182,8 @@
             ],
             "refreshCost": 420,
             "gift": {
-                "cost": 1000,
-                "rep": 10
+                "cost": 2000,
+                "rep": 40
             },
             "repLogBase": 3,
             "dealDays": [
@@ -3193,11 +3193,11 @@
                 "Sunday"
             ],
             "reward": {
-                "rep_cost": 100,
-                "unlockRep": 100,
+                "rep_cost": 200,
+                "unlockRep": 200,
                 "type": "console",
                 "args": [
-                    "cleartrash"
+                    "give","revolver"
                 ]
             },
             "curfewDeal": true,
@@ -3332,9 +3332,9 @@
                     "Alright. Appreciate it."
                 ],
                 "reward": [
-                    "Here you go. Payment.",
-                    "Okay, money's here.",
-                    "This is yours. Right on."
+                    "Here you go. Payment. {dollar}",
+                    "Okay, money's here. {dollar}",
+                    "This is yours. Right on. {dollar}"
                 ]
             }
         },
@@ -3370,8 +3370,8 @@
             ],
             "refreshCost": 420,
             "gift": {
-                "cost": 1000,
-                "rep": 10
+                "cost": 3000,
+                "rep": 60
             },
             "repLogBase": 4,
             "dealDays": [
@@ -3380,11 +3380,11 @@
                 "Saturday"
             ],
             "reward": {
-                "rep_cost": 100,
-                "unlockRep": 100,
+                "rep_cost": 300,
+                "unlockRep": 300,
                 "type": "console",
                 "args": [
-                    "cleartrash"
+                    "sethealth","200"
                 ]
             },
             "curfewDeal": true,
@@ -3539,9 +3539,9 @@
                     "Solid."
                 ],
                 "reward": [
-                    "Here's your money. Now beat it.",
-                    "Payment. Don't come around unless you're called.",
-                    "Take it. We're done here."
+                    "Here's your money. Now beat it. {dollar}",
+                    "Payment. Don't come around unless you're called. {dollar}",
+                    "Take it. We're done here. {dollar}"
                 ]
             }
         },
@@ -3593,19 +3593,19 @@
             ],
             "refreshCost": 420,
             "gift": {
-                "cost": 1000,
-                "rep": 10
+                "cost": 5000,
+                "rep": 100
             },
             "repLogBase": 6,
             "dealDays": [
                 "Friday"
             ],
             "reward": {
-                "rep_cost": 100,
-                "unlockRep": 100,
+                "rep_cost": 500,
+                "unlockRep": 500,
                 "type": "console",
                 "args": [
-                    "cleartrash"
+                    "growplants"
                 ]
             },
             "curfewDeal": true,
@@ -3795,9 +3795,9 @@
                     "Correct. Your execution is adequate."
                 ],
                 "reward": [
-                    "Payment rendered. Maintain this standard.",
-                    "The funds are transferred. Discretion is expected.",
-                    "Your compensation. Remember who is in charge."
+                    "Payment rendered. Maintain this standard. {dollar}",
+                    "The funds are transferred. Discretion is expected. {dollar}",
+                    "Your compensation. Remember who is in charge. {dollar}"
                 ]
             }
         }

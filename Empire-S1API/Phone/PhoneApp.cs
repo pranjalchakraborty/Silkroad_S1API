@@ -705,7 +705,7 @@ namespace Empire
             int maxAmount = shipping.MaxAmount;
             if (buyer.RepLogBase > 1)
             {
-                double logResult = Math.Log((double)buyer._DealerData.Reputation, (double)buyer.RepLogBase);
+                double logResult = Math.Log((double)buyer._DealerData.Reputation+1, (double)buyer.RepLogBase);
                 // Clamp logResult so that it is at worst 0 - and offset by 4 - UPDATABLE
                 if (logResult < 4)
                     logResult = 0;

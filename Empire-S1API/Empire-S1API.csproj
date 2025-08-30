@@ -107,9 +107,6 @@
        <Reference Include="0Harmony">
            <HintPath>$(MelonLoaderAssembliesPath)\0Harmony.dll</HintPath>
        </Reference>
-       <Reference Include="UnityEngine.InputModule">
-         <HintPath>..\..\Assemblies\Il2Cpp\UnityEngine.InputModule.dll</HintPath>
-       </Reference>
 		<Reference Include="S1API">
 			<HintPath>..\..\Assemblies\S1API.dll</HintPath>
 		</Reference>

@@ -10,6 +10,7 @@ using S1API.Internal.Utils;
 using S1API.PhoneApp;
 using S1API.Saveables;
 using UnityEngine;
+using S1API.GameTime;
 
 namespace Empire
 {
@@ -39,6 +40,7 @@ namespace Empire
             GeneralSetup.EmpireSaveData = this;
             MelonLogger.Msg("Empire Save Data Created");
             GeneralSetup.UncCalls();//ToDO - shift to proper flow
+            TimeManager.OnDayPass += GeneralSetup.ResetPlayerStats;//ToDO - shift to proper flow
         }
 
 
