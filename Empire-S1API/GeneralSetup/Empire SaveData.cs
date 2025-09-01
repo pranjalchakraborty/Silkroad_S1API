@@ -11,6 +11,7 @@ using S1API.PhoneApp;
 using S1API.Saveables;
 using UnityEngine;
 using S1API.GameTime;
+using S1API.Logging;
 
 namespace Empire
 {
@@ -20,25 +21,31 @@ namespace Empire
 
         [SaveableField("empire_save_data")]
         public GlobalSaveData SaveData;
-        //public bool UncNelsonCartelIntroDone;
 
         public EmpireSaveData() : base("EmpireSaveData", "Empire", "SaveData")
         {
-           SaveData= new GlobalSaveData();  
+            MelonLogger.Msg("Empire Save Data Constructor");
+            //if SaveData is null, create a new instance
+            if (SaveData == null)
+                SaveData = new GlobalSaveData();
+            //if GeneralSetup.EmpireSaveData is null, set it to this instance
+            GeneralSetup.EmpireSaveData = this;
+
+
         }
 
         protected override void OnLoaded()
         {
             base.OnLoaded();
-            //GeneralSetup.EmpireSaveData = this;
             MelonLogger.Msg("Empire Save Data Loaded");
+            //GeneralSetup.EmpireSaveData = this;
         }
 
         protected override void OnCreated()
         {
             base.OnCreated();
-            GeneralSetup.EmpireSaveData = this;
             MelonLogger.Msg("Empire Save Data Created");
+            //GeneralSetup.EmpireSaveData = this;
             GeneralSetup.UncCalls();//ToDO - shift to proper flow
             TimeManager.OnDayPass += GeneralSetup.ResetPlayerStats;//ToDO - shift to proper flow
         }

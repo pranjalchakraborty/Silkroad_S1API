@@ -1,6 +1,6 @@
 {
     "version": {
-        "s1api": "1.6.5",
+        "s1api": "1.6.7",
         "empire": "0.1"
     },
     "effectsName": [
@@ -75,7 +75,7 @@
         1.0,
         0.54,
         0.42,
-        0
+        0.0
     ],
     "qualityTypes": [
         "trash",
@@ -97,8 +97,8 @@
         "cocaine"
     ],
     "randomNumberRanges": [
-        0.3,
-        0.3,
+        0.25,
+        0.5,
         0.5,
         1.5,
         0.5,
@@ -116,13 +116,13 @@
                 [
                     1,
                     0.85,
-                    3564,
+                    941,
                     8
                 ],
                 [
                     2,
                     0.7,
-                    4212,
+                    1112,
                     12
                 ]
             ],
@@ -139,17 +139,19 @@
                 "Thursday"
             ],
             "reward": {
-                "rep_cost": 100,
+                "rep_cost": 40,
                 "unlockRep": 100,
                 "type": "console",
                 "args": [
-                    "give","cocaine","5"
+                    "give",
+                    "cocaine",
+                    "5"
                 ]
             },
             "curfewDeal": false,
             "drugs": [
                 {
-                    "type": "cocaine",
+                    "type": "weed",
                     "unlockRep": 0,
                     "base_dollar": 250,
                     "base_rep": 9,
@@ -236,8 +238,8 @@
                     "Yo, listen up, {amount} {quality} {product}. It must deliver required effects: {effects} along with optional effects: {optionalEffects}. Don't waste my time."
                 ],
                 "accept": [
-                    "Deal’s on, man!",
-                    "Cool, let’s roll with it!"
+                    "Deal\u2019s on, man!",
+                    "Cool, let\u2019s roll with it!"
                 ],
                 "incomplete": [
                     "Nah man, this ain't it. Need the full {amount}. Step it up.",
@@ -273,13 +275,13 @@
                 [
                     1,
                     0.85,
-                    1836,
+                    941,
                     8
                 ],
                 [
                     2,
                     0.7,
-                    2142,
+                    1112,
                     12
                 ]
             ],
@@ -296,7 +298,7 @@
                 "Friday"
             ],
             "reward": {
-                "rep_cost": 100,
+                "rep_cost": 40,
                 "unlockRep": 100,
                 "type": "console",
                 "args": [
@@ -308,7 +310,7 @@
             "curfewDeal": false,
             "drugs": [
                 {
-                    "type": "meth",
+                    "type": "weed",
                     "unlockRep": 0,
                     "base_dollar": 250,
                     "base_rep": 9,
@@ -455,11 +457,13 @@
                 "Saturday"
             ],
             "reward": {
-                "rep_cost": 100,
+                "rep_cost": 40,
                 "unlockRep": 100,
                 "type": "console",
                 "args": [
-                    "give","weed","20"
+                    "give",
+                    "weed",
+                    "20"
                 ]
             },
             "curfewDeal": false,
@@ -552,8 +556,8 @@
                     "Provide {amount} {quality} {product} featuring required effects: {effects} and optional effects: {optionalEffects}."
                 ],
                 "accept": [
-                    "Sweet, let’s roll, man!",
-                    "I’m down, let’s do it!"
+                    "Sweet, let\u2019s roll, man!",
+                    "I\u2019m down, let\u2019s do it!"
                 ],
                 "incomplete": [
                     "Yo, hold up. Where's the rest? Short by {amount}. Can't be doin' that.",
@@ -634,7 +638,7 @@
                 "Friday"
             ],
             "reward": {
-                "rep_cost": 300,
+                "rep_cost": 200,
                 "unlockRep": 300,
                 "type": "console",
                 "args": [
@@ -837,7 +841,7 @@
                 ],
                 "accept": [
                     "Yeah, science, bitch!",
-                    "Let’s do this, yo!"
+                    "Let\u2019s do this, yo!"
                 ],
                 "incomplete": [
                     "Yo, what the hell? This ain't {amount}! Bring the rest, man!",
@@ -901,11 +905,12 @@
                 "Saturday"
             ],
             "reward": {
-                "rep_cost": 200,
+                "rep_cost": 100,
                 "unlockRep": 200,
                 "type": "console",
                 "args": [
-                    "setlawintensity","1"
+                    "setlawintensity",
+                    "1"
                 ]
             },
             "curfewDeal": true,
@@ -1136,7 +1141,7 @@
                 "Sunday"
             ],
             "reward": {
-                "rep_cost": 200,
+                "rep_cost": 50,
                 "unlockRep": 200,
                 "type": "console",
                 "args": [
@@ -1372,13 +1377,13 @@
             ],
             "debt": {
                 "total_debt": 10000,
-                "interest_rate": 1,
+                "interest_rate": 1.0,
                 "day_multiple": 10,
-                "day_exponent": 2,
-                "product_bonus": 2
+                "day_exponent": 2.0,
+                "product_bonus": 2.0
             },
             "reward": {
-                "rep_cost": 200,
+                "rep_cost": 100,
                 "unlockRep": 200,
                 "type": "console",
                 "args": [
@@ -1624,13 +1629,13 @@
             ],
             "debt": {
                 "total_debt": 250000,
-                "interest_rate": 1,
+                "interest_rate": 1.0,
                 "day_multiple": 10,
-                "day_exponent": 2,
-                "product_bonus": 2
+                "day_exponent": 2.0,
+                "product_bonus": 2.0
             },
             "reward": {
-                "rep_cost": 300,
+                "rep_cost": 100,
                 "unlockRep": 300,
                 "type": "console",
                 "args": [
@@ -1903,11 +1908,12 @@
                 "Wednesday"
             ],
             "reward": {
-                "rep_cost": 400,
+                "rep_cost": 250,
                 "unlockRep": 400,
                 "type": "console",
                 "args": [
-                    "setmovespeed","2"
+                    "setmovespeed",
+                    "2"
                 ]
             },
             "curfewDeal": true,
@@ -2186,13 +2192,13 @@
             ],
             "debt": {
                 "total_debt": 50000,
-                "interest_rate": 1,
+                "interest_rate": 1.0,
                 "day_multiple": 10,
-                "day_exponent": 2,
-                "product_bonus": 2
+                "day_exponent": 2.0,
+                "product_bonus": 2.0
             },
             "reward": {
-                "rep_cost": 200,
+                "rep_cost": 50,
                 "unlockRep": 200,
                 "type": "console",
                 "args": [
@@ -2429,17 +2435,18 @@
             ],
             "debt": {
                 "total_debt": 100000,
-                "interest_rate": 1,
+                "interest_rate": 1.0,
                 "day_multiple": 10,
-                "day_exponent": 2,
-                "product_bonus": 2
+                "day_exponent": 2.0,
+                "product_bonus": 2.0
             },
             "reward": {
-                "rep_cost": 200,
+                "rep_cost": 40,
                 "unlockRep": 200,
                 "type": "console",
                 "args": [
-                    "teleport","church"
+                    "teleport",
+                    "church"
                 ]
             },
             "curfewDeal": true,
@@ -2680,17 +2687,18 @@
             ],
             "debt": {
                 "total_debt": 1000000,
-                "interest_rate": 1,
+                "interest_rate": 1.0,
                 "day_multiple": 10,
-                "day_exponent": 2,
-                "product_bonus": 2
+                "day_exponent": 2.0,
+                "product_bonus": 2.0
             },
             "reward": {
-                "rep_cost": 400,
+                "rep_cost": 250,
                 "unlockRep": 400,
                 "type": "console",
                 "args": [
-                    "setjumpforce","2"
+                    "setjumpforce",
+                    "2"
                 ]
             },
             "curfewDeal": true,
@@ -2976,11 +2984,12 @@
                 "Saturday"
             ],
             "reward": {
-                "rep_cost": 400,
+                "rep_cost": 250,
                 "unlockRep": 400,
                 "type": "console",
                 "args": [
-                    "setstaminareserve","200"
+                    "setstaminareserve",
+                    "200"
                 ]
             },
             "curfewDeal": true,
@@ -3193,11 +3202,12 @@
                 "Sunday"
             ],
             "reward": {
-                "rep_cost": 200,
+                "rep_cost": 50,
                 "unlockRep": 200,
                 "type": "console",
                 "args": [
-                    "give","revolver"
+                    "give",
+                    "revolver"
                 ]
             },
             "curfewDeal": true,
@@ -3380,11 +3390,12 @@
                 "Saturday"
             ],
             "reward": {
-                "rep_cost": 300,
+                "rep_cost": 200,
                 "unlockRep": 300,
                 "type": "console",
                 "args": [
-                    "sethealth","200"
+                    "sethealth",
+                    "200"
                 ]
             },
             "curfewDeal": true,
@@ -3601,7 +3612,7 @@
                 "Friday"
             ],
             "reward": {
-                "rep_cost": 500,
+                "rep_cost": 300,
                 "unlockRep": 500,
                 "type": "console",
                 "args": [

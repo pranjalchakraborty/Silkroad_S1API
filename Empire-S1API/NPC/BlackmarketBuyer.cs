@@ -125,7 +125,7 @@ namespace Empire
         protected override void OnCreated()
         {
             base.OnCreated();
-            Debug.Log($"BlackmarketBuyer {DealerName} ONcreated.");
+            MelonLogger.Msg($"BlackmarketBuyer {DealerName} ONcreated.");
         }
 
         public static DealerSaveData GetDealerSaveData(string dealerName)

@@ -30,11 +30,11 @@ namespace Empire
         public static void ResetPlayerStats()
         {
             MelonLogger.Msg("Resetting Player Stats.");
-            S1API.Console.ConsoleHelperTemp.SetPlayerJumpMultiplier(1f);
-            S1API.Console.ConsoleHelperTemp.SetPlayerMoveSpeedMultiplier(1f);
-            S1API.Console.ConsoleHelperTemp.SetPlayerHealth(100f);
-            S1API.Console.ConsoleHelperTemp.SetPlayerEnergyLevel(100f);
-            //S1API.Console.ConsoleHelperTemp.SetLawIntensity(1f);
+            S1API.Console.ConsoleHelper.SetPlayerJumpMultiplier(1f);
+            S1API.Console.ConsoleHelper.SetPlayerMoveSpeedMultiplier(1f);
+            S1API.Console.ConsoleHelper.SetPlayerHealth(100f);
+            S1API.Console.ConsoleHelper.SetPlayerEnergyLevel(100f);
+            //S1API.Console.ConsoleHelper.SetLawIntensity(1f);
             MelonLogger.Msg("Player Stats Reset.");
         }
     }

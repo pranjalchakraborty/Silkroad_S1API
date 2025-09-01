@@ -12,12 +12,7 @@ using S1API.Money;
 using S1API.Entities;
 using S1API.Console;
 using UnityEngine;
-//using Console = S1API.Console;  
-#if (Il2Cpp)
-using Console = Il2CppScheduleOne.Console;
-#elif (Mono)
-using Console = ScheduleOne.Console;
-#endif
+using Console = S1API.Console;  
 
 namespace Empire
 {
@@ -147,7 +142,7 @@ namespace Empire
                 {
                     string command = string.Join(" ", buyer.Reward.Args);
                     MelonLogger.Msg($"Executing console command: {command}");
-                    Console.SubmitCommand(command);
+                    Console.ConsoleHelper.Submit(command);
                 }
             }
 

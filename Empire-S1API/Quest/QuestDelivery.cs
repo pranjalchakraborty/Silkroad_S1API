@@ -113,7 +113,7 @@ namespace Empire
                 yield break;
             }
             buyer = Contacts.GetBuyer(Data.DealerName);
-            ConsoleHelperTemp.SetLawIntensity(2*buyer.Tier);// TODO - Expose Deal Heat thru JSON
+            ConsoleHelper.SetLawIntensity((float)2*buyer.Tier);// TODO - Expose Deal Heat thru JSON
         }
 
 
@@ -124,7 +124,7 @@ namespace Empire
             MelonLogger.Msg($"QuestOnCreated() done.");
             
             buyer = Contacts.GetBuyer(Data.DealerName);
-            ConsoleHelperTemp.SetLawIntensity(2*buyer.Tier);// TODO - Expose Deal Heat thru JSON
+            ConsoleHelper.SetLawIntensity((float)2*buyer.Tier);// TODO - Expose Deal Heat thru JSON
             QuestActive = true;
             Active = this;
             TimeManager.OnDayPass += ExpireCountdown;
@@ -226,7 +226,7 @@ namespace Empire
                     continue;
                 }
 
-        var props = productDef.Properties; 
+                var props = productDef.Properties; 
                 if (productDef is WeedDefinition weed)
                     props = weed.GetProperties();
                 else if (productDef is MethDefinition meth)
@@ -290,7 +290,7 @@ namespace Empire
                     }
                 }
             }
-            if (Data.RequiredAmount <= 0)
+            if (Data.RequiredAmount <= 0 && deliveryEntry.State!=QuestState.Completed)
             {
                 //MelonLogger.Msg("Test2");
                 buyer.SendCustomMessage("Success", Data.ProductID, (int)Data.RequiredAmount, Data.Quality, Data.NecessaryEffects, Data.OptionalEffects,Data.Reward);
@@ -301,7 +301,7 @@ namespace Empire
                 MelonCoroutines.Start(DelayedReward("Completed"));
 
             }
-            else
+            else if (Data.RequiredAmount > 0)
             {
                 buyer.SendCustomMessage("Incomplete", Data.ProductID, (int)Data.RequiredAmount, Data.Quality, Data.NecessaryEffects, Data.OptionalEffects);
                 MelonLogger.Msg($"Continue delivery. Remaining amount: {Data.RequiredAmount}");
@@ -365,15 +365,6 @@ namespace Empire
                 return;
             }
             var qualityMult = Data.QualityMult;
-            // add to qualityMult the value of JSONDeserializer.QualitiesDollarMult where the key is Data.Quality
-            if (JSONDeserializer.QualitiesDollarMult.TryGetValue(Data.Quality.ToLower().Trim(), out float qualityMultiplier))
-            {
-                qualityMult += qualityMultiplier;
-            }
-            else
-            {
-                MelonLogger.Error($"❌ Quality multiplier not found for {Data.Quality}.");
-            }
             var requiredQuality = GetQualityNumber(Data.Quality);
             // Sum of all in Data.NecessaryEffectMult
             float EffectsSum = Data.NecessaryEffectMult.Sum();
@@ -403,7 +394,7 @@ namespace Empire
         private void GiveReward(string source)
         {
             TimeManager.OnDayPass -= ExpireCountdown;
-            ConsoleHelperTemp.GiveXp(Data.XpReward);
+            ConsoleHelper.GiveXp(Data.XpReward);
             buyer.GiveReputation((int)Data.RepReward);
             // Pay the reward or debt
             if (buyer._DealerData.DebtRemaining > 0)
@@ -457,7 +448,7 @@ namespace Empire
                 return;
             }
             MyApp.Instance.OnQuestComplete();
-            ConsoleHelperTemp.SetLawIntensity(1);
+            //ConsoleHelper.SetLawIntensity(1f);
             rewardEntry?.Complete();
             // Trigger the event with no payload
             OnQuestCompleted?.Invoke();

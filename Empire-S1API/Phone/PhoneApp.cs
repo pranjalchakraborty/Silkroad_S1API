@@ -755,6 +755,7 @@ namespace Empire
             {
                 quality = qualityKey;
                 qualityMult = randomQuality.DollarMult;
+                qualityMult += JSONDeserializer.QualitiesDollarMult[qualityKey];
             }
             else
             {
@@ -895,8 +896,8 @@ namespace Empire
             var randomNum3 = UnityEngine.Random.Range(JSONDeserializer.RandomNumberRanges[4], JSONDeserializer.RandomNumberRanges[5]);//XP Random
             var randomNum4 = UnityEngine.Random.Range(JSONDeserializer.RandomNumberRanges[6], JSONDeserializer.RandomNumberRanges[7]);//$ Base Random
             MelonLogger.Msg($"RandomNum1: {randomNum1}, RandomNum2: {randomNum2}, RandomNum3: {randomNum3}, RandomNum4: {randomNum4}");
-            aggregateDollarMultMin *= dealTimesMult;
-            aggregateDollarMultMax *= dealTimesMult;
+            aggregateDollarMultMin *= dealTimesMult*randomNum4;
+            aggregateDollarMultMax *= dealTimesMult*randomNum4;
             var quest = new QuestData
             {
                 Title = $"{buyer.DealerName} wants {drugType} delivered.",
@@ -906,7 +907,7 @@ namespace Empire
                 TargetObjectName = buyer.DealerName,
                 DealerName = buyer.DealerName,
                 QuestImage = Path.Combine(MelonEnvironment.ModsDirectory, "Empire", buyer.DealerImage ?? "EmpireIcon_quest.png"),
-                BaseDollar = RoundToHalfMSD((int)(randomDrug.BaseDollar * randomNum4)),
+                BaseDollar = RoundToHalfMSD((int)(randomDrug.BaseDollar / randomNum4)),
                 BaseRep = RoundToHalfMSD((int)(randomDrug.BaseRep * randomNum2)),
                 BaseXp = RoundToHalfMSD((int)(randomDrug.BaseXp * randomNum3)),
                 RepMult = randomDrug.RepMult * randomNum2,
