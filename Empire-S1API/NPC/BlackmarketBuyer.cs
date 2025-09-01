@@ -17,7 +17,7 @@ namespace Empire
     {
         public static int dealerDataIndex = 0;
         //public int Index { get; set; } = dealerDataIndex;
-        public static Dealer dealer = Contacts.GetDealerDataByIndex(dealerDataIndex);
+        public static Dealer dealer;
         public bool IsInitialized { get; set; } = false;
 
         [SaveableField("DealerSaveData")]
@@ -43,19 +43,30 @@ namespace Empire
 
         public RewardManager RewardManager { get; set; } // Initialize RewardManager object
         static Sprite? npcSprite => ImageUtils.LoadImage(
-            string.IsNullOrEmpty(dealer?.Image)
+            string.IsNullOrEmpty(GetDealer()?.Image)
                 ? Path.Combine(MelonEnvironment.ModsDirectory, "Empire", "EmpireIcon_quest.png")
-                : Path.Combine(MelonEnvironment.ModsDirectory, "Empire", dealer.Image)
+                : Path.Combine(MelonEnvironment.ModsDirectory, "Empire", GetDealer().Image)
         );
+
+        // Get dealer data, initializing if needed
+        private static Dealer GetDealer()
+        {
+            if (dealer == null)
+            {
+                dealer = Contacts.GetDealerDataByIndex(dealerDataIndex);
+            }
+            return dealer;
+        }
 
         //Parameterless Constructor for the S1API call
         public BlackmarketBuyer() : base(
-            dealer.Name.Trim().ToLower().Replace(" ", "_"),
-            dealer.Name.Trim().Split(' ')[0],
-            dealer.Name.Trim().Contains(' ') ? dealer.Name.Substring(dealer.Name.IndexOf(' ') + 1) : "", npcSprite)
+            GetDealer().Name.Trim().ToLower().Replace(" ", "_"),
+            GetDealer().Name.Trim().Split(' ')[0],
+            GetDealer().Name.Trim().Contains(' ') ? GetDealer().Name.Substring(GetDealer().Name.IndexOf(' ') + 1) : "", npcSprite)
         {
-            DealerName = dealer.Name.Trim();
-            DealerImage = Path.Combine(MelonEnvironment.ModsDirectory, "Empire", dealer.Image);
+            var currentDealer = GetDealer();
+            DealerName = currentDealer.Name.Trim();
+            DealerImage = Path.Combine(MelonEnvironment.ModsDirectory, "Empire", currentDealer.Image);
             MelonLogger.Msg($"BlackmarketBuyer () Constructor created with Name {DealerName} and Index {dealerDataIndex}.");
             // If dealerDataIndex is more than count in Contacts.DealerData, return
             if (dealerDataIndex >= JSONDeserializer.dealerData.Dealers.Count)
@@ -66,27 +77,27 @@ namespace Empire
                 return;
 
             }
-            //DebugUtils.LogObjectJson(dealer,$"{DealerName}");
+            //DebugUtils.LogObjectJson(currentDealer,$"{DealerName}");
 
-            if (dealer == null)
-                throw new ArgumentNullException(nameof(dealer));
+            if (currentDealer == null)
+                throw new ArgumentNullException(nameof(currentDealer));
 
             Contacts.Buyers[DealerName] = this;
 
             // Initialize dealer data
-            Dialogues = dealer.Dialogue;
-            UnlockRequirements = dealer.UnlockRequirements ?? new List<UnlockRequirement>();
-            Drugs = dealer.Drugs ?? new List<Drug>();
-            Shippings = dealer.Shippings ?? new List<Shipping>();
-            Deals = dealer.Deals ?? new List<List<float>>();
-            DealDays = dealer.DealDays ?? new List<string>();
-            RepLogBase = dealer.RepLogBase;
-            CurfewDeal = dealer.CurfewDeal;
-            Tier = dealer.Tier;
-            Debt = dealer.Debt ?? new Debt();
-            RefreshCost = dealer.RefreshCost;
-            Gift = dealer.Gift;
-            Reward = dealer.Reward ?? new DealerReward(); // Initialize Reward with a new DealerReward if null
+            Dialogues = currentDealer.Dialogue;
+            UnlockRequirements = currentDealer.UnlockRequirements ?? new List<UnlockRequirement>();
+            Drugs = currentDealer.Drugs ?? new List<Drug>();
+            Shippings = currentDealer.Shippings ?? new List<Shipping>();
+            Deals = currentDealer.Deals ?? new List<List<float>>();
+            DealDays = currentDealer.DealDays ?? new List<string>();
+            RepLogBase = currentDealer.RepLogBase;
+            CurfewDeal = currentDealer.CurfewDeal;
+            Tier = currentDealer.Tier;
+            Debt = currentDealer.Debt ?? new Debt();
+            RefreshCost = currentDealer.RefreshCost;
+            Gift = currentDealer.Gift;
+            Reward = currentDealer.Reward ?? new DealerReward(); // Initialize Reward with a new DealerReward if null
             // NEW: Initialize RewardManager using the updated dealer reward field.
             RewardManager = new RewardManager(this);
             if (_DealerData != null)
