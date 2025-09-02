@@ -66,8 +66,8 @@ namespace Empire
                 // If the quest time has expired, fail the quest
                 Data.Reward = -Data.Penalties[0];
                 Data.RepReward = -Data.Penalties[1];
-                MelonCoroutines.Start(DelayedReward("Expired"));
-                //GiveReward("Expired");
+                //MelonCoroutines.Start(DelayedReward("Expired"));
+                GiveReward("Expired");
                 if (deliveryEntry != null && deliveryEntry.State != QuestState.Completed)
                     rewardEntry.SetState(QuestState.Expired); // ✅
                 if (rewardEntry != null && rewardEntry.State != QuestState.Completed)
@@ -386,60 +386,57 @@ namespace Empire
         private System.Collections.IEnumerator DelayedReward(string source)
         {
             yield return new WaitForSeconds(RandomUtils.RangeInt(15, 30));
-            Data.RepReward += (int)(Data.Reward * Data.RepMult);
-            Data.XpReward += (int)(Data.Reward * Data.XpMult);
             GiveReward(source);
         }
 
         private void GiveReward(string source)
         {
             TimeManager.OnDayPass -= ExpireCountdown;
-            ConsoleHelper.GiveXp(Data.XpReward);
-            buyer.GiveReputation((int)Data.RepReward);
-            // Pay the reward or debt
-            if (buyer._DealerData.DebtRemaining > 0)
-            {
-                // If debt remaining < reward, set it to 0 and pay the rest
-                if (buyer._DealerData.DebtRemaining <= buyer.Debt.ProductBonus * Data.Reward)
-                {
-                    Data.Reward -= (int)(buyer._DealerData.DebtRemaining / buyer.Debt.ProductBonus);
-                    buyer._DealerData.DebtRemaining = 0;
-                    //buyer.SendCustomMessage("Congrats! You Paid off the debt.");
-                    MelonLogger.Msg($"   Paid off debt to {buyer.DealerName}");
-                    Money.ChangeCashBalance(Data.Reward);
-                }
-                else
-                {
-                    MelonLogger.Msg($"   Paid off debt: ${Data.Reward} to {buyer.DealerName}");
-                    buyer._DealerData.DebtRemaining -= buyer.Debt.ProductBonus * Data.Reward;
-                    buyer._DealerData.DebtPaidThisWeek += buyer.Debt.ProductBonus * Data.Reward;
-                }
-                buyer.DebtManager.SendDealDebtMessage();    
-            }
-            else
-            {
-                Money.ChangeCashBalance(Data.Reward);
-            }
-
-            MelonLogger.Msg($"   Rewarded : ${Data.Reward} and Rep {Data.RepReward} and Xp {Data.XpReward} from {Data.DealerName}");
-
             if (source == "Expired")
             {
+                Money.ChangeCashBalance(Data.Reward);
                 buyer.SendCustomMessage("Expire", Data.ProductID, (int)Data.RequiredAmount, Data.Quality, Data.NecessaryEffects, Data.OptionalEffects);
             }
             else if (source == "Failed")
             {
+                Money.ChangeCashBalance(Data.Reward);
                 buyer.SendCustomMessage("Fail", Data.ProductID, (int)Data.RequiredAmount, Data.Quality, Data.NecessaryEffects, Data.OptionalEffects);
             }
             else if (source == "Completed")
             {
-                buyer.SendCustomMessage("Reward", Data.ProductID, (int)Data.RequiredAmount, Data.Quality, Data.NecessaryEffects, Data.OptionalEffects,Data.Reward);
+                Data.RepReward += (int)(Data.Reward * Data.RepMult);
+                Data.XpReward += (int)(Data.Reward * Data.XpMult);
+                buyer.SendCustomMessage("Reward", Data.ProductID, (int)Data.RequiredAmount, Data.Quality, Data.NecessaryEffects, Data.OptionalEffects, Data.Reward);
                 buyer.IncreaseCompletedDeals(1);
                 buyer.UnlockDrug();
                 Contacts.Update();
                 Complete();
                 QuestActive = false;
                 Active = null;
+                // Pay the reward or debt
+                if (buyer._DealerData.DebtRemaining > 0)
+                {
+                    // If debt remaining < reward, set it to 0 and pay the rest
+                    if (buyer._DealerData.DebtRemaining <= buyer.Debt.ProductBonus * Data.Reward)
+                    {
+                        Data.Reward -= (int)(buyer._DealerData.DebtRemaining / buyer.Debt.ProductBonus);
+                        buyer._DealerData.DebtRemaining = 0;
+                        //buyer.SendCustomMessage("Congrats! You Paid off the debt.");
+                        MelonLogger.Msg($"   Paid off debt to {buyer.DealerName}");
+                        Money.ChangeCashBalance(Data.Reward);
+                    }
+                    else
+                    {
+                        MelonLogger.Msg($"   Paid off debt: ${Data.Reward} to {buyer.DealerName}");
+                        buyer._DealerData.DebtRemaining -= buyer.Debt.ProductBonus * Data.Reward;
+                        buyer._DealerData.DebtPaidThisWeek += buyer.Debt.ProductBonus * Data.Reward;
+                    }
+                    buyer.DebtManager.SendDealDebtMessage();
+                }
+                else
+                {
+                    Money.ChangeCashBalance(Data.Reward);
+                }
 
             }
             else
@@ -447,6 +444,13 @@ namespace Empire
                 MelonLogger.Error($"❌ Unknown source: {source}.");
                 return;
             }
+            
+            ConsoleHelper.GiveXp(Data.XpReward);
+            buyer.GiveReputation((int)Data.RepReward);
+            
+            MelonLogger.Msg($"   Rewarded : ${Data.Reward} and Rep {Data.RepReward} and Xp {Data.XpReward} from {Data.DealerName}");
+            
+
             MyApp.Instance.OnQuestComplete();
             //ConsoleHelper.SetLawIntensity(1f);
             rewardEntry?.Complete();

@@ -84,7 +84,7 @@ namespace Empire
                 return;
             }
 
-            //BlackmarketBuyer testBuyer = new BlackmarketBuyer();
+            
 
             MelonLogger.Msg("Testing 100");
             _isUpdateCoroutineRunning = true;
