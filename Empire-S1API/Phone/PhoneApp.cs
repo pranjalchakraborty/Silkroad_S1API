@@ -907,7 +907,7 @@ namespace Empire
                 TargetObjectName = buyer.DealerName,
                 DealerName = buyer.DealerName,
                 QuestImage = Path.Combine(MelonEnvironment.ModsDirectory, "Empire", buyer.DealerImage ?? "EmpireIcon_quest.png"),
-                BaseDollar = RoundToHalfMSD((int)(randomDrug.BaseDollar / randomNum4)),
+                BaseDollar = RoundToHalfMSD((int)(randomDrug.BaseDollar * amount / randomNum4)),
                 BaseRep = RoundToHalfMSD((int)(randomDrug.BaseRep * randomNum2)),
                 BaseXp = RoundToHalfMSD((int)(randomDrug.BaseXp * randomNum3)),
                 RepMult = randomDrug.RepMult * randomNum2,

@@ -31,7 +31,7 @@ namespace Empire
         public static int GetNearestWeek(int days)
         {
             // Find the nearest week (multiple of 7) that is greater than or equal to days
-            int weeks = (int)Math.Ceiling(days / 7.0);
+            int weeks = (int)Math.Ceiling((days+1) / 7.0);
             return weeks * 7;
         }
         private void SendDebtMessage(int paymentAmount)
@@ -49,9 +49,11 @@ namespace Empire
             if (buyer._DealerData.DebtRemaining <= 0)
             {
                 buyer.SendCustomMessage("You have no debt remaining after this weekly payment. Congrats!");
-                return;
             }
-            buyer.SendCustomMessage($"You owe us ${buyer._DealerData.DebtRemaining}. We will take ${debtPayable} at the beginning of next week or equivalent in products with a bonus multiple of {buyer.Debt.ProductBonus}. If you don't pay, we will take your life.");
+            else
+            {
+                buyer.SendCustomMessage($"You owe us ${buyer._DealerData.DebtRemaining}. We will take ${debtPayable} at the beginning of next week or equivalent in products with a bonus multiple of {buyer.Debt.ProductBonus}. If you don't pay, we will take your life.");
+            }
 
             // Send a message to the player about the debt status
             // This is a placeholder for the actual message sending method
@@ -99,7 +101,7 @@ namespace Empire
             Money.ChangeCashBalance(-paymentAmount); // Deduct the payment amount from the player's cash balance
             buyer._DealerData.DebtRemaining = buyer._DealerData.DebtRemaining * (1 + buyer.Debt.InterestRate); // Apply interest to the remaining debt
             buyer._DealerData.DebtPaidThisWeek = 0; // Reset the amount paid this week
-            buyer.SendCustomMessage($"You have paid ${paymentAmount} towards your debt.");
+            //buyer.SendCustomMessage($"You have paid ${paymentAmount} towards your debt.");
             SendDebtMessage((int)paymentAmount); // Send the updated debt message
         }
 
@@ -123,6 +125,9 @@ namespace Empire
             {
                 amountPayable = buyer._DealerData.DebtRemaining;
             }
+            //Log the calculation details
+            MelonLogger.Msg($"Calculating weekly payment for {buyer.DealerName}: DayMultiple={dayMultiple}, DayExponent={dayExponent}, ElapsedDays={elapsedDays}, InitialAmount={dayMultiple * (float)Math.Pow(elapsedDays, dayExponent)}, AmountPaidThisWeek={buyer._DealerData.DebtPaidThisWeek}, AmountPayable={amountPayable}");
+            
             return amountPayable;
         }
     }

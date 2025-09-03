@@ -86,7 +86,7 @@ NPCs can have preferences for certain product effects, which can be necessary or
 Successful deliveries yield various rewards, calculated as follows:
 
 * **Money Reward:**
-    `money = (base_dollar*random4) + (total_price_of_delivered_products * (1 + sum_of_all_effects_(dollar_mult*random1)) * (1 + quality_dollar_mult) * dealTimesMult * random4)`
+    `money = (base_dollar*amount/random4) + (total_price_of_delivered_products * (1 + sum_of_all_effects_(dollar_mult*random1)) * (1 + quality_dollar_mult) * dealTimesMult * random4)`
 * **Reputation Reward:**
     `rep = base_rep*random2 + (money_reward * rep_mult*random2)`
 * **XP Reward:**

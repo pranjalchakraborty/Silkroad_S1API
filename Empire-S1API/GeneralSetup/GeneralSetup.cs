@@ -17,6 +17,9 @@ namespace Empire
         // Basic intro to mod and debt mechanics
         public static void UncCalls()
         {
+            MelonLogger.Msg("Unc Calls Method Triggered.");
+            //Log if intro has been done
+            MelonLogger.Msg($"Unc Calls: {EmpireSaveData.SaveData.UncNelsonCartelIntroDone}");
             if (!EmpireSaveData.SaveData.UncNelsonCartelIntroDone)
             {
                 MelonLogger.Msg($"Unc Calls: {EmpireSaveData.SaveData.UncNelsonCartelIntroDone}");

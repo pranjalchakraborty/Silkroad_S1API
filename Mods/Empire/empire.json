@@ -104,7 +104,7 @@
         0.5,
         1.5,
         0.25,
-        0.75
+        1.0
     ],
     "dealers": [
         {
@@ -153,7 +153,7 @@
                 {
                     "type": "weed",
                     "unlockRep": 0,
-                    "base_dollar": 250,
+                    "base_dollar": 12,
                     "base_rep": 9,
                     "base_xp": 6,
                     "rep_mult": 0.001,
@@ -312,7 +312,7 @@
                 {
                     "type": "weed",
                     "unlockRep": 0,
-                    "base_dollar": 250,
+                    "base_dollar": 12,
                     "base_rep": 9,
                     "base_xp": 6,
                     "rep_mult": 0.002,
@@ -471,7 +471,7 @@
                 {
                     "type": "weed",
                     "unlockRep": 0,
-                    "base_dollar": 250,
+                    "base_dollar": 12,
                     "base_rep": 9,
                     "base_xp": 6,
                     "rep_mult": 0.004,
@@ -651,7 +651,7 @@
                 {
                     "type": "weed",
                     "unlockRep": 0,
-                    "base_dollar": 4200,
+                    "base_dollar": 50,
                     "base_rep": 80,
                     "base_xp": 39,
                     "rep_mult": 0.002,
@@ -714,8 +714,8 @@
                 },
                 {
                     "type": "meth",
-                    "unlockRep": 130,
-                    "base_dollar": 4200,
+                    "unlockRep": 120,
+                    "base_dollar": 84,
                     "base_rep": 60,
                     "base_xp": 41,
                     "rep_mult": 0.004,
@@ -918,7 +918,7 @@
                 {
                     "type": "weed",
                     "unlockRep": 0,
-                    "base_dollar": 1400,
+                    "base_dollar": 40,
                     "base_rep": 26,
                     "base_xp": 17,
                     "rep_mult": 0.004,
@@ -971,7 +971,7 @@
                 {
                     "type": "cocaine",
                     "unlockRep": 90,
-                    "base_dollar": 1400,
+                    "base_dollar": 150,
                     "base_rep": 17,
                     "base_xp": 18,
                     "rep_mult": 0.001,
@@ -1153,7 +1153,7 @@
                 {
                     "type": "meth",
                     "unlockRep": 0,
-                    "base_dollar": 2400,
+                    "base_dollar": 60,
                     "base_rep": 50,
                     "base_xp": 39,
                     "rep_mult": 0.002,
@@ -1206,7 +1206,7 @@
                 {
                     "type": "cocaine",
                     "unlockRep": 165,
-                    "base_dollar": 2400,
+                    "base_dollar": 150,
                     "base_rep": 65,
                     "base_xp": 41,
                     "rep_mult": 0.001,
@@ -1377,7 +1377,7 @@
             ],
             "debt": {
                 "total_debt": 10000,
-                "interest_rate": 1.0,
+                "interest_rate": 0.1,
                 "day_multiple": 10,
                 "day_exponent": 2.0,
                 "product_bonus": 2.0
@@ -1396,7 +1396,7 @@
                 {
                     "type": "weed",
                     "unlockRep": 0,
-                    "base_dollar": 1600,
+                    "base_dollar": 26,
                     "base_rep": 42,
                     "base_xp": 31,
                     "rep_mult": 0.002,
@@ -1449,7 +1449,7 @@
                 {
                     "type": "meth",
                     "unlockRep": 300,
-                    "base_dollar": 1600,
+                    "base_dollar": 52,
                     "base_rep": 50,
                     "base_xp": 33,
                     "rep_mult": 0.001,
@@ -1629,7 +1629,7 @@
             ],
             "debt": {
                 "total_debt": 250000,
-                "interest_rate": 1.0,
+                "interest_rate": 0.1,
                 "day_multiple": 10,
                 "day_exponent": 2.0,
                 "product_bonus": 2.0
@@ -1647,7 +1647,7 @@
                 {
                     "type": "meth",
                     "unlockRep": 0,
-                    "base_dollar": 5400,
+                    "base_dollar": 67,
                     "base_rep": 88,
                     "base_xp": 62,
                     "rep_mult": 0.002,
@@ -1706,7 +1706,7 @@
                 {
                     "type": "cocaine",
                     "unlockRep": 640,
-                    "base_dollar": 5400,
+                    "base_dollar": 134,
                     "base_rep": 69,
                     "base_xp": 66,
                     "rep_mult": 0.001,
@@ -1921,7 +1921,7 @@
                 {
                     "type": "meth",
                     "unlockRep": 0,
-                    "base_dollar": 24000,
+                    "base_dollar": 60,
                     "base_rep": 260,
                     "base_xp": 215,
                     "rep_mult": 0.002,
@@ -1986,7 +1986,7 @@
                 {
                     "type": "cocaine",
                     "unlockRep": 1750,
-                    "base_dollar": 24000,
+                    "base_dollar": 120,
                     "base_rep": 220,
                     "base_xp": 224,
                     "rep_mult": 0.001,
@@ -2192,7 +2192,7 @@
             ],
             "debt": {
                 "total_debt": 50000,
-                "interest_rate": 1.0,
+                "interest_rate": 0.1,
                 "day_multiple": 10,
                 "day_exponent": 2.0,
                 "product_bonus": 2.0
@@ -2210,7 +2210,7 @@
                 {
                     "type": "cocaine",
                     "unlockRep": 0,
-                    "base_dollar": 4000,
+                    "base_dollar": 100,
                     "base_rep": 60,
                     "base_xp": 57,
                     "rep_mult": 0.001,
@@ -2263,7 +2263,7 @@
                 {
                     "type": "meth",
                     "unlockRep": 560,
-                    "base_dollar": 4000,
+                    "base_dollar": 50,
                     "base_rep": 70,
                     "base_xp": 60,
                     "rep_mult": 0.002,
@@ -2435,7 +2435,7 @@
             ],
             "debt": {
                 "total_debt": 100000,
-                "interest_rate": 1.0,
+                "interest_rate": 0.1,
                 "day_multiple": 10,
                 "day_exponent": 2.0,
                 "product_bonus": 2.0
@@ -2454,7 +2454,7 @@
                 {
                     "type": "cocaine",
                     "unlockRep": 0,
-                    "base_dollar": 6000,
+                    "base_dollar": 120,
                     "base_rep": 181,
                     "base_xp": 153,
                     "rep_mult": 0.001,
@@ -2507,7 +2507,7 @@
                 {
                     "type": "meth",
                     "unlockRep": 1140,
-                    "base_dollar": 6000,
+                    "base_dollar": 60,
                     "base_rep": 168,
                     "base_xp": 161,
                     "rep_mult": 0.002,
@@ -2687,7 +2687,7 @@
             ],
             "debt": {
                 "total_debt": 1000000,
-                "interest_rate": 1.0,
+                "interest_rate": 0.1,
                 "day_multiple": 10,
                 "day_exponent": 2.0,
                 "product_bonus": 2.0
@@ -2706,7 +2706,7 @@
                 {
                     "type": "cocaine",
                     "unlockRep": 0,
-                    "base_dollar": 33600,
+                    "base_dollar": 150,
                     "base_rep": 423,
                     "base_xp": 367,
                     "rep_mult": 0.001,
@@ -2771,7 +2771,7 @@
                 {
                     "type": "meth",
                     "unlockRep": 2450,
-                    "base_dollar": 33600,
+                    "base_dollar": 80,
                     "base_rep": 398,
                     "base_xp": 383,
                     "rep_mult": 0.002,
@@ -2997,7 +2997,7 @@
                 {
                     "type": "meth",
                     "unlockRep": 0,
-                    "base_dollar": 16000,
+                    "base_dollar": 80,
                     "base_rep": 181,
                     "base_xp": 155,
                     "rep_mult": 0.002,
@@ -3215,7 +3215,7 @@
                 {
                     "type": "meth",
                     "unlockRep": 0,
-                    "base_dollar": 7500,
+                    "base_dollar": 46,
                     "base_rep": 85,
                     "base_xp": 71,
                     "rep_mult": 0.002,
@@ -3403,7 +3403,7 @@
                 {
                     "type": "meth",
                     "unlockRep": 0,
-                    "base_dollar": 16800,
+                    "base_dollar": 84,
                     "base_rep": 241,
                     "base_xp": 211,
                     "rep_mult": 0.002,
@@ -3624,7 +3624,7 @@
                 {
                     "type": "meth",
                     "unlockRep": 0,
-                    "base_dollar": 60000,
+                    "base_dollar": 150,
                     "base_rep": 668,
                     "base_xp": 624,
                     "rep_mult": 0.002,
