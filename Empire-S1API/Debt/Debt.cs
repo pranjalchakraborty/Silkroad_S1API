@@ -17,6 +17,13 @@ namespace Empire
     public class DebtManager
     {
         BlackmarketBuyer buyer;
+        public bool paidthisweek = false;
+
+        //paythisweek is set to true
+        private void SetPayThisWeek()
+        {
+            paidthisweek = false;
+        }
 
         public DebtManager(BlackmarketBuyer buyer)
         {
@@ -24,6 +31,8 @@ namespace Empire
             if (buyer._DealerData.DebtRemaining > 0)
             {
                 TimeManager.OnWeekPass += DebtPayment; // Subscribe to the week passed event
+                //set paidthisweek to false at the start of each week
+                TimeManager.OnWeekPass += SetPayThisWeek;
             }
             SendDebtMessage(0); // Send the initial debt message
         }
@@ -79,6 +88,7 @@ namespace Empire
             }
             else
             {
+                paidthisweek = true;
                 buyer.SendCustomMessage($"You owe us ${buyer._DealerData.DebtRemaining}. You have paid ${buyer._DealerData.DebtPaidThisWeek} this week so far. Congrats! This is more than this week's quota. Rest of business this week will be in cash.");
             }
 

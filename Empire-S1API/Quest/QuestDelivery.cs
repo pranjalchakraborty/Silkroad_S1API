@@ -413,8 +413,15 @@ namespace Empire
                 Complete();
                 QuestActive = false;
                 Active = null;
+                //if buyer.DebtManager does not exist, log and skip debt payment
+                if (buyer.DebtManager == null)
+                {
+
+                    Money.ChangeCashBalance(Data.Reward);
+                   
+                }
                 // Pay the reward or debt
-                if (buyer._DealerData.DebtRemaining > 0)
+                else if (buyer._DealerData.DebtRemaining > 0 && !buyer.DebtManager.paidthisweek)
                 {
                     // If debt remaining < reward, set it to 0 and pay the rest
                     if (buyer._DealerData.DebtRemaining <= buyer.Debt.ProductBonus * Data.Reward)
