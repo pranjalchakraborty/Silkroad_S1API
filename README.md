@@ -4,7 +4,7 @@ Welcome to the NPC Custom Buyers & Dealers Expansion Mod! This mod allows player
 
 **Game:** Schedule 1  
 **Primary Audience:** Players looking for an enhanced experience and Modders wishing to create or customize NPC content.  
-**Core Dependency:** This mod requires `s1api` (another mod that acts as an API for the game) to function.
+**Core Dependency:** This mod requires [S1API](https://github.com/ifBars/S1API/releases/latest) (another mod that acts as an API for the game) to function.
 
 ## Table of Contents
 
@@ -120,7 +120,7 @@ Standard dialogue event types include:
 
 *(Standard mod installation instructions for Schedule 1 should be followed. If you are unsure, please refer to general Schedule 1 modding guides.)*
 
-1.  **Install Dependencies:** Ensure you have the `s1api` mod installed and enabled, as this mod relies on it.
+1.  **Install Dependencies:** Ensure you have the [S1API](https://github.com/ifBars/S1API/releases/latest) mod installed and enabled, as this mod relies on it.
 2.  **Install This Mod:** Place the mod files into the appropriate directory for Schedule 1 mods.
 
 ### Important: Before Updating This Mod
