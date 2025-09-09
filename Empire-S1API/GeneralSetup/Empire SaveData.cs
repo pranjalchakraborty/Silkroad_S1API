@@ -14,13 +14,15 @@ namespace Empire
         public EmpireSaveData()
         {
             MelonLogger.Msg("Empire Save Data Constructor");
-            GeneralSetup.EmpireSaveData = this;
         }
 
         protected override void OnLoaded()
         {
             MelonLogger.Msg("Empire Save Data Loaded");
             GeneralSetup.EmpireSaveData = this;
+            GeneralSetup.UncCalls(); // TODO - shift to proper flow
+            TimeManager.OnDayPass -= GeneralSetup.ResetPlayerStats;
+            TimeManager.OnDayPass += GeneralSetup.ResetPlayerStats; // TODO - shift to proper flow
         }
 
         protected override void OnCreated()
@@ -28,6 +30,7 @@ namespace Empire
             MelonLogger.Msg("Empire Save Data Created");
             GeneralSetup.EmpireSaveData = this;
             GeneralSetup.UncCalls(); // TODO - shift to proper flow
+            TimeManager.OnDayPass -= GeneralSetup.ResetPlayerStats;
             TimeManager.OnDayPass += GeneralSetup.ResetPlayerStats; // TODO - shift to proper flow
         }
 
