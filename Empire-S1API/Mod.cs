@@ -2,7 +2,7 @@
 using Empire;
 using S1API.Saveables;
 
-[assembly: MelonInfo(typeof(MyMod), "Empire", "0.90", "Aracor")]
+[assembly: MelonInfo(typeof(MyMod), "Empire", "0.95", "Aracor")]
 [assembly: MelonGame("TVGS", "Schedule I")]
 
 namespace Empire

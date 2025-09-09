@@ -101,7 +101,7 @@ namespace Empire
             try
             {
                 // Melonlogger Test
-                MelonLogger.Msg("Testing 101}");
+                //MelonLogger.Msg("Testing 101}");
                 foreach (var buyer in Buyers.Values)
                 {
 
@@ -174,8 +174,15 @@ namespace Empire
             }
         }
     }
-
-
+    //TODO - Move to JSON
+    //create a public static class QualityColors that contains an array caller Color
+public static class QualityColors
+    {
+        public static string[] Colors = new string[]
+        {
+            "#a84545", "#5bad38", "#358ecd", "#e93be9", "#ecb522"
+        };
+    }
 
     public static class JSONDeserializer
     {

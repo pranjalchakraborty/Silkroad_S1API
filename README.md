@@ -316,10 +316,7 @@ This mod is an ongoing project with many plans for expansion and refinement!
 
 - [ ] Play game
 - [ ] Update Readme
-- [ ] JSON values balance - Gifts and Rewards
-- [ ] do cartel support once s1api updates
-- [ ] New Tab in modal to show debt info/payoff or to payoff one time
-
+- [ ] JSON values balance 
 ## Bugs
 
 * There are slight graphical glitches in the avatar of the NPCs that occurs when scrolling.
@@ -345,3 +342,7 @@ Much gratitude and many many thanks to:
 
 
 
+// skinny pete change weed to weedname in give reward json
+// refactor phoneapp
+// better ui
+// fix button sizes

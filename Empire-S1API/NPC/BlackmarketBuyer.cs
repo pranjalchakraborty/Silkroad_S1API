@@ -10,6 +10,7 @@ using S1API.Saveables;
 using MelonLoader;
 using MelonLoader.Utils;
 using System.IO;
+using System.Reflection;
 
 namespace Empire
 {
@@ -269,13 +270,14 @@ namespace Empire
         //Send the message to the player using the phone app or return the message string only if returnMessage is true
         public string SendCustomMessage(string messageType, string product = "", int amount = 0, string quality = "", List<string>? necessaryEffects = null, List<string> optionalEffects = null,int dollar=0, bool returnMessage = false)
         {
+            // Use case-insensitive property lookup to avoid simple casing mismatches
+            var prop = Dialogues.GetType().GetProperty(messageType, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+            List<string> messages = prop?.GetValue(Dialogues) as List<string>;
 
-            List<string> messages = Dialogues.GetType().GetProperty(messageType)?.GetValue(Dialogues) as List<string>;
-
-            //throw melonloader error if message is null
-            if (messages == null)
+            // If messages is null or empty, log and fallback
+            if (messages == null || messages.Count == 0)
             {
-                MelonLogger.Error($"❌ Message type '{messageType}' not found in Dialogue.");
+                MelonLogger.Msg($"❌ Message type '{messageType}' not found in Dialogue or contains no lines.");
                 if (returnMessage)
                 {
                     return messageType;
@@ -286,13 +288,47 @@ namespace Empire
                     return null;
                 }
             }
+
+            // Safe random selection (messages.Count > 0 guaranteed here)
             string line = messages[RandomUtils.RangeInt(0, messages.Count)];
+
+            // Resolve quality color safely. Guard against missing quality or missing QualityTypes
+            int qualityindex = -1;
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(quality))
+                {
+                    var qualityTypes = JSONDeserializer.dealerData?.QualityTypes ?? new List<string>();
+                    qualityindex = Array.FindIndex(qualityTypes.ToArray(), q => q.Trim().ToLowerInvariant() == quality.Trim().ToLowerInvariant());
+                }
+            }
+            catch
+            {
+                MelonLogger.Error("❌ Error finding quality index.");
+                qualityindex = -1;
+            }
+
+            string qualityColor = "#FFFFFF"; // default fallback color
+            if (qualityindex >= 0)
+            {
+                try
+                {
+                    if (QualityColors.Colors != null && qualityindex >= 0 && qualityindex < QualityColors.Colors.Length)
+                        qualityColor = QualityColors.Colors[qualityindex];
+                }
+                catch
+                {
+                    MelonLogger.Error("❌ Error finding quality color.");
+                    qualityColor = "#FFFFFF";
+                }
+            }
 
             string formatted = line
                 .Replace("{product}", $"<color=#34AD33>{product}</color>")
                 .Replace("{amount}", $"<color=#FF0004>{amount}x</color>")
-                .Replace("{quality}", $"<color=#FF0004>{quality}</color>")
+                .Replace("{quality}", $"<color={qualityColor}>{(string.IsNullOrWhiteSpace(quality) ? "unknown" : quality)}</color>")
                 .Replace("{dollar}", $"<color=#FF0004>{dollar}</color>");
+
             if (necessaryEffects != null && necessaryEffects.Count > 0)
             {
                 string effects = string.Join(", ", necessaryEffects.Select(e => $"<color=#FF0004>{e}</color>"));
@@ -313,7 +349,7 @@ namespace Empire
             }
             //UPDATABELE - May change
             // If messageType==accept, add another line to formatted = "Remember that we only accept packages after curfew"
-            if (messageType == "accept")
+            if (messageType.Equals("accept", StringComparison.OrdinalIgnoreCase))
             {
                 formatted += "\nRemember that we only accept packages under cover of night.";
             }

@@ -42,39 +42,43 @@ namespace Empire
         {
             MelonLogger.Msg("🚫 QuestDelivery.ForceCancel() called.");
 
-            Data.Reward = -Data.Penalties[0];
-            Data.RepReward = -Data.Penalties[1];
             //MelonCoroutines.Start(DelayedReward("Failed"));
             GiveReward("Failed");
             if (deliveryEntry != null && deliveryEntry.State != QuestState.Completed)
-                rewardEntry.SetState(QuestState.Failed); // ✅
+                deliveryEntry.SetState(QuestState.Expired);
             if (rewardEntry != null && rewardEntry.State != QuestState.Completed)
                 rewardEntry.SetState(QuestState.Failed);
             QuestActive = false;
             Active = null; // 👈 Reset after cancel
             Fail();
+            
         }
 
         private void ExpireCountdown()
         {
-            //use syntax like += to add a new event handler to the DayPass event
+            
             // Reduce the quest time by 1 day
+            MelonLogger.Msg($"ExpireCountdown called. DealTime before: {Data.DealTime}");
             Data.DealTime -= 1;
+            MelonLogger.Msg($"DealTime after: {Data.DealTime}");
+            // Update the delivery entry description with the new time
+            deliveryEntry.Title= ($"{Data.Task} at the {deliveryDrop.Name}. Expiry: {Data.DealTime} Days");
+            
             // Check if the quest time has expired and rewardEntry is not active
-            if (Data.DealTime < 0 && rewardEntry.State!=QuestState.Active)
+            if (Data.DealTime <= 0 && rewardEntry.State!=QuestState.Active)
             {
                 // If the quest time has expired, fail the quest
-                Data.Reward = -Data.Penalties[0];
-                Data.RepReward = -Data.Penalties[1];
+                
                 //MelonCoroutines.Start(DelayedReward("Expired"));
                 GiveReward("Expired");
                 if (deliveryEntry != null && deliveryEntry.State != QuestState.Completed)
-                    rewardEntry.SetState(QuestState.Expired); // ✅
+                    deliveryEntry.SetState(QuestState.Expired);
                 if (rewardEntry != null && rewardEntry.State != QuestState.Completed)
                     rewardEntry.SetState(QuestState.Expired);
                 QuestActive = false;
                 Active = null; // 👈 Reset after cancel
                 Expire();
+                
             }
         }
 
@@ -92,7 +96,7 @@ namespace Empire
             base.OnLoaded();
             MelonCoroutines.Start(WaitForBuyerAndLoad());
             
-            TimeManager.OnDayPass += ExpireCountdown;
+            //TimeManager.OnDayPass += ExpireCountdown;
             MelonLogger.Msg($"Quest OnLoaded() done.");
         }
 
@@ -112,8 +116,8 @@ namespace Empire
                 MelonLogger.Warning("⚠️ Buyer NPCs still not initialized after timeout. Skipping status sync.");
                 yield break;
             }
-            buyer = Contacts.GetBuyer(Data.DealerName);
-            ConsoleHelper.SetLawIntensity((float)2*buyer.Tier);// TODO - Expose Deal Heat thru JSON
+            //buyer = Contacts.GetBuyer(Data.DealerName);
+            //ConsoleHelper.SetLawIntensity((float)2*buyer.Tier);// TODO - Expose Deal Heat thru JSON
         }
 
 
@@ -127,7 +131,8 @@ namespace Empire
             ConsoleHelper.SetLawIntensity((float)2*buyer.Tier);// TODO - Expose Deal Heat thru JSON
             QuestActive = true;
             Active = this;
-            TimeManager.OnDayPass += ExpireCountdown;
+            TimeManager.OnDayPass -= ExpireCountdown; // Remove any previous subscription
+            TimeManager.OnDayPass += ExpireCountdown; // Add a single subscription
             if (!Data.Initialized)
             {
                 var drops = DeadDropManager.All?.ToList();
@@ -146,7 +151,7 @@ namespace Empire
                 deliveryDrop = DeadDropManager.All.FirstOrDefault(d => d.GUID == Data.DeliveryDropGUID);
             }
             //MelonLogger.Msg("📦 Testing 1.");
-            deliveryEntry = AddEntry($"{Data.Task} at the dead drop.");
+            deliveryEntry = AddEntry($"{Data.Task} at the {deliveryDrop.Name}.Expiry: {Data.DealTime} Days");
             deliveryEntry.POIPosition = deliveryDrop.Position;
             deliveryEntry.Begin();
 
@@ -154,7 +159,17 @@ namespace Empire
             MelonLogger.Msg("📦 Setting rewardEntry state to Inactive.");
             rewardEntry.SetState(QuestState.Inactive);
 
-            deliveryDrop.Storage.OnClosed += CheckDelivery;
+            // Ensure we don't add duplicate subscriptions. Remove any existing handlers first.
+            if (deliveryDrop?.Storage != null)
+            {
+                MelonLogger.Msg($"Subscribing CheckDelivery for quest {Data.DealerName} on storage {deliveryDrop.GUID}");
+                deliveryDrop.Storage.OnClosed -= CheckDelivery;
+                deliveryDrop.Storage.OnClosed += CheckDelivery;
+            }
+            else
+            {
+                MelonLogger.Warning("⚠️ deliveryDrop.Storage is null when attempting to subscribe to OnClosed.");
+            }
 
             MelonLogger.Msg("📦 QuestDelivery started with drop locations assigned.");
         }
@@ -172,6 +187,11 @@ namespace Empire
 
         private void CheckDelivery()
         {
+            if (!QuestActive || Active != this)
+            {
+                MelonLogger.Msg("CheckDelivery ignored: quest not active or not current.");
+                return;
+            }
             MelonLogger.Msg("CheckDelivery called.");
             // Add null checks
             if (deliveryDrop?.Storage?.Slots == null)
@@ -184,6 +204,7 @@ namespace Empire
             if (buyer.CurfewDeal && !TimeManager.IsNight)
             {
                 MelonLogger.Msg("❌ Curfew deal is true but it is not night. Cannot deliver.");
+                //ToDO - Shift to JSON
                 buyer.SendCustomMessage("Deliveries only after Curfew.", Data.ProductID, (int)Data.RequiredAmount, Data.Quality, Data.NecessaryEffects, Data.OptionalEffects);
                 return;
             }
@@ -251,7 +272,8 @@ namespace Empire
 
                 if (!Data.NecessaryEffects.All(effect => properties.Contains(effect.Trim().ToLower())))
                 {
-                    MelonLogger.Error($"❌ Effect type mismatch");
+                    MelonLogger.Error($"❌ Effect type mismatch"); 
+                    //ToDO - SHift to JSON
                     buyer.SendCustomMessage("All the required necessary effects are not present.");
                     continue;
                 }
@@ -264,6 +286,7 @@ namespace Empire
                 if (qualityNumber < GetQualityNumber(Data.Quality))
                 {
                     MelonLogger.Error($"❌ Quality mismatch: {quality} < {GetQualityNumber(Data.Quality)} or {quality} > {GetQualityNumber(Data.Quality)}");
+                    //ToDO - SHift to JSON
                     buyer.SendCustomMessage("The quality of the product is worse than what I ordered.");
                     continue;
                 }
@@ -290,12 +313,12 @@ namespace Empire
                     }
                 }
             }
-            if (Data.RequiredAmount <= 0 && deliveryEntry.State!=QuestState.Completed)
+            if (Data.RequiredAmount <= 0 && deliveryEntry.State==QuestState.Active)
             {
                 //MelonLogger.Msg("Test2");
                 buyer.SendCustomMessage("Success", Data.ProductID, (int)Data.RequiredAmount, Data.Quality, Data.NecessaryEffects, Data.OptionalEffects,Data.Reward);
                 MelonLogger.Msg("❌ No required amount to deliver. Quest done.");
-                deliveryDrop.Storage.OnClosed -= CheckDelivery;
+                
                 deliveryEntry.Complete();
                 rewardEntry.SetState(QuestState.Active);
                 MelonCoroutines.Start(DelayedReward("Completed"));
@@ -376,16 +399,23 @@ namespace Empire
                     EffectsSum += Data.OptionalEffectMult[i];
                 }
             }
-            Data.Reward += (int)(total * productDef.Price * (1 + qualityMult) * Data.DealTimeMult * (1 + EffectsSum));
-            MelonLogger.Msg($"   Reward updated: {Data.Reward} with Price: {productDef.Price}, Quality: {qualityMult} and EffectsSum: {EffectsSum} and DealTimeMult: {Data.DealTimeMult}.");
+            Data.Reward += (int)(total * productDef.MarketValue * (1 + qualityMult) * Data.DealTimeMult * (1 + EffectsSum));
+            MelonLogger.Msg($"   Reward updated: {Data.Reward} with Price: {productDef.MarketValue}, Quality: {qualityMult} and EffectsSum: {EffectsSum} and DealTimeMult: {Data.DealTimeMult}.");
         }
 
 
-
+        //ToDO - Expose Wanted Level through JSON
         //Call with QuestState to be set as string - UPDATABLE
         private System.Collections.IEnumerator DelayedReward(string source)
         {
-            yield return new WaitForSeconds(RandomUtils.RangeInt(15, 30));
+            // for buyer.Tier -1 times, raise wanted level by 1
+            for (int i = 0; i < buyer.Tier - 1; i++)
+            {
+                ConsoleHelper.RaiseWanted();
+                yield return new WaitForSeconds(1f);
+            }
+
+            yield return new WaitForSeconds(RandomUtils.RangeInt(20, 45));
             GiveReward(source);
         }
 
@@ -394,18 +424,26 @@ namespace Empire
             TimeManager.OnDayPass -= ExpireCountdown;
             if (source == "Expired")
             {
+                Data.Reward = -Data.Penalties[0];
+                Data.RepReward = -Data.Penalties[1];
                 Money.ChangeCashBalance(Data.Reward);
+                buyer.GiveReputation((int)Data.RepReward);
                 buyer.SendCustomMessage("Expire", Data.ProductID, (int)Data.RequiredAmount, Data.Quality, Data.NecessaryEffects, Data.OptionalEffects);
             }
             else if (source == "Failed")
             {
+                Data.Reward = -Data.Penalties[0];
+                Data.RepReward = -Data.Penalties[1];
                 Money.ChangeCashBalance(Data.Reward);
+                buyer.GiveReputation((int)Data.RepReward);
                 buyer.SendCustomMessage("Fail", Data.ProductID, (int)Data.RequiredAmount, Data.Quality, Data.NecessaryEffects, Data.OptionalEffects);
             }
             else if (source == "Completed")
             {
                 Data.RepReward += (int)(Data.Reward * Data.RepMult);
                 Data.XpReward += (int)(Data.Reward * Data.XpMult);
+                buyer.GiveReputation((int)Data.RepReward);
+                ConsoleHelper.GiveXp(Data.XpReward);
                 buyer.SendCustomMessage("Reward", Data.ProductID, (int)Data.RequiredAmount, Data.Quality, Data.NecessaryEffects, Data.OptionalEffects, Data.Reward);
                 buyer.IncreaseCompletedDeals(1);
                 buyer.UnlockDrug();
@@ -418,7 +456,7 @@ namespace Empire
                 {
 
                     Money.ChangeCashBalance(Data.Reward);
-                   
+                  
                 }
                 // Pay the reward or debt
                 else if (buyer._DealerData.DebtRemaining > 0 && !buyer.DebtManager.paidthisweek)
@@ -426,19 +464,23 @@ namespace Empire
                     // If debt remaining < reward, set it to 0 and pay the rest
                     if (buyer._DealerData.DebtRemaining <= buyer.Debt.ProductBonus * Data.Reward)
                     {
-                        Data.Reward -= (int)(buyer._DealerData.DebtRemaining / buyer.Debt.ProductBonus);
+                        var temp1 = Data.Reward - (int)(buyer._DealerData.DebtRemaining / buyer.Debt.ProductBonus);
+                        var temp2 = buyer._DealerData.DebtRemaining;
                         buyer._DealerData.DebtRemaining = 0;
                         //buyer.SendCustomMessage("Congrats! You Paid off the debt.");
                         MelonLogger.Msg($"   Paid off debt to {buyer.DealerName}");
-                        Money.ChangeCashBalance(Data.Reward);
+                        Money.ChangeCashBalance(temp1);
+                        buyer.DebtManager.SendDebtMessage((int)temp2, "deal");
                     }
                     else
                     {
                         MelonLogger.Msg($"   Paid off debt: ${Data.Reward} to {buyer.DealerName}");
                         buyer._DealerData.DebtRemaining -= buyer.Debt.ProductBonus * Data.Reward;
                         buyer._DealerData.DebtPaidThisWeek += buyer.Debt.ProductBonus * Data.Reward;
+                        buyer.DebtManager.SendDebtMessage((int) (Data.Reward * buyer.Debt.ProductBonus), "deal");
                     }
-                    buyer.DebtManager.SendDealDebtMessage();
+                    
+                    buyer.DebtManager.CheckIfPaidThisWeek();
                 }
                 else
                 {
@@ -452,11 +494,23 @@ namespace Empire
                 return;
             }
             
-            ConsoleHelper.GiveXp(Data.XpReward);
-            buyer.GiveReputation((int)Data.RepReward);
             
-            MelonLogger.Msg($"   Rewarded : ${Data.Reward} and Rep {Data.RepReward} and Xp {Data.XpReward} from {Data.DealerName}");
             
+            
+            MelonLogger.Msg($"   Rewarded : ${Data.Reward} and Rep {Data.RepReward} and Xp (if completed) {Data.XpReward} from {Data.DealerName}");
+
+            // Safely remove subscription(s) to avoid CheckDelivery being invoked after quest end.
+            if (deliveryDrop?.Storage != null)
+            {
+                // Remove any existing handler(s)
+                MelonLogger.Msg($"Unsubscribing CheckDelivery for quest {Data.DealerName} on storage {deliveryDrop.GUID}");
+
+                deliveryDrop.Storage.OnClosed -= CheckDelivery;
+            }
+            else
+            {
+                MelonLogger.Warning("⚠️ deliveryDrop.Storage is null when attempting to unsubscribe from OnClosed.");
+            }
 
             MyApp.Instance.OnQuestComplete();
             //ConsoleHelper.SetLawIntensity(1f);

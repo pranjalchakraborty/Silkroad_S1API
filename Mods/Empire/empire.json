@@ -1,7 +1,7 @@
 {
     "version": {
-        "s1api": "1.6.7",
-        "empire": "0.1"
+        "s1api": "1.7.1",
+        "empire": "0.95"
     },
     "effectsName": [
         "AntiGravity",
@@ -131,7 +131,7 @@
                 "cost": 1000,
                 "rep": 20
             },
-            "repLogBase": 2,
+            "repLogBase": 3,
             "dealDays": [
                 "Monday",
                 "Tuesday",
@@ -290,10 +290,10 @@
                 "cost": 1000,
                 "rep": 20
             },
-            "repLogBase": 2,
+            "repLogBase": 3,
             "dealDays": [
-                "Tuesday",
-                "Wednesday",
+                "Saturday",
+                "Sunday",
                 "Thursday",
                 "Friday"
             ],
@@ -449,7 +449,7 @@
                 "cost": 1000,
                 "rep": 20
             },
-            "repLogBase": 2,
+            "repLogBase": 3,
             "dealDays": [
                 "Wednesday",
                 "Thursday",
@@ -631,7 +631,7 @@
                 "cost": 3000,
                 "rep": 60
             },
-            "repLogBase": 4,
+            "repLogBase": 5,
             "dealDays": [
                 "Tuesday",
                 "Thursday",
@@ -897,7 +897,7 @@
                 "cost": 2000,
                 "rep": 40
             },
-            "repLogBase": 3,
+            "repLogBase": 4,
             "dealDays": [
                 "Monday",
                 "Tuesday",
@@ -1133,7 +1133,7 @@
                 "cost": 2000,
                 "rep": 40
             },
-            "repLogBase": 3,
+            "repLogBase": 4,
             "dealDays": [
                 "Tuesday",
                 "Wednesday",
@@ -1368,7 +1368,7 @@
                 "cost": 2000,
                 "rep": 40
             },
-            "repLogBase": 3,
+            "repLogBase": 4,
             "dealDays": [
                 "Monday",
                 "Wednesday",
@@ -1621,7 +1621,7 @@
                 "cost": 3000,
                 "rep": 60
             },
-            "repLogBase": 4,
+            "repLogBase": 5,
             "dealDays": [
                 "Tuesday",
                 "Friday",
@@ -1902,7 +1902,7 @@
                 "cost": 4000,
                 "rep": 80
             },
-            "repLogBase": 5,
+            "repLogBase": 6,
             "dealDays": [
                 "Monday",
                 "Wednesday"
@@ -2183,7 +2183,7 @@
                 "cost": 2000,
                 "rep": 40
             },
-            "repLogBase": 3,
+            "repLogBase": 4,
             "dealDays": [
                 "Monday",
                 "Wednesday",
@@ -2330,7 +2330,7 @@
                     ]
                 },
                 {
-                    "name": "Salamanca Express",
+                    "name": "Regalo Helado Trucks",
                     "cost": 20000,
                     "unlockRep": 380,
                     "minAmount": 40,
@@ -2426,7 +2426,7 @@
                 "cost": 2000,
                 "rep": 40
             },
-            "repLogBase": 3,
+            "repLogBase": 4,
             "dealDays": [
                 "Monday",
                 "Wednesday",
@@ -2680,7 +2680,7 @@
                 "cost": 4000,
                 "rep": 80
             },
-            "repLogBase": 5,
+            "repLogBase": 6,
             "dealDays": [
                 "Wednesday",
                 "Sunday"
@@ -2978,7 +2978,7 @@
                 "cost": 4000,
                 "rep": 80
             },
-            "repLogBase": 5,
+            "repLogBase": 6,
             "dealDays": [
                 "Tuesday",
                 "Saturday"
@@ -3194,7 +3194,7 @@
                 "cost": 2000,
                 "rep": 40
             },
-            "repLogBase": 3,
+            "repLogBase": 4,
             "dealDays": [
                 "Monday",
                 "Tuesday",
@@ -3383,7 +3383,7 @@
                 "cost": 3000,
                 "rep": 60
             },
-            "repLogBase": 4,
+            "repLogBase": 5,
             "dealDays": [
                 "Wednesday",
                 "Thursday",
@@ -3607,7 +3607,7 @@
                 "cost": 5000,
                 "rep": 100
             },
-            "repLogBase": 6,
+            "repLogBase": 7,
             "dealDays": [
                 "Friday"
             ],

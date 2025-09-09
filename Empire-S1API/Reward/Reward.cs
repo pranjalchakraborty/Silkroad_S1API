@@ -27,6 +27,7 @@ namespace Empire
         {
             this.buyer = buyer;
             isRewardAvailable = true;
+            TimeManager.OnDayPass -= SetRewardAvailable;
             TimeManager.OnDayPass += SetRewardAvailable;
         }
 
@@ -107,6 +108,7 @@ namespace Empire
         }
         public void GiveReward()
         {
+            isRewardAvailable = false;
             if (!isRewardAvailable)
             {
                 MelonLogger.Error("Reward is not available right now.");
@@ -146,7 +148,7 @@ namespace Empire
                 }
             }
 
-            isRewardAvailable = false;
+            
             MelonLogger.Msg("Reward executed successfully.");
         }
     }
