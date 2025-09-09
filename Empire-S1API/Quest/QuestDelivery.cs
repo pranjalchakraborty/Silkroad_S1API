@@ -29,6 +29,7 @@ namespace Empire
         public DeliverySaveData Data = new DeliverySaveData();
         public BlackmarketBuyer buyer;
         private DeadDropInstance deliveryDrop;
+        private StorageInstance? subscribedStorage;
         public static HashSet<string> CompletedQuestKeys = new HashSet<string>();
         public QuestEntry deliveryEntry;
         public QuestEntry rewardEntry;
@@ -127,6 +128,10 @@ namespace Empire
             base.OnCreated();
             MelonLogger.Msg($"QuestOnCreated() done.");
             
+            // Ensure any previously active QuestDelivery cleans up its subscriptions
+            if (Active != null && Active != this)
+                Active.CleanupSubscriptions();
+
             buyer = Contacts.GetBuyer(Data.DealerName);
             ConsoleHelper.SetLawIntensity((float)2*buyer.Tier);// TODO - Expose Deal Heat thru JSON
             QuestActive = true;
@@ -163,8 +168,9 @@ namespace Empire
             if (deliveryDrop?.Storage != null)
             {
                 MelonLogger.Msg($"Subscribing CheckDelivery for quest {Data.DealerName} on storage {deliveryDrop.GUID}");
-                deliveryDrop.Storage.OnClosed -= CheckDelivery;
-                deliveryDrop.Storage.OnClosed += CheckDelivery;
+                subscribedStorage = deliveryDrop.Storage;
+                subscribedStorage.OnClosed -= CheckDelivery;
+                subscribedStorage.OnClosed += CheckDelivery;
             }
             else
             {
@@ -190,6 +196,16 @@ namespace Empire
             if (!QuestActive || Active != this)
             {
                 MelonLogger.Msg("CheckDelivery ignored: quest not active or not current.");
+                // Proactively detach in case cleanup did not run yet for this instance
+                if (subscribedStorage != null)
+                {
+                    subscribedStorage.OnClosed -= CheckDelivery;
+                    subscribedStorage = null;
+                }
+                if (deliveryDrop?.Storage != null)
+                {
+                    deliveryDrop.Storage.OnClosed -= CheckDelivery;
+                }
                 return;
             }
             MelonLogger.Msg("CheckDelivery called.");
@@ -419,9 +435,28 @@ namespace Empire
             GiveReward(source);
         }
 
+        private void CleanupSubscriptions()
+        {
+            // Detach storage event
+            if (subscribedStorage != null)
+            {
+                MelonLogger.Msg($"Unsubscribing CheckDelivery for quest {Data.DealerName} on storage {deliveryDrop?.GUID}");
+                subscribedStorage.OnClosed -= CheckDelivery;
+                subscribedStorage = null;
+            }
+            else if (deliveryDrop?.Storage != null)
+            {
+                MelonLogger.Msg($"Unsubscribing CheckDelivery for quest {Data.DealerName} on storage {deliveryDrop.GUID}");
+                deliveryDrop.Storage.OnClosed -= CheckDelivery;
+            }
+
+            // Detach time callback
+            TimeManager.OnDayPass -= ExpireCountdown;
+        }
+
         private void GiveReward(string source)
         {
-            TimeManager.OnDayPass -= ExpireCountdown;
+            CleanupSubscriptions();
             if (source == "Expired")
             {
                 Data.Reward = -Data.Penalties[0];
@@ -498,19 +533,6 @@ namespace Empire
             
             
             MelonLogger.Msg($"   Rewarded : ${Data.Reward} and Rep {Data.RepReward} and Xp (if completed) {Data.XpReward} from {Data.DealerName}");
-
-            // Safely remove subscription(s) to avoid CheckDelivery being invoked after quest end.
-            if (deliveryDrop?.Storage != null)
-            {
-                // Remove any existing handler(s)
-                MelonLogger.Msg($"Unsubscribing CheckDelivery for quest {Data.DealerName} on storage {deliveryDrop.GUID}");
-
-                deliveryDrop.Storage.OnClosed -= CheckDelivery;
-            }
-            else
-            {
-                MelonLogger.Warning("⚠️ deliveryDrop.Storage is null when attempting to unsubscribe from OnClosed.");
-            }
 
             MyApp.Instance.OnQuestComplete();
             //ConsoleHelper.SetLawIntensity(1f);
