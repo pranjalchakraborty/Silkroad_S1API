@@ -63,8 +63,9 @@ namespace Empire
             Data.DealTime -= 1;
             MelonLogger.Msg($"DealTime after: {Data.DealTime}");
             // Update the delivery entry description with the new time
-            deliveryEntry.Title= ($"{Data.Task} at the {deliveryDrop.Name}. Expiry: {Data.DealTime} Days");
-            
+            deliveryEntry.Title = $"{Data.Task} at the {Colorize(deliveryDrop.Name, DropNameColor)}. Expiry: {Colorize(Data.DealTime.ToString(), DealTimeColor)} Days";
+
+
             // Check if the quest time has expired and rewardEntry is not active
             if (Data.DealTime <= 0 && rewardEntry.State!=QuestState.Active)
             {
@@ -156,7 +157,7 @@ namespace Empire
                 deliveryDrop = DeadDropManager.All.FirstOrDefault(d => d.GUID == Data.DeliveryDropGUID);
             }
             //MelonLogger.Msg("📦 Testing 1.");
-            deliveryEntry = AddEntry($"{Data.Task} at the {deliveryDrop.Name}.Expiry: {Data.DealTime} Days");
+            deliveryEntry = AddEntry($"{Data.Task} at the {Colorize(deliveryDrop.Name, DropNameColor)}. Expiry: {Colorize(Data.DealTime.ToString(), DealTimeColor)} Days");
             deliveryEntry.POIPosition = deliveryDrop.Position;
             deliveryEntry.Begin();
 
@@ -431,7 +432,7 @@ namespace Empire
                 yield return new WaitForSeconds(1f);
             }
 
-            yield return new WaitForSeconds(RandomUtils.RangeInt(20, 45));
+            yield return new WaitForSeconds(RandomUtils.RangeInt(5, 10));
             GiveReward(source);
         }
 
@@ -550,5 +551,11 @@ namespace Empire
             !string.IsNullOrEmpty(Data?.ProductID) && Data.RequiredAmount > 0
                 ? $"{Data.Task}"
                 : "Deliver the assigned product to the stash location.";
-    }
+
+        // Add this helper method and color constants to your class (place near the top of QuestDelivery)
+        private const string DropNameColor = "00FFCC"; // Teal
+        private const string DealTimeColor = "FFD166"; // Warm yellow
+        private string Colorize(string text, string hex) => $"<color=#{hex}>{text}</color>";
+
+        }
 }

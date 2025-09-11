@@ -12,7 +12,7 @@ using S1API.Money;
 using S1API.Entities;
 using S1API.Console;
 using UnityEngine;
-using Console = S1API.Console;  
+using Console = S1API.Console;
 
 namespace Empire
 {
@@ -108,7 +108,7 @@ namespace Empire
         }
         public void GiveReward()
         {
-            isRewardAvailable = false;
+            
             if (!isRewardAvailable)
             {
                 MelonLogger.Error("Reward is not available right now.");
@@ -124,10 +124,10 @@ namespace Empire
                 MelonLogger.Error($"Insufficient reputation to claim reward. Required: {buyer.Reward.unlockRep}, Current: {buyer._DealerData.Reputation}");
                 return;
             }
-
+            MelonLoader.MelonLogger.Msg($"Claiming reward: {buyer.Reward.Type} with args: {string.Join(", ", buyer.Reward.Args)}");
             // Deduct reputation cost from current reputation
             buyer._DealerData.Reputation -= buyer.Reward.RepCost;
-
+            isRewardAvailable = false;
             // Start coroutine to execute reward after 10 seconds
             MelonCoroutines.Start(ExecuteRewardAfterDelay());
         }
@@ -142,14 +142,49 @@ namespace Empire
             {
                 if (buyer.Reward.Args != null && buyer.Reward.Args.Count > 0)
                 {
-                    string command = string.Join(" ", buyer.Reward.Args);
-                    MelonLogger.Msg($"Executing console command: {command}");
-                    Console.ConsoleHelper.Submit(command);
+                    string commandLine = string.Join(" ", buyer.Reward.Args);
+                    // Split by "&&"
+                    string[] commands = commandLine.Split(new string[] { "&&" }, StringSplitOptions.RemoveEmptyEntries);
+
+                    foreach (string rawCmd in commands)
+                    {
+                        string cmd = rawCmd.Trim();
+                        var args = cmd.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
+                        int bindonceIdx = args.IndexOf("bindonce");
+                        if (bindonceIdx >= 0 && bindonceIdx < args.Count - 1)
+                        {
+                            string key = args[bindonceIdx + 1];
+                            // Replace "bindonce" with "bind"
+                            args[bindonceIdx] = "bind";
+                            string filteredCmd = string.Join(" ", args);
+                            MelonLogger.Msg($"Executing console command: {filteredCmd}");
+                            ConsoleHelper.Submit(filteredCmd);
+                            MelonCoroutines.Start(WaitForBindOnceKey(key));
+                        }
+                        else
+                        {
+                            MelonLogger.Msg($"Executing console command: {cmd}");
+                            ConsoleHelper.Submit(cmd);
+                        }
+                    }
                 }
             }
 
-            
             MelonLogger.Msg("Reward executed successfully.");
+        }
+
+        private System.Collections.IEnumerator WaitForBindOnceKey(string key)
+        {
+            if (!Enum.TryParse<KeyCode>(key, true, out var keyCode))
+            {
+                MelonLogger.Error($"Invalid key specified for bindonce: {key}");
+                yield break;
+            }
+            MelonLogger.Msg($"Waiting for key press: {keyCode}");
+            while (!UnityEngine.Input.GetKeyDown(keyCode))
+                yield return null;
+            MelonLogger.Msg($"Key {keyCode} pressed, unbinding...");
+            Console.ConsoleHelper.Submit($"unbind {key}");
         }
     }
 

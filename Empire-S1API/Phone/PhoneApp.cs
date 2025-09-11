@@ -392,6 +392,15 @@ namespace Empire
                 int currentTier = selectedBuyer._DealerData.ShippingTier;
                 string currentShipping = "";
                 string nextShipping = "";
+                double logResult = 0d;
+                if (selectedBuyer.RepLogBase > 1)
+                {
+                    logResult = Math.Log((double)selectedBuyer._DealerData.Reputation + 1, (double)selectedBuyer.RepLogBase);
+                    if (logResult < 4) logResult = 0;
+                    else logResult = logResult - 4;
+                }
+                //format to 2 decimal places
+                logResult = Math.Round(logResult, 2);
                 if (selectedBuyer.Shippings != null && currentTier < selectedBuyer.Shippings.Count)
                 {
                     var currentShip = selectedBuyer.Shippings[currentTier];
@@ -400,6 +409,8 @@ namespace Empire
                                       $"   • <i>Cost:</i> <color=#00FFFF>{currentShip.Cost}</color>\n" +
                                       $"   • <i>Unlock Rep:</i> <color=#00FF00>{currentShip.UnlockRep}</color>\n" +
                                       $"   • <i>Amounts:</i> <color=#FFFF00>{currentShip.MinAmount} - {currentShip.MaxAmount}</color>\n" +
+                                      $"   • <i>Package:</i> <color=#FFFF00>{currentShip.StepAmount}</color>\n" +
+                                      $"   • <i>Rep Multiple Bonus:</i> <color=#FFFF00>x {logResult}</color>\n" +
                                       $"   • <i>Deal Modifier:</i> <color=#FFA500>{string.Join(", ", currentShip.DealModifier)}</color>\n";
                 }
                 else
@@ -414,6 +425,8 @@ namespace Empire
                                    $"   • <i>Cost:</i> <color=#00FFFF>{nextShip.Cost}</color>\n" +
                                    $"   • <i>Unlock Rep:</i> <color=#00FF00>{nextShip.UnlockRep}</color>\n" +
                                    $"   • <i>Amounts:</i> <color=#FFFF00>{nextShip.MinAmount} - {nextShip.MaxAmount}</color>\n" +
+                                   $"   • <i>Package:</i> <color=#FFFF00>{nextShip.StepAmount}</color>\n" +
+                                   $"   • <i>Rep Multiple Bonus:</i> <color=#FFFF00>x {logResult}</color>\n" +
                                    $"   • <i>Deal Modifier:</i> <color=#FFA500>{string.Join(", ", nextShip.DealModifier)}</color>\n";
                 }
                 else
@@ -573,14 +586,14 @@ namespace Empire
                     int displayedPaymentAmount = (int)Mathf.Max(1000f, debtBuyer._DealerData.DebtRemaining * 0.1f);
                     displayedPaymentAmount = (int)Mathf.Floor(Mathf.Min(displayedPaymentAmount, debtBuyer._DealerData.DebtRemaining));
 
-                    var payDebtTuple = UIFactory.RoundedButtonWithLabel("PayDebtButton", $"Pay ${displayedPaymentAmount:N0}", managementDetailPanel.transform, new Color32(0, 123, 255, 255), 460f, 60f, 22, Color.white);
+                    var payDebtTuple = UIFactory.RoundedButtonWithLabel("PayDebtButton", $"Pay ${displayedPaymentAmount:N0}", managementDetailPanel.transform, new Color32(0, 123, 255, 255), 220f, 42f, 22, Color.white);
                     ButtonUtils.ClearListeners(payDebtTuple.Item2);
 
                     // Capture buyer for the closure (listener recalculates to ensure correctness at click time)
                     ButtonUtils.AddListener(payDebtTuple.Item2, () =>
                     {
                         int paymentAmount = (int)Mathf.Max(1000f, debtBuyer._DealerData.DebtRemaining * 0.1f);
-                        paymentAmount = (int) Mathf.Floor(Mathf.Min(paymentAmount, debtBuyer._DealerData.DebtRemaining));
+                        paymentAmount = (int)Mathf.Floor(Mathf.Min(paymentAmount, debtBuyer._DealerData.DebtRemaining));
 
                         if (Money.GetCashBalance() < paymentAmount)
                         {
@@ -593,7 +606,7 @@ namespace Empire
                         ConsoleHelper.RunCashCommand(-(int)paymentAmount);
 
                         // Apply payment to the captured buyer
-                        debtBuyer._DealerData.DebtRemaining = (int) (debtBuyer._DealerData.DebtRemaining - paymentAmount);
+                        debtBuyer._DealerData.DebtRemaining = (int)(debtBuyer._DealerData.DebtRemaining - paymentAmount);
                         debtBuyer._DealerData.DebtPaidThisWeek = (int)(debtBuyer._DealerData.DebtPaidThisWeek+paymentAmount);
 
                         var success = UIFactory.Text("DebtSuccessText", $"<color=#00FF00>Paid ${paymentAmount:N0}.</color>", GetMessageParent(), 18);
@@ -607,6 +620,51 @@ namespace Empire
                             selectedBuyer = debtBuyer;
                         debtBuyer.DebtManager.SendDebtMessage(paymentAmount,"payment"); // Ensure debt manager recalculates interest and next payment
                         debtBuyer.DebtManager.CheckIfPaidThisWeek(); // Check if debt is weekly paid
+                        UpdateBuyerDetails("Debt");
+                    });
+
+                    // New button: fixed payment of $1,000 per press (caps to remaining debt)
+                    var payThousandTuple = UIFactory.RoundedButtonWithLabel("PayThousandButton", "Pay $1,000", managementDetailPanel.transform, new Color32(0, 123, 255, 255), 220f, 42f, 22, Color.white);
+                    ButtonUtils.ClearListeners(payThousandTuple.Item2);
+                    ButtonUtils.AddListener(payThousandTuple.Item2, () =>
+                    {
+                        int fixedPayment = 1000;
+                        // Cap the fixed payment to remaining debt
+                        int paymentAmount = (int)Mathf.Floor(Mathf.Min(fixedPayment, debtBuyer._DealerData.DebtRemaining));
+
+                        if (paymentAmount <= 0)
+                        {
+                            var info = UIFactory.Text("DebtZeroText", "<color=#FFFF00>No debt remaining to pay.</color>", GetMessageParent(), 18);
+                            MelonCoroutines.Start(BlinkMessage(info));
+                            UpdateBuyerDetails("Debt");
+                            return;
+                        }
+
+                        if (Money.GetCashBalance() < paymentAmount)
+                        {
+                            var error = UIFactory.Text("DebtThousandErrorText", "<color=#FF0000>Not enough cash to pay $1,000.</color>", GetMessageParent(), 18);
+                            MelonCoroutines.Start(BlinkMessage(error));
+                            return;
+                        }
+
+                        // Use console command to change cash so other systems react consistently
+                        ConsoleHelper.RunCashCommand(-paymentAmount);
+
+                        // Apply payment to the captured buyer
+                        debtBuyer._DealerData.DebtRemaining = (int)(debtBuyer._DealerData.DebtRemaining - paymentAmount);
+                        debtBuyer._DealerData.DebtPaidThisWeek = (int)(debtBuyer._DealerData.DebtPaidThisWeek + paymentAmount);
+
+                        var success = UIFactory.Text("DebtThousandSuccessText", $"<color=#00FF00>Paid ${paymentAmount:N0}.</color>", GetMessageParent(), 18);
+                        MelonCoroutines.Start(BlinkMessage(success));
+
+                        // Refresh source data and re-resolve selectedBuyer
+                        Contacts.Update();
+                        if (Contacts.Buyers.TryGetValue(debtBuyer.DealerName, out var updatedBuyer2) && updatedBuyer2.IsInitialized)
+                            selectedBuyer = updatedBuyer2;
+                        else
+                            selectedBuyer = debtBuyer;
+                        debtBuyer.DebtManager.SendDebtMessage(paymentAmount, "payment");
+                        debtBuyer.DebtManager.CheckIfPaidThisWeek();
                         UpdateBuyerDetails("Debt");
                     });
                 }
@@ -721,17 +779,18 @@ namespace Empire
             var shipping = buyer.Shippings[dealerSaveData.ShippingTier];
             int minAmount = shipping.MinAmount;
             int maxAmount = shipping.MaxAmount;
+            double logResult = 0d;
             if (buyer.RepLogBase > 1)
             {
-                double logResult = Math.Log((double)buyer._DealerData.Reputation + 1, (double)buyer.RepLogBase);
+                logResult = Math.Log((double)buyer._DealerData.Reputation + 1, (double)buyer.RepLogBase);
                 if (logResult < 4) logResult = 0;
                 else logResult = logResult - 4;
-                minAmount = (int)(minAmount * (1 + logResult));
-                maxAmount = (int)(maxAmount * (1 + logResult));
             }
             int steps = (maxAmount - minAmount) / shipping.StepAmount;
             int randomStep = (steps > 0) ? RandomUtils.RangeInt(0, steps + 1) : 0;
+            randomStep = (int) (randomStep * (1+logResult));
             int amount = minAmount + randomStep * shipping.StepAmount;
+           
 
             var unlockedDrug = dealerSaveData.UnlockedDrugs.FirstOrDefault(d => d.Type == drugType);
             if (unlockedDrug == null) return;
@@ -757,8 +816,8 @@ namespace Empire
 
             foreach (var effect in unlockedDrug.Effects)
             {
-                bool isNecessary = effect.Probability > 1f && UnityEngine.Random.Range(0f, 1f) < (effect.Probability - 1f);
-                bool isOptional = effect.Probability > 0f && effect.Probability <= 1f && UnityEngine.Random.Range(0f, 1f) < effect.Probability;
+                bool isNecessary = effect.Probability > 1f && UnityEngine.Random.Range(0f, 1f) < (effect.Probability - 1f) && !JSONDeserializer.dealerData.NoNecessaryEffects;
+                bool isOptional = (effect.Probability > 0f && effect.Probability <= 1f && UnityEngine.Random.Range(0f, 1f) < effect.Probability) || JSONDeserializer.dealerData.NoNecessaryEffects;
 
                 if (isNecessary || isOptional)
                 {
@@ -803,14 +862,47 @@ namespace Empire
             float aggregateDollarMultMin = (1 + qualityMult) * tempMult11 * dealTimesMult * randomNum4;
             float aggregateDollarMultMax = (1 + qualityMult) * tempMult21 * dealTimesMult * randomNum4;
 
-            string effectDesc = "";
-            if (necessaryEffects.Count > 0) effectDesc += $"Required: {string.Join(", ", necessaryEffects)}";
-            if (optionalEffects.Count > 0) effectDesc += (effectDesc.Length > 0 ? "; " : "") + $"Optional: {string.Join(", ", optionalEffects)}";
+            //string effectDesc = "";
+            //if (necessaryEffects.Count > 0) effectDesc += $"Required: {string.Join(", ", necessaryEffects)}";
+            //if (optionalEffects.Count > 0) effectDesc += (effectDesc.Length > 0 ? "; " : "") + $"Optional: {string.Join(", ", optionalEffects)}";
+
+            // Colorize task components: amount, quality (quality-colors), product, and effects (necessary vs optional)
+            int qualityIndex = -1;
+            try
+            {
+                var qualityTypes = JSONDeserializer.dealerData?.QualityTypes ?? new List<string>();
+                qualityIndex = qualityTypes.FindIndex(q => q?.Trim().ToLowerInvariant() == qualityKey);
+            }
+            catch
+            {
+                qualityIndex = -1;
+            }
+
+            string qualityColor = "#FFFFFF";
+            if (qualityIndex >= 0 && QualityColors.Colors != null && qualityIndex < QualityColors.Colors.Length)
+                qualityColor = QualityColors.Colors[qualityIndex];
+
+            string effectDescColored = "";
+            if (necessaryEffects.Count > 0)
+            {
+                var coloredNecessary = string.Join(", ", necessaryEffects.Select(e => $"<color=#FF0004>{e}</color>"));
+                effectDescColored += $"Required: {coloredNecessary}";
+            }
+            if (optionalEffects.Count > 0)
+            {
+                if (effectDescColored.Length > 0) effectDescColored += "; ";
+                var coloredOptional = string.Join(", ", optionalEffects.Select(e => $"<color=#00FFFF>{e}</color>"));
+                effectDescColored += $"Optional: {coloredOptional}";
+            }
+            if (string.IsNullOrEmpty(effectDescColored)) effectDescColored = "none";
+
+            //create the dialogueIndex as a random index of "DealStart" Dialogues of selected buyer
+            int dialogueIndex = RandomUtils.RangeInt(0, buyer.Dialogues.DealStart.Count);
 
             var quest = new QuestData
             {
                 Title = $"{buyer.DealerName} wants {drugType} delivered.",
-                Task = $"Deliver {amount}x {qualityKey} {drugType} with effects: {effectDesc}",
+                Task = $"Deliver <color=#FF0004>{amount}x</color> <color={qualityColor}>{qualityKey}</color> <color=#FF0004>{drugType}</color> with effects: {effectDescColored}",
                 ProductID = drugType,
                 AmountRequired = (uint)amount,
                 DealerName = buyer.DealerName,
@@ -831,7 +923,8 @@ namespace Empire
                 NecessaryEffectMult = necessaryEffectMult,
                 OptionalEffects = optionalEffects,
                 OptionalEffectMult = optionalEffectMult,
-                Index = Index++
+                Index = Index++,
+                DialogueIndex = dialogueIndex
             };
             quests.Add(quest);
         }
@@ -918,7 +1011,7 @@ namespace Empire
             RefreshQuestList(); // Redraw list to show new selection highlight
 
             var Buyer = Contacts.GetBuyer(quest.DealerName);
-            var dialogue = Buyer.SendCustomMessage("DealStart", quest.ProductID, (int)quest.AmountRequired, quest.Quality, quest.NecessaryEffects, quest.OptionalEffects, 0, true);
+            var dialogue = Buyer.SendCustomMessage("DealStart", quest.ProductID, (int)quest.AmountRequired, quest.Quality, quest.NecessaryEffects, quest.OptionalEffects, 0, true, quest.DialogueIndex);
             questTitle.text = quest.Title;
             questTask.text = $"{dialogue}";
             

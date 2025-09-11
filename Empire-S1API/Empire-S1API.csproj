@@ -68,6 +68,9 @@
         <Reference Include="UnityEngine.ImageConversionModule">
             <HintPath>$(Il2CppAssembliesPath)\UnityEngine.ImageConversionModule.dll</HintPath>
         </Reference>
+        <Reference Include="UnityEngine.InputLegacyModule">
+            <HintPath>$(Il2CppAssembliesPath)\UnityEngine.InputLegacyModule.dll</HintPath>
+        </Reference>
     </ItemGroup>
 
     <!-- Mono Specific Deps -->
@@ -98,6 +101,9 @@
         </Reference>
         <Reference Include="UnityEngine.ImageConversionModule">
             <HintPath>$(MonoAssembliesPath)\UnityEngine.ImageConversionModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.InputLegacyModule">
+            <HintPath>$(MonoAssembliesPath)\UnityEngine.InputLegacyModule.dll</HintPath>
         </Reference>
     </ItemGroup>
 

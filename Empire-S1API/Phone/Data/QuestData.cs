@@ -30,5 +30,6 @@ namespace Empire
         public float DollarMultiplierMax;
         public int Index;
 
+        public int DialogueIndex { get; internal set; }
     }
 }

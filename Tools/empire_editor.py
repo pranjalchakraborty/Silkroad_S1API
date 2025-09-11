@@ -4,6 +4,7 @@ from tkinter import ttk, filedialog, messagebox, simpledialog
 import os # Needed for path operations
 import re # Needed for filename sanitization
 import traceback # For better error reporting
+import copy # Needed for deep copying objects
 
 # --- Custom Dialog for Merge Conflicts ---
 class MergeConflictDialog(simpledialog.Dialog):
@@ -135,13 +136,23 @@ class DealerEditorApp:
         scrollable_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
         canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
         canvas.configure(yscrollcommand=scrollbar.set)
+        
+        row_num = 0
 
         # --- Version ---
         version_frame = ttk.LabelFrame(scrollable_frame, text="Version", padding=10)
-        version_frame.grid(row=0, column=0, padx=5, pady=5, sticky="ew")
+        version_frame.grid(row=row_num, column=0, padx=5, pady=5, sticky="ew"); row_num += 1
         version_frame.columnconfigure(1, weight=1)
         self.version_s1api_entry = self._create_label_entry_pair(version_frame, "S1 API:", 0)
         self.version_empire_entry = self._create_label_entry_pair(version_frame, "Empire:", 1)
+        
+        # --- Boolean Flags ---
+        misc_frame = ttk.LabelFrame(scrollable_frame, text="Flags", padding=10)
+        misc_frame.grid(row=row_num, column=0, padx=5, pady=5, sticky="ew"); row_num += 1
+        self.no_necessary_effects_var = tk.BooleanVar()
+        self.no_necessary_effects_check = ttk.Checkbutton(misc_frame, text="No Necessary Effects", variable=self.no_necessary_effects_var)
+        self.no_necessary_effects_check.pack(anchor="w")
+
 
         # --- Arrays/Lists ---
         self.global_text_widgets = {}
@@ -154,7 +165,6 @@ class DealerEditorApp:
             "randomNumberRanges": ("Random Number Ranges", float)
         }
         
-        row_num = 1
         for key, (label, type_cast) in array_fields.items():
             frame = ttk.LabelFrame(scrollable_frame, text=label, padding=10)
             frame.grid(row=row_num, column=0, padx=5, pady=5, sticky="nsew")
@@ -204,10 +214,9 @@ class DealerEditorApp:
 
         dealer_button_frame = ttk.Frame(dealers_frame)
         dealer_button_frame.pack(fill=tk.X, pady=5)
-        add_dealer_button = ttk.Button(dealer_button_frame, text="Add Dealer", command=self.add_dealer)
-        add_dealer_button.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=(0, 2))
-        remove_dealer_button = ttk.Button(dealer_button_frame, text="Remove Dealer", command=self.remove_dealer)
-        remove_dealer_button.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=(2, 0))
+        ttk.Button(dealer_button_frame, text="Add", command=self.add_dealer).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=(0,1))
+        ttk.Button(dealer_button_frame, text="Clone", command=self.clone_dealer).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=1)
+        ttk.Button(dealer_button_frame, text="Remove", command=self.remove_dealer).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=(1,0))
 
     def _create_details_section(self, parent_pane):
         """Creates the scrollable section for displaying dealer details."""
@@ -305,13 +314,13 @@ class DealerEditorApp:
 
         self.drugs_list, self.drug_details_frame = self._create_list_detail_section(
             parent_frame, current_row, "Drugs", "Drug",
-            self.add_drug, self.remove_drug, self.load_selected_drug,
+            self.add_drug, self.remove_drug, self.clone_drug, self.load_selected_drug,
             self.create_drug_details_widgets
         ); current_row += 1
         
         self.shipping_list, self.shipping_details_frame = self._create_list_detail_section(
             parent_frame, current_row, "Shipping", "Shipping Option",
-            self.add_shipping, self.remove_shipping, self.load_selected_shipping,
+            self.add_shipping, self.remove_shipping, self.clone_shipping, self.load_selected_shipping,
             self.create_shipping_details_widgets
         ); current_row += 1
 
@@ -337,8 +346,8 @@ class DealerEditorApp:
         entry.grid(row=row_num, column=1, padx=5, pady=2, sticky="ew")
         return entry
 
-    def _create_list_detail_section(self, parent_frame, grid_row, section_label, item_name, add_cmd, remove_cmd, select_cmd, create_detail_widgets_cmd):
-        """Helper to create a standard listbox with add/remove buttons and a details frame."""
+    def _create_list_detail_section(self, parent_frame, grid_row, section_label, item_name, add_cmd, remove_cmd, clone_cmd, select_cmd, create_detail_widgets_cmd):
+        """Helper to create a standard listbox with add/remove/clone buttons and a details frame."""
         frame = ttk.LabelFrame(parent_frame, text=section_label, padding=(10, 5))
         frame.grid(row=grid_row, column=0, padx=5, pady=5, sticky="nsew")
         frame.columnconfigure(0, weight=1)
@@ -354,8 +363,9 @@ class DealerEditorApp:
 
         button_frame = ttk.Frame(frame)
         button_frame.grid(row=1, column=0, columnspan=2, sticky="ew", pady=2)
-        ttk.Button(button_frame, text=f"Add {item_name}", command=add_cmd).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=(0, 2))
-        ttk.Button(button_frame, text=f"Remove {item_name}", command=remove_cmd).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=(2, 0))
+        ttk.Button(button_frame, text=f"Add", command=add_cmd).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=(0,1))
+        ttk.Button(button_frame, text=f"Clone", command=clone_cmd).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=1)
+        ttk.Button(button_frame, text=f"Remove", command=remove_cmd).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=(1,0))
 
         details_frame_widget = ttk.LabelFrame(frame, text=f"{item_name} Details", padding=(10, 5))
         details_frame_widget.grid(row=2, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
@@ -377,13 +387,13 @@ class DealerEditorApp:
 
         self.qualities_list, self.quality_details_frame = self._create_list_detail_section(
             parent_frame, current_row, "Qualities", "Quality",
-            self.add_quality, self.remove_quality, self.load_selected_quality,
+            self.add_quality, self.remove_quality, self.clone_quality, self.load_selected_quality,
             self.create_quality_details_widgets
         ); current_row +=1
 
         self.effects_list, self.effect_details_frame = self._create_list_detail_section(
             parent_frame, current_row, "Effects", "Effect",
-            self.add_effect, self.remove_effect, self.load_selected_effect,
+            self.add_effect, self.remove_effect, self.clone_effect, self.load_selected_effect,
             self.create_effect_details_widgets
         ); current_row +=1
         
@@ -585,6 +595,7 @@ class DealerEditorApp:
             "effectsName": [], "effectsDollarMult": [],
             "qualityTypes": [], "qualitiesDollarMult": [],
             "productTypes": [], "randomNumberRanges": [],
+            "noNecessaryEffects": False,
             "dealers": []
         }
 
@@ -688,12 +699,12 @@ class DealerEditorApp:
 
     def _load_global_settings_to_ui(self):
         """Populates the Global Settings tab from self.other_top_level_keys."""
-        # Version
         version_data = self.other_top_level_keys.get('version', {})
         self.clear_entry(self.version_s1api_entry); self.version_s1api_entry.insert(0, version_data.get('s1api', ''))
         self.clear_entry(self.version_empire_entry); self.version_empire_entry.insert(0, version_data.get('empire', ''))
+        
+        self.no_necessary_effects_var.set(self.other_top_level_keys.get('noNecessaryEffects', False))
 
-        # Array fields
         for key, widget in self.global_text_widgets.items():
             self.text_from_list(widget, self.other_top_level_keys.get(key, []))
 
@@ -711,6 +722,7 @@ class DealerEditorApp:
             "s1api": self.version_s1api_entry.get(),
             "empire": self.version_empire_entry.get()
         }
+        self.other_top_level_keys['noNecessaryEffects'] = self.no_necessary_effects_var.get()
         
         array_fields = {
             "effectsName": str, "effectsDollarMult": float, "qualityTypes": str,
@@ -745,7 +757,6 @@ class DealerEditorApp:
             filename = self.sanitize_filename(dealer_name) + ".json"
             filepath = os.path.join(output_dir, filename)
             
-            # The other_top_level_keys are now already synced from the UI
             dealer_file_content = self.other_top_level_keys.copy()
             dealer_file_content["dealers"] = [dealer_obj]
             
@@ -1582,6 +1593,105 @@ class DealerEditorApp:
             self.clear_entry(entry_widget)
         self.set_widget_state(self.shipping_details_frame, 'disabled')
         self.current_shipping_index = -1
+    
+    # --- Clone Methods ---
+    def clone_dealer(self):
+        selected_indices = self.dealer_list.curselection()
+        if not selected_indices:
+            messagebox.showwarning("Clone Error", "No dealer selected to clone.")
+            return
+        
+        original_index = selected_indices[0]
+        original_dealer = self.data["dealers"][original_index]
+        
+        cloned_dealer = copy.deepcopy(original_dealer)
+        cloned_dealer["name"] = f"{original_dealer.get('name', 'Unnamed')}_clone"
+        
+        new_index = original_index + 1
+        self.data["dealers"].insert(new_index, cloned_dealer)
+        
+        self.update_dealer_listbox(select_index=new_index)
+        self.load_selected_dealer(None)
+
+    def clone_drug(self):
+        selected_indices = self.drugs_list.curselection()
+        if not selected_indices:
+            messagebox.showwarning("Clone Error", "No drug selected to clone.")
+            return
+        
+        original_index = selected_indices[0]
+        dealer = self.data["dealers"][self.current_dealer_index]
+        original_drug = dealer["drugs"][original_index]
+        
+        cloned_drug = copy.deepcopy(original_drug)
+        cloned_drug["type"] = f"{original_drug.get('type', 'Unnamed')}_clone"
+        
+        new_index = original_index + 1
+        dealer["drugs"].insert(new_index, cloned_drug)
+        
+        self.update_drugs_listbox()
+        self.drugs_list.selection_set(new_index)
+        self.load_selected_drug(None)
+
+    def clone_quality(self):
+        selected_indices = self.qualities_list.curselection()
+        if not selected_indices:
+            messagebox.showwarning("Clone Error", "No quality selected to clone.")
+            return
+
+        original_index = selected_indices[0]
+        drug = self.data["dealers"][self.current_dealer_index]["drugs"][self.current_drug_index]
+        original_quality = drug["qualities"][original_index]
+        
+        cloned_quality = copy.deepcopy(original_quality)
+        cloned_quality["type"] = f"{original_quality.get('type', 'Unnamed')}_clone"
+        
+        new_index = original_index + 1
+        drug["qualities"].insert(new_index, cloned_quality)
+
+        self.update_qualities_listbox()
+        self.qualities_list.selection_set(new_index)
+        self.load_selected_quality(None)
+        
+    def clone_effect(self):
+        selected_indices = self.effects_list.curselection()
+        if not selected_indices:
+            messagebox.showwarning("Clone Error", "No effect selected to clone.")
+            return
+
+        original_index = selected_indices[0]
+        drug = self.data["dealers"][self.current_dealer_index]["drugs"][self.current_drug_index]
+        original_effect = drug["effects"][original_index]
+        
+        cloned_effect = copy.deepcopy(original_effect)
+        cloned_effect["name"] = f"{original_effect.get('name', 'Unnamed')}_clone"
+        
+        new_index = original_index + 1
+        drug["effects"].insert(new_index, cloned_effect)
+
+        self.update_effects_listbox()
+        self.effects_list.selection_set(new_index)
+        self.load_selected_effect(None)
+
+    def clone_shipping(self):
+        selected_indices = self.shipping_list.curselection()
+        if not selected_indices:
+            messagebox.showwarning("Clone Error", "No shipping option selected to clone.")
+            return
+
+        original_index = selected_indices[0]
+        dealer = self.data["dealers"][self.current_dealer_index]
+        original_shipping = dealer["shipping"][original_index]
+        
+        cloned_shipping = copy.deepcopy(original_shipping)
+        cloned_shipping["name"] = f"{original_shipping.get('name', 'Unnamed')}_clone"
+        
+        new_index = original_index + 1
+        dealer["shipping"].insert(new_index, cloned_shipping)
+
+        self.update_shipping_listbox()
+        self.shipping_list.selection_set(new_index)
+        self.load_selected_shipping(None)
 
 
 if __name__ == "__main__":

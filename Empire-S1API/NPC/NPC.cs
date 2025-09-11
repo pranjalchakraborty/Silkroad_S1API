@@ -30,7 +30,7 @@ namespace Empire
     public class NPC28:BlackmarketBuyer{}
     public class NPC29:BlackmarketBuyer{}
     public class NPC30:BlackmarketBuyer{}
-    /*public class NPC31:BlackmarketBuyer{}
+    public class NPC31:BlackmarketBuyer{}
     public class NPC32:BlackmarketBuyer{}
     public class NPC33:BlackmarketBuyer{}
     public class NPC34:BlackmarketBuyer{}
@@ -49,6 +49,6 @@ namespace Empire
     public class NPC47:BlackmarketBuyer{}
     public class NPC48:BlackmarketBuyer{}
     public class NPC49:BlackmarketBuyer{}
-    public class NPC50:BlackmarketBuyer{}*/
+    public class NPC50:BlackmarketBuyer{}
 
 }

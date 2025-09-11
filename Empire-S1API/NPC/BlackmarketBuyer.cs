@@ -28,7 +28,7 @@ namespace Empire
 
         private List<Drug> Drugs = new List<Drug>(); // Initialize Drugs list
         public List<Shipping> Shippings { get; set; } = new List<Shipping>(); // Initialize Shippings list
-        private Dialogue Dialogues = new Dialogue();
+        public Dialogue Dialogues = new Dialogue();
         public float RepLogBase { get; set; } = 10f; // Base value for reputation log
         public List<List<float>> Deals { get; set; } = new List<List<float>>(); // List of Deals
         public string DealerName { get; private set; }
@@ -116,7 +116,7 @@ namespace Empire
 
         protected override void OnLoaded()
         {
-            MelonLogger.Msg($"BlackmarketBuyer {DealerName} ONloaded.");
+            //MelonLogger.Msg($"BlackmarketBuyer {DealerName} ONloaded.");
             base.OnLoaded();
             if (dealerDataIndex < JSONDeserializer.dealerData.Dealers.Count)
             {
@@ -129,7 +129,7 @@ namespace Empire
             }
             else
             {
-                MelonLogger.Msg($"⚠️ No more drugs to unlock for index {dealerDataIndex}.");
+                //MelonLogger.Msg($"⚠️ No more drugs to unlock for index {dealerDataIndex}.");
             }
             dealer = Contacts.GetDealerDataByIndex(++dealerDataIndex);
         }
@@ -137,7 +137,7 @@ namespace Empire
         protected override void OnCreated()
         {
             base.OnCreated();
-            MelonLogger.Msg($"BlackmarketBuyer {DealerName} ONcreated.");
+            //MelonLogger.Msg($"BlackmarketBuyer {DealerName} ONcreated.");
         }
 
         public static DealerSaveData GetDealerSaveData(string dealerName)
@@ -268,7 +268,7 @@ namespace Empire
         }
 
         //Send the message to the player using the phone app or return the message string only if returnMessage is true
-        public string SendCustomMessage(string messageType, string product = "", int amount = 0, string quality = "", List<string>? necessaryEffects = null, List<string> optionalEffects = null,int dollar=0, bool returnMessage = false)
+        public string SendCustomMessage(string messageType, string product = "", int amount = 0, string quality = "", List<string>? necessaryEffects = null, List<string> optionalEffects = null,int dollar=0, bool returnMessage = false, int index = -1)
         {
             // Use case-insensitive property lookup to avoid simple casing mismatches
             var prop = Dialogues.GetType().GetProperty(messageType, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
@@ -288,9 +288,16 @@ namespace Empire
                     return null;
                 }
             }
-
+            string line="";
             // Safe random selection (messages.Count > 0 guaranteed here)
-            string line = messages[RandomUtils.RangeInt(0, messages.Count)];
+            if (index < 0 || index >= messages.Count)
+            {
+                 line = messages[RandomUtils.RangeInt(0, messages.Count)];
+            }
+            else
+            {
+                 line = messages[index];
+            }
 
             // Resolve quality color safely. Guard against missing quality or missing QualityTypes
             int qualityindex = -1;
@@ -324,7 +331,7 @@ namespace Empire
             }
 
             string formatted = line
-                .Replace("{product}", $"<color=#34AD33>{product}</color>")
+                .Replace("{product}", $"<color=#FF0004>{product}</color>")
                 .Replace("{amount}", $"<color=#FF0004>{amount}x</color>")
                 .Replace("{quality}", $"<color={qualityColor}>{(string.IsNullOrWhiteSpace(quality) ? "unknown" : quality)}</color>")
                 .Replace("{dollar}", $"<color=#FF0004>{dollar}</color>");
@@ -340,7 +347,7 @@ namespace Empire
             }
             if (optionalEffects != null && optionalEffects.Count > 0)
             {
-                string effects = string.Join(", ", optionalEffects.Select(e => $"<color=#FF0004>{e}</color>"));
+                string effects = string.Join(", ", optionalEffects.Select(e => $"<color=#00FFFF>{e}</color>"));
                 formatted = formatted.Replace("{optionalEffects}", effects);
             }
             else

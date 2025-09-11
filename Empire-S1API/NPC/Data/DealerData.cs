@@ -131,6 +131,8 @@ namespace Empire
         public List<float> QualitiesDollarMult { get; set; }
         [JsonProperty("randomNumberRanges")]
         public List<float> RandomNumberRanges { get; set; }
+        [JsonProperty("noNecessaryEffects")]
+        public bool NoNecessaryEffects { get; set; } = false;
         [JsonProperty("dealers")]
         public List<Dealer> Dealers { get; set; }
     }

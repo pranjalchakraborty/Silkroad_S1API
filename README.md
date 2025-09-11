@@ -54,7 +54,7 @@ Welcome to the NPC Custom Buyers & Dealers Expansion Mod! This mod allows player
 
 ### NPCs & Progression
 
-* **Reputation System:** NPC reputation is minimum at `1` and can increase indefinitely. Higher reputation unlocks more benefits.
+* **Reputation System:** NPC reputation is minimum at `0` and can increase indefinitely. Higher reputation unlocks more benefits.
 * **NPC Unlocks:** New NPCs can be set to unlock once the player reaches specific reputation milestones with other, prerequisite NPCs.
 
 ### Quests
@@ -258,10 +258,7 @@ This mod is an ongoing project with many plans for expansion and refinement!
     * Money laundering specialists offering financial services.
 * **Advanced Delivery Systems:**
     * Instant delivery deals with configurable wanted levels (constant or refreshing).
-* **Enhanced NPC Interactions:**
-    * Customizable NPC introductions and interaction types through JSON.
 * **Quest Generation Enhancements:**
-    * Variable quest generation frequency.
     * NPCs ordering from a list of "Product Manager Discovered Products" or "Favorited Products." - Json support
 * **Deeper NPC Immersion:**
     * Unlock criteria based on player rank, wealth, or total deals completed.
@@ -270,8 +267,6 @@ This mod is an ongoing project with many plans for expansion and refinement!
 * **Advanced Interactions:**
     * NPC relationship matrix (potentially affecting other mod or base game NPCs).
     * Dialogue-driven missions and storylines.
-* **API Dependent Features:**
-    * Replace hardcoded prices with base prices from product definitions once `s1api` supports this.
 * **Quest Rewards:**
     * Optionally, players may receive a bonus for turning in a quest earlier than the deadline.
 
@@ -307,10 +302,7 @@ This mod is an ongoing project with many plans for expansion and refinement!
 - **Quest System:** Convert and expose quest systems (like Uncle Nelson's questline) through JSON.
 
     * **Comment:** Unc Nelson Questline
-    * **Comment:** Unc Nelson Phone Msg - convert to Call
     * **Comment:** Special mechanic for each dealer groups like Debt for Cartel - Police Help for Uncle Nelson - Gus Gang, Prison help for Uncle Nelson - Welker Gang, Break Out Unc with Heisenberg Gang, Legal Help - Saul
-    * **Comment:** "pay_once":{"amount":,"msg":"This money will be put to good use"}
-    * **Comment:** Bool Variables for Debt Payoff/Pay Once - Special mechanics by mechanic type and NPC name
 
 ## Checklist to Release
 
@@ -328,7 +320,7 @@ We hope you enjoy the NPC Custom Buyers & Dealers Expansion Mod! Your feedback a
 💕Credits:
 Much gratitude and many many thanks to:
 ❤️ @Akermi for teaching S1API usage through his git repos and for the initial project structure.
-❤️ S1API for providing the foundation for the mod, and it's creators @KaBooMa @Akermi @Max @ChloeNow  for making such a valuable and user-friendly modding resource.
+❤️ S1API for providing the foundation for the mod
 ❤️ @Freshairkaboom for helping with the UI.
 ❤️ @iiTzSamurai for App icon and delivery icons.
 ❤️ Tyler for giving us Schedule 1.
@@ -341,8 +333,10 @@ Much gratitude and many many thanks to:
 
 
 
-
-// skinny pete change weed to weedname in give reward json
+// hitman contracts
+// global settings variable flags - all_prices_market, all_prices_suggested, all_effects_optional
+// persist generated quests per save
+// create clone existing option per new/delete option in Editor
 // refactor phoneapp
 // better ui
 // fix button sizes
