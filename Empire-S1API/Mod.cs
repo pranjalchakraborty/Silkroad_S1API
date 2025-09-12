@@ -13,10 +13,6 @@ namespace Empire
         {
             // Initialize JSON data first
             JSONDeserializer.Initialize();
-
-            // Register the EmpireSaveData with the ModSaveableRegistry
-            var empireSaveData = new EmpireSaveData();
-            ModSaveableRegistry.Register(empireSaveData, "Empire");
         }
 
         public override void OnSceneWasUnloaded(int buildIndex, string sceneName)
