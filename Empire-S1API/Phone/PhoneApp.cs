@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Empire;
+using Il2Cpp;
 using MelonLoader;
 using MelonLoader.Utils;
 using S1API.Console;
@@ -20,7 +21,6 @@ namespace Empire
     public class MyApp : S1API.PhoneApp.PhoneApp
     {
         public static MyApp Instance { get; set; }
-        public static BlackmarketBuyer saveBuyer { get; set; }
         protected override string AppName => "Empire";
         protected override string AppTitle => "Empire";
         protected override string IconLabel => "Empire";
@@ -59,6 +59,14 @@ namespace Empire
         public static string QuestImage;
 
         private GameObject messageContainer;
+        private S1API.Quests.Quest q;
+
+        public static void Reset()
+        {
+            QuestDelivery.QuestActive = false;
+            QuestDelivery.Active = null;
+            q= null;
+        }
 
         private Transform GetMessageParent()
         {
@@ -969,7 +977,7 @@ namespace Empire
                 }
 
                 ButtonUtils.AddListener(row.GetComponent<Button>(), () => OnSelectQuest(quest));
-                UIFactory.CreateTextBlock(textPanel.transform, quest.Title, quest.Task, QuestDelivery.CompletedQuestKeys?.Contains($"{quest.ProductID}_{quest.AmountRequired}") == true);
+                UIFactory.CreateTextBlock(textPanel.transform, quest.Title, quest.Task, false);
             }
         }
         private void PopulateBuyerList(RectTransform container)
@@ -1060,7 +1068,7 @@ namespace Empire
             deliveryStatus.text = "📦 Delivery started!";
             ButtonUtils.Disable(acceptButton, acceptLabel, "In Progress");
 
-            var q = S1API.Quests.QuestManager.CreateQuest<QuestDelivery>();
+            q = S1API.Quests.QuestManager.CreateQuest<QuestDelivery>();
             if (q is QuestDelivery delivery)
             {
                 delivery.Data.ProductID = quest.ProductID;

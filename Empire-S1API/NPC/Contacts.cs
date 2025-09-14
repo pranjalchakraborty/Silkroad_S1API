@@ -84,9 +84,6 @@ namespace Empire
                 return;
             }
 
-            
-
-            MelonLogger.Msg("Testing 100");
             _isUpdateCoroutineRunning = true;
             MelonLoader.MelonCoroutines.Start(UpdateCoroutine());
         }

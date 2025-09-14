@@ -1,7 +1,7 @@
 {
     "version": {
-        "s1api": "1.7.5",
-        "empire": "1.05"
+        "s1api": "1.7.9",
+        "empire": "1.11"
     },
     "effectsName": [
         "AntiGravity",
@@ -154,7 +154,7 @@
                 {
                     "type": "weed",
                     "unlockRep": 0,
-                    "base_dollar": 12,
+                    "base_dollar": 10,
                     "base_rep": 9,
                     "base_xp": 6,
                     "rep_mult": 0.001,
@@ -313,7 +313,7 @@
                 {
                     "type": "weed",
                     "unlockRep": 0,
-                    "base_dollar": 12,
+                    "base_dollar": 10,
                     "base_rep": 9,
                     "base_xp": 6,
                     "rep_mult": 0.002,
@@ -472,7 +472,7 @@
                 {
                     "type": "weed",
                     "unlockRep": 0,
-                    "base_dollar": 12,
+                    "base_dollar": 10,
                     "base_rep": 9,
                     "base_xp": 6,
                     "rep_mult": 0.004,
@@ -652,7 +652,7 @@
                 {
                     "type": "weed",
                     "unlockRep": 0,
-                    "base_dollar": 50,
+                    "base_dollar": 37,
                     "base_rep": 80,
                     "base_xp": 39,
                     "rep_mult": 0.002,
@@ -716,7 +716,7 @@
                 {
                     "type": "meth",
                     "unlockRep": 120,
-                    "base_dollar": 84,
+                    "base_dollar": 48,
                     "base_rep": 60,
                     "base_xp": 41,
                     "rep_mult": 0.004,
@@ -919,7 +919,7 @@
                 {
                     "type": "weed",
                     "unlockRep": 0,
-                    "base_dollar": 40,
+                    "base_dollar": 17,
                     "base_rep": 26,
                     "base_xp": 17,
                     "rep_mult": 0.004,
@@ -972,7 +972,7 @@
                 {
                     "type": "cocaine",
                     "unlockRep": 90,
-                    "base_dollar": 150,
+                    "base_dollar": 71,
                     "base_rep": 17,
                     "base_xp": 18,
                     "rep_mult": 0.001,
@@ -1154,7 +1154,7 @@
                 {
                     "type": "meth",
                     "unlockRep": 0,
-                    "base_dollar": 60,
+                    "base_dollar": 40,
                     "base_rep": 50,
                     "base_xp": 39,
                     "rep_mult": 0.002,
@@ -1207,7 +1207,7 @@
                 {
                     "type": "cocaine",
                     "unlockRep": 165,
-                    "base_dollar": 150,
+                    "base_dollar": 74,
                     "base_rep": 65,
                     "base_xp": 41,
                     "rep_mult": 0.001,
@@ -1397,7 +1397,7 @@
                 {
                     "type": "weed",
                     "unlockRep": 0,
-                    "base_dollar": 26,
+                    "base_dollar": 17,
                     "base_rep": 42,
                     "base_xp": 31,
                     "rep_mult": 0.002,
@@ -1450,7 +1450,7 @@
                 {
                     "type": "meth",
                     "unlockRep": 300,
-                    "base_dollar": 52,
+                    "base_dollar": 35,
                     "base_rep": 50,
                     "base_xp": 33,
                     "rep_mult": 0.001,
@@ -1648,7 +1648,7 @@
                 {
                     "type": "meth",
                     "unlockRep": 0,
-                    "base_dollar": 67,
+                    "base_dollar": 43,
                     "base_rep": 88,
                     "base_xp": 62,
                     "rep_mult": 0.002,
@@ -1707,7 +1707,7 @@
                 {
                     "type": "cocaine",
                     "unlockRep": 640,
-                    "base_dollar": 134,
+                    "base_dollar": 98,
                     "base_rep": 69,
                     "base_xp": 66,
                     "rep_mult": 0.001,
@@ -1922,7 +1922,7 @@
                 {
                     "type": "meth",
                     "unlockRep": 0,
-                    "base_dollar": 60,
+                    "base_dollar": 68,
                     "base_rep": 260,
                     "base_xp": 215,
                     "rep_mult": 0.002,
@@ -1987,7 +1987,7 @@
                 {
                     "type": "cocaine",
                     "unlockRep": 1750,
-                    "base_dollar": 120,
+                    "base_dollar": 104,
                     "base_rep": 220,
                     "base_xp": 224,
                     "rep_mult": 0.001,
@@ -2211,7 +2211,7 @@
                 {
                     "type": "cocaine",
                     "unlockRep": 0,
-                    "base_dollar": 100,
+                    "base_dollar": 77,
                     "base_rep": 60,
                     "base_xp": 57,
                     "rep_mult": 0.001,
@@ -2264,7 +2264,7 @@
                 {
                     "type": "meth",
                     "unlockRep": 560,
-                    "base_dollar": 50,
+                    "base_dollar": 42,
                     "base_rep": 70,
                     "base_xp": 60,
                     "rep_mult": 0.002,
@@ -2455,7 +2455,7 @@
                 {
                     "type": "cocaine",
                     "unlockRep": 0,
-                    "base_dollar": 120,
+                    "base_dollar": 75,
                     "base_rep": 181,
                     "base_xp": 153,
                     "rep_mult": 0.001,
@@ -2508,7 +2508,7 @@
                 {
                     "type": "meth",
                     "unlockRep": 1140,
-                    "base_dollar": 60,
+                    "base_dollar": 40,
                     "base_rep": 168,
                     "base_xp": 161,
                     "rep_mult": 0.002,
@@ -2707,7 +2707,7 @@
                 {
                     "type": "cocaine",
                     "unlockRep": 0,
-                    "base_dollar": 150,
+                    "base_dollar": 134,
                     "base_rep": 423,
                     "base_xp": 367,
                     "rep_mult": 0.001,
@@ -2772,7 +2772,7 @@
                 {
                     "type": "meth",
                     "unlockRep": 2450,
-                    "base_dollar": 80,
+                    "base_dollar": 49,
                     "base_rep": 398,
                     "base_xp": 383,
                     "rep_mult": 0.002,
@@ -2998,7 +2998,7 @@
                 {
                     "type": "meth",
                     "unlockRep": 0,
-                    "base_dollar": 80,
+                    "base_dollar": 54,
                     "base_rep": 181,
                     "base_xp": 155,
                     "rep_mult": 0.002,
@@ -3216,7 +3216,7 @@
                 {
                     "type": "meth",
                     "unlockRep": 0,
-                    "base_dollar": 46,
+                    "base_dollar": 37,
                     "base_rep": 85,
                     "base_xp": 71,
                     "rep_mult": 0.002,
@@ -3404,7 +3404,7 @@
                 {
                     "type": "meth",
                     "unlockRep": 0,
-                    "base_dollar": 84,
+                    "base_dollar": 51,
                     "base_rep": 241,
                     "base_xp": 211,
                     "rep_mult": 0.002,
@@ -3625,7 +3625,7 @@
                 {
                     "type": "meth",
                     "unlockRep": 0,
-                    "base_dollar": 150,
+                    "base_dollar": 80,
                     "base_rep": 668,
                     "base_xp": 624,
                     "rep_mult": 0.002,

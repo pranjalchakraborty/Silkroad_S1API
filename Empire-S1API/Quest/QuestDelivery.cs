@@ -30,11 +30,9 @@ namespace Empire
         public BlackmarketBuyer buyer;
         private DeadDropInstance deliveryDrop;
         private StorageInstance? subscribedStorage;
-        public static HashSet<string> CompletedQuestKeys = new HashSet<string>();
         public QuestEntry deliveryEntry;
         public QuestEntry rewardEntry;
         public static bool QuestActive = false;
-        public static event Action OnQuestCompleted;
         public static QuestDelivery? Active { get; internal set; }
 
         public QuestEntry GetDeliveryEntry() => deliveryEntry;
@@ -43,7 +41,6 @@ namespace Empire
         {
             MelonLogger.Msg("🚫 QuestDelivery.ForceCancel() called.");
 
-            //MelonCoroutines.Start(DelayedReward("Failed"));
             GiveReward("Failed");
             if (deliveryEntry != null && deliveryEntry.State != QuestState.Completed)
                 deliveryEntry.SetState(QuestState.Expired);
@@ -71,7 +68,6 @@ namespace Empire
             {
                 // If the quest time has expired, fail the quest
                 
-                //MelonCoroutines.Start(DelayedReward("Expired"));
                 GiveReward("Expired");
                 if (deliveryEntry != null && deliveryEntry.State != QuestState.Completed)
                     deliveryEntry.SetState(QuestState.Expired);
@@ -98,7 +94,6 @@ namespace Empire
             base.OnLoaded();
             MelonCoroutines.Start(WaitForBuyerAndLoad());
             
-            //TimeManager.OnDayPass += ExpireCountdown;
             MelonLogger.Msg($"Quest OnLoaded() done.");
         }
 
@@ -118,8 +113,6 @@ namespace Empire
                 MelonLogger.Warning("⚠️ Buyer NPCs still not initialized after timeout. Skipping status sync.");
                 yield break;
             }
-            //buyer = Contacts.GetBuyer(Data.DealerName);
-            //ConsoleHelper.SetLawIntensity((float)2*buyer.Tier);// TODO - Expose Deal Heat thru JSON
         }
 
 
@@ -156,7 +149,6 @@ namespace Empire
             {
                 deliveryDrop = DeadDropManager.All.FirstOrDefault(d => d.GUID == Data.DeliveryDropGUID);
             }
-            //MelonLogger.Msg("📦 Testing 1.");
             deliveryEntry = AddEntry($"{Data.Task} at the {Colorize(deliveryDrop.Name, DropNameColor)}. Expiry: {Colorize(Data.DealTime.ToString(), DealTimeColor)} Days");
             deliveryEntry.POIPosition = deliveryDrop.Position;
             deliveryEntry.Begin();
@@ -536,10 +528,7 @@ namespace Empire
             MelonLogger.Msg($"   Rewarded : ${Data.Reward} and Rep {Data.RepReward} and Xp (if completed) {Data.XpReward} from {Data.DealerName}");
 
             MyApp.Instance.OnQuestComplete();
-            //ConsoleHelper.SetLawIntensity(1f);
             rewardEntry?.Complete();
-            // Trigger the event with no payload
-            OnQuestCompleted?.Invoke();
         }
 
         protected override string Title =>

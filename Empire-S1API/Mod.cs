@@ -2,7 +2,7 @@
 using Empire;
 using S1API.Saveables;
 
-[assembly: MelonInfo(typeof(MyMod), "Empire", "1.0", "Aracor")]
+[assembly: MelonInfo(typeof(MyMod), "Empire", "1.11", "Aracor")]
 [assembly: MelonGame("TVGS", "Schedule I")]
 
 namespace Empire
@@ -21,6 +21,7 @@ namespace Empire
             {
                 MelonLogger.Msg("🧹 Resetting Empire static state after Main scene unload");
                 Contacts.Reset();
+                MyApp.Reset();
             }
         }
 
@@ -31,6 +32,7 @@ namespace Empire
                 // Also reset on initialization to be safe
                 MelonLogger.Msg("🧹 Resetting Empire static state after Main scene initialization");
                 Contacts.Reset();
+                MyApp.Reset();
             }
         }
     }

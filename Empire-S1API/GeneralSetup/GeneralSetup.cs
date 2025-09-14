@@ -23,7 +23,7 @@ namespace Empire
             MelonLogger.Msg($"Unc Calls: {EmpireSaveData.SaveData.UncNelsonCartelIntroDone}");
             if (!EmpireSaveData.SaveData.UncNelsonCartelIntroDone)
             {
-                MelonLogger.Msg($"Unc Calls: {EmpireSaveData.SaveData.UncNelsonCartelIntroDone}");
+                //MelonLogger.Msg($"Unc Calls: {EmpireSaveData.SaveData.UncNelsonCartelIntroDone}");
                 EmpireSaveData.SaveData.UncNelsonCartelIntroDone = true;
                 // Queue the intro as a phone call with staged dialogue
                 var caller = NPC1.Get<UncleNelson>() as UncleNelson;
