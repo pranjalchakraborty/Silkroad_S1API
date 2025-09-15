@@ -59,13 +59,20 @@ namespace Empire
         public static string QuestImage;
 
         private GameObject messageContainer;
-        private S1API.Quests.Quest q;
+        private S1API.Quests.Quest? q;
 
         public static void Reset()
         {
-            QuestDelivery.QuestActive = false;
-            QuestDelivery.Active = null;
-            q= null;
+            if (QuestDelivery.QuestActive && QuestDelivery.Active != null)
+            {
+                MelonLogger.Msg("[EmpireApp] Resetting active quest state.");
+                QuestDelivery.Active.Cleanup();
+            }     
+            if (Instance.q != null)
+            {
+                MelonLogger.Msg("[EmpireApp] Resetting MyApp instance.");
+                Instance.q = null;
+            }
         }
 
         private Transform GetMessageParent()
@@ -84,6 +91,7 @@ namespace Empire
             base.OnCreated();
             MelonLogger.Msg("[EmpireApp] OnCreated called");
             Instance = this;
+            Reset();
             TimeManager.OnDayPass -= LoadQuests;
             TimeManager.OnDayPass += LoadQuests;
             MelonLogger.Msg("✅ TimeManager.OnDayPass event subscribed");

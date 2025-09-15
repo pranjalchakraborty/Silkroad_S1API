@@ -51,7 +51,15 @@ namespace Empire
             Fail();
             
         }
-
+        public void Cleanup()
+        {
+            MelonLogger.Msg("🚫 QuestDelivery.Cleanup() called.");
+            CleanupSubscriptions();
+            MelonLogger.Msg("Calling");
+            Fail();
+            QuestActive = false;
+            Active = null; // 👈 Reset after cancel
+        }
         private void ExpireCountdown()
         {
             

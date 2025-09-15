@@ -20,8 +20,9 @@ namespace Empire
             if (sceneName == "Main")
             {
                 MelonLogger.Msg("🧹 Resetting Empire static state after Main scene unload");
+                //MyApp.Reset();
                 Contacts.Reset();
-                MyApp.Reset();
+                
             }
         }
 
@@ -31,8 +32,9 @@ namespace Empire
             {
                 // Also reset on initialization to be safe
                 MelonLogger.Msg("🧹 Resetting Empire static state after Main scene initialization");
+                //MyApp.Reset();
                 Contacts.Reset();
-                MyApp.Reset();
+                
             }
         }
     }
